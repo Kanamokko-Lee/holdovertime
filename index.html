@@ -229,12 +229,16 @@ select option{background:var(--bg)}
         <div style="margin-bottom:10px">
           <label>OAT (°C)</label>
           <div style="display:flex;gap:5px;align-items:center">
-            <input type="number" id="inp-oat" value="0" step="0.5" onchange="calculate()" oninput="calculate()" style="flex:1;min-width:0;text-align:center;font-size:18px;font-weight:700">
-            <div style="display:flex;flex-direction:column;gap:3px">
-              <button class="step-btn big" onclick="stepOAT(5)" style="font-size:11px;padding:3px 7px;min-width:34px">+5</button>
-              <button class="step-btn big" onclick="stepOAT(1)" style="font-size:13px;padding:3px 7px;min-width:34px">+1</button>
-              <button class="step-btn big" onclick="stepOAT(-1)" style="font-size:13px;padding:3px 7px;min-width:34px">−1</button>
-              <button class="step-btn big" onclick="stepOAT(-5)" style="font-size:11px;padding:3px 7px;min-width:34px">−5</button>
+            <input type="number" id="inp-oat" value="0" step="0.5" onchange="calculate()" oninput="calculate()" style="width:80px;text-align:center;font-size:18px;font-weight:700">
+            <div style="display:flex;gap:4px">
+              <div style="display:flex;flex-direction:column;gap:3px">
+                <button class="step-btn big" onclick="stepOAT(5)" style="font-size:12px;padding:6px 11px;min-width:46px">+5</button>
+                <button class="step-btn big" onclick="stepOAT(-5)" style="font-size:12px;padding:6px 11px;min-width:46px">−5</button>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px">
+                <button class="step-btn big" onclick="stepOAT(1)" style="font-size:14px;padding:6px 11px;min-width:46px">+1</button>
+                <button class="step-btn big" onclick="stepOAT(-1)" style="font-size:14px;padding:6px 11px;min-width:46px">−1</button>
+              </div>
             </div>
             <span style="color:var(--text2);font-size:14px;font-weight:600">°C</span>
           </div>
@@ -254,14 +258,16 @@ select option{background:var(--bg)}
         <div style="margin-bottom:8px">
           <label>視程</label>
           <div style="display:flex;gap:5px;align-items:center">
-            <div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0">
-              <button class="step-btn big" onclick="stepVis(1000)" style="font-size:11px;padding:3px 7px;min-width:34px">+1k</button>
-              <button class="step-btn big" onclick="stepVis(-1000)" style="font-size:11px;padding:3px 7px;min-width:34px">−1k</button>
-            </div>
-            <input type="number" id="inp-vis" placeholder="—" step="100" onchange="calculate()" oninput="calculate()" style="flex:1;min-width:0;text-align:center;font-size:16px">
-            <div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0">
-              <button class="step-btn big" onclick="stepVis(100)" style="font-size:11px;padding:3px 7px;min-width:34px">+100</button>
-              <button class="step-btn big" onclick="stepVis(-100)" style="font-size:11px;padding:3px 7px;min-width:34px">−100</button>
+            <input type="number" id="inp-vis" placeholder="—" step="100" onchange="calculate()" oninput="calculate()" style="width:80px;text-align:center;font-size:16px">
+            <div style="display:flex;gap:4px">
+              <div style="display:flex;flex-direction:column;gap:3px">
+                <button class="step-btn big" onclick="stepVis(1000)" style="font-size:12px;padding:6px 8px;min-width:46px">+1k</button>
+                <button class="step-btn big" onclick="stepVis(-1000)" style="font-size:12px;padding:6px 8px;min-width:46px">−1k</button>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px">
+                <button class="step-btn big" onclick="stepVis(100)" style="font-size:12px;padding:6px 8px;min-width:46px">+100</button>
+                <button class="step-btn big" onclick="stepVis(-100)" style="font-size:12px;padding:6px 8px;min-width:46px">−100</button>
+              </div>
             </div>
             <select id="sel-vis-unit" onchange="calculate()" style="width:50px;flex-shrink:0;font-size:13px;padding:7px 3px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);color:var(--text)">
               <option value="m">m</option>
@@ -1047,52 +1053,50 @@ function calculate(){
 function buildInlineWarnings(minCol,ratio,snIntensityResult,snNeedsVis){
   if(minCol===null)return'';
   const fluid=FLUIDS[state.fluid];
+  const FS='font-size:14px;font-weight:700';
   let lines=[];
 
-  // OAT next-band warning
+  // OAT next-band warning: show upper boundary (oatMax) of next band = where it triggers
   const bi=getOatBandIndex(state.fluid,state.oat);
   const bands=fluid.bands;
   if(bi<bands.length-1){
     const nb=bands[bi+1];
     const nextArr=nb[ratio];
     const nextV=nextArr?nextArr[minCol]:null;
-    const threshold=nb.oatMin;
-    const dropTo=threshold; // °C at which next band starts
+    // nb.oatMax is the upper (higher) boundary of the next band = trigger threshold
+    const threshold=nb.oatMax;
     if(nextV!==null){
-      lines.push(`<span style="color:var(--yellow)">🌡 ${dropTo}°C以下→ <b>${fmtMin(nextV)}</b></span>`);
+      lines.push(`<span style="color:var(--yellow);${FS}">🌡 ${threshold}°C以下→ ${fmtMin(nextV)}</span>`);
     } else {
-      lines.push(`<span style="color:var(--orange)">🌡 ${dropTo}°C以下→ <b>指針なし</b></span>`);
+      lines.push(`<span style="color:var(--orange);${FS}">🌡 ${threshold}°C以下→ 指針なし</span>`);
     }
   }
 
-  // Vis degradation warnings (SN only)
+  // Vis degradation: ONE step only (first next intensity worse than current)
   if(snNeedsVis&&state.visMeter&&snIntensityResult){
-    const curIntensity=snIntensityResult;
     const breakpoints=[3600,3000,2600,2000,1400,1000,600,400,200];
-    let shownIntensities=new Set([curIntensity]);
     for(const bp of breakpoints){
       if(bp>=state.visMeter)continue;
       const si=getSnIntensity(bp,state.oat,state.isNight);
-      if(!si||shownIntensities.has(si))continue;
-      shownIntensities.add(si);
+      if(!si||si===snIntensityResult)continue;
       if(si==='heavy'){
-        lines.push(`<span style="color:var(--red)">👁 ${bp}m以下→ <b>Heavy SN Ops</b></span>`);
+        lines.push(`<span style="color:var(--red);${FS}">👁 ${bp}m以下→ Heavy SN Ops</span>`);
       } else {
         const sc=snIntensityToCol(si);
         const sv=sc!==null?lookupHOT(state.fluid,ratio,sc,state.oat):null;
         const siLabel=SN_INTENSITY_LABELS[si];
         const color=SN_INTENSITY_COLORS[si]||'#aaa';
         if(sv!==null){
-          lines.push(`<span style="color:${color}">👁 ${bp}m以下→ <span style="color:${color}">${siLabel}</span> → <b>${fmtMin(sv)}</b></span>`);
+          lines.push(`<span style="color:${color};${FS}">👁 ${bp}m以下→ ${siLabel} → ${fmtMin(sv)}</span>`);
         } else {
-          lines.push(`<span style="color:var(--red)">👁 ${bp}m以下→ ${siLabel} → <b>指針なし</b></span>`);
+          lines.push(`<span style="color:var(--red);${FS}">👁 ${bp}m以下→ ${siLabel} → 指針なし</span>`);
         }
       }
-      if(lines.length>=5)break;
+      break; // ONE step only
     }
   }
 
-  // Day/Night change warning (SN intensity changes at day/night boundary)
+  // Day/Night change warning
   if(snNeedsVis&&state.visMeter&&snIntensityResult){
     const otherNight=!state.isNight;
     const otherSI=getSnIntensity(state.visMeter,state.oat,otherNight);
@@ -1101,17 +1105,15 @@ function buildInlineWarnings(minCol,ratio,snIntensityResult,snNeedsVis){
       const otherHOT=otherCol!==null?lookupHOT(state.fluid,ratio,otherCol,state.oat):null;
       const otherColor=SN_INTENSITY_COLORS[otherSI]||'#aaa';
       const icon=otherNight?'🌙':'☀';
+      const label=otherNight?'日没後':'日出後';
       if(otherSI==='heavy'){
-        lines.push(`<span style="color:var(--red)">${icon} 日${otherNight?'没':'出'}後→ <b>Heavy SN Ops</b></span>`);
+        lines.push(`<span style="color:var(--red);${FS}">${icon} ${label}→ Heavy SN Ops</span>`);
       } else if(otherHOT!==null){
-        lines.push(`<span style="color:${otherColor}">${icon} 日${otherNight?'没':'出'}後→ <span style="color:${otherColor}">${SN_INTENSITY_LABELS[otherSI]}</span> → <b>${fmtMin(otherHOT)}</b></span>`);
+        lines.push(`<span style="color:${otherColor};${FS}">${icon} ${label}→ ${SN_INTENSITY_LABELS[otherSI]} → ${fmtMin(otherHOT)}</span>`);
       } else {
-        lines.push(`<span style="color:var(--red)">${icon} 日${otherNight?'没':'出'}後→ <b>指針なし</b></span>`);
+        lines.push(`<span style="color:var(--red);${FS}">${icon} ${label}→ 指針なし</span>`);
       }
     }
-  } else if(!snNeedsVis){
-    // Non-SN: just check OAT band day/night doesn't matter, but show if night matters for SN
-    // nothing extra needed
   }
 
   return lines.join('<br>');
@@ -1379,20 +1381,20 @@ function buildPLInlineWarnings(row,curBandIdx){
   const lines=[];
   const curT=curBandIdx<row.times.length?row.times[curBandIdx]:null;
   let lastT=curT;
-  // Walk downward through bands, show every value-change boundary
   for(let i=curBandIdx+1;i<PL_OAT_BANDS.length;i++){
     const t=i<row.times.length?row.times[i]:null;
     const band=PL_OAT_BANDS[i];
+    // threshold = band.max (upper/higher temp of this band) = where this band begins
+    const threshold=band.max===999?'>0':band.max;
     if(t===null){
       if(lastT!==null){
-        // First N/A boundary: show it
-        lines.push(`<span style="color:var(--red)">🌡 ${band.min}°C以下→ <b>N/A</b></span>`);
+        lines.push(`<span style="color:var(--red);font-size:14px;font-weight:700">🌡 ${threshold}°C以下→ N/A</span>`);
       }
       break;
     }
     if(t!==lastT){
       const color=t<(lastT||999)?'var(--yellow)':'var(--green)';
-      lines.push(`<span style="color:${color}">🌡 ${band.min}°C以下→ <b>${t}分</b></span>`);
+      lines.push(`<span style="color:${color};font-size:14px;font-weight:700">🌡 ${threshold}°C以下→ ${t}分</span>`);
       lastT=t;
     }
     if(lines.length>=4)break;
