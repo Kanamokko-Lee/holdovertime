@@ -11,215 +11,229 @@
 <title>HOT Calculator — B787 AOMB No.151</title>
 <style>
 :root {
-  --bg: #0d1b2a;
-  --panel: #1a2d42;
-  --panel2: #1e3451;
-  --border: #2c4a6a;
-  --accent: #4a9edd;
-  --accent2: #2d7abf;
-  --green: #2ecc71;
-  --yellow: #f1c40f;
-  --orange: #e67e22;
-  --red: #e74c3c;
-  --red2: #c0392b;
-  --text: #d8e8f4;
-  --text2: #8aaccc;
-  --text3: #5580a0;
-  --white: #ffffff;
-  --r: 8px;
-  --r2: 5px;
+  --bg:#0d1b2a; --panel:#1a2d42; --panel2:#1e3451; --border:#2c4a6a;
+  --accent:#4a9edd; --accent2:#2d7abf;
+  --green:#2ecc71; --yellow:#f1c40f; --orange:#e67e22; --red:#e74c3c; --red2:#c0392b;
+  --sn-vl:#88aaff; --sn-lt:#f1c40f; --sn-mod:#e67e22; --sn-heavy:#e74c3c;
+  --text:#d8e8f4; --text2:#8aaccc; --text3:#5580a0; --white:#fff;
+  --r:8px; --r2:5px;
+  --fs-base:15px; --fs-sm:13px; --fs-xs:11px; --fs-lg:18px;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; background: var(--bg); color: var(--text); font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; }
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;font-size:var(--fs-base)}
+.app{display:flex;flex-direction:column;height:100vh;max-width:520px;margin:0 auto}
+/* Header */
+.header{background:var(--panel);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.header h1{font-size:17px;font-weight:700;color:var(--accent)}
+.header .sub{font-size:11px;color:var(--text3)}
+.btn-settings{background:none;border:1px solid var(--border);color:var(--text2);padding:6px 12px;border-radius:var(--r2);font-size:13px;cursor:pointer}
+/* Scroll */
+.scroll{flex:1;overflow-y:auto;padding:12px}
+/* Cards */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.card-title{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
+/* Inputs */
+label{font-size:var(--fs-xs);color:var(--text2);display:block;margin-bottom:4px}
+input[type=number],input[type=text],select{
+  width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);
+  color:var(--text);font-size:17px;padding:9px 11px;outline:none;-webkit-appearance:none}
+input:focus,select:focus{border-color:var(--accent)}
+select option{background:var(--bg)}
+/* Fluid select special colors */
+select.fluid-sel option.flag-red{color:#ff6666}
+/* Toggle btns */
+.toggle-group{display:flex;gap:4px}
+.toggle-btn{
+  flex:1;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);
+  color:var(--text2);font-size:var(--fs-sm);padding:8px 5px;cursor:pointer;text-align:center;transition:all .15s}
+.toggle-btn.active{background:var(--accent2);border-color:var(--accent);color:#fff;font-weight:700}
+/* METAR */
+.metar-row{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+.metar-row input{font-family:'Courier New',monospace;font-size:16px;text-transform:uppercase;letter-spacing:.05em}
+.metar-row button{background:var(--accent2);border:none;color:#fff;border-radius:var(--r2);padding:9px 13px;font-size:13px;cursor:pointer;white-space:nowrap}
+.metar-hint{font-size:11px;color:var(--text3);margin-bottom:8px}
+/* Ratio */
+.ratio-group{display:flex;gap:4px}
+.ratio-btn{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);color:var(--text2);font-size:14px;font-weight:700;padding:8px 4px;cursor:pointer;text-align:center}
+.ratio-btn.active{background:var(--accent2);border-color:var(--accent);color:#fff}
+.ratio-btn:disabled{opacity:.3;cursor:not-allowed}
 
-/* ── Layout ── */
-.app { display: flex; flex-direction: column; height: 100vh; max-width: 480px; margin: 0 auto; }
-.header { background: var(--panel); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-.header h1 { font-size: 15px; font-weight: 700; letter-spacing: 0.05em; color: var(--accent); }
-.header .sub { font-size: 10px; color: var(--text3); }
-.btn-settings { background: none; border: 1px solid var(--border); color: var(--text2); padding: 5px 10px; border-radius: var(--r2); font-size: 12px; cursor: pointer; }
+/* ── WEATHER SECTION: two-column layout ── */
+.wx-layout{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wx-left,.wx-right{display:flex;flex-direction:column;gap:8px}
 
-.scroll { flex: 1; overflow-y: auto; padding: 12px; }
+/* OAT + Day/Night block */
+.oat-block{background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:10px}
+.oat-block label{font-size:12px;color:var(--text2);margin-bottom:4px}
+.oat-big{font-size:28px;font-weight:800;color:var(--text);font-family:monospace;letter-spacing:-.02em}
+.oat-unit{font-size:14px;color:var(--text3)}
 
-/* ── Cards ── */
-.card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--r); padding: 12px; margin-bottom: 10px; }
-.card-title { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+/* SN vis block – highlighted */
+.sn-block{background:#0e2035;border:2px solid #3a6a9a;border-radius:var(--r2);padding:10px}
+.sn-block-title{font-size:11px;font-weight:700;color:#4a9edd;margin-bottom:6px;text-transform:uppercase}
+.sn-intensity-badge{
+  display:inline-block;border-radius:4px;padding:3px 10px;font-size:13px;font-weight:700;
+  margin-top:4px;letter-spacing:.03em}
+.sn-intensity-badge.vlight{background:rgba(136,170,255,.2);color:var(--sn-vl);border:1px solid var(--sn-vl)}
+.sn-intensity-badge.light{background:rgba(241,196,15,.18);color:var(--sn-lt);border:1px solid var(--sn-lt)}
+.sn-intensity-badge.moderate{background:rgba(230,126,34,.2);color:var(--sn-mod);border:1px solid var(--sn-mod)}
+.sn-intensity-badge.heavy{background:rgba(231,76,60,.2);color:var(--sn-heavy);border:1px solid var(--sn-heavy)}
+/* vis input color coding */
+.vis-vlight{color:var(--sn-vl)!important;border-color:var(--sn-vl)!important}
+.vis-light{color:var(--sn-lt)!important;border-color:var(--sn-lt)!important}
+.vis-moderate{color:var(--sn-mod)!important;border-color:var(--sn-mod)!important}
+.vis-heavy{color:var(--sn-heavy)!important;border-color:var(--sn-heavy)!important}
 
-/* ── Inputs ── */
-.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-label { font-size: 11px; color: var(--text2); display: block; margin-bottom: 3px; }
-input[type=number], input[type=text], select {
-  width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r2);
-  color: var(--text); font-size: 16px; padding: 8px 10px; outline: none;
-  -webkit-appearance: none;
-}
-input[type=number]:focus, input[type=text]:focus, select:focus { border-color: var(--accent); }
-select option { background: var(--bg); }
+/* Precip grid – grouped */
+.precip-section{margin-bottom:8px}
+.precip-section-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;padding:4px 0 4px 2px;border-bottom:1px solid var(--border);margin-bottom:5px}
+/* SN section has blue accent border */
+.precip-section.sn-section .precip-section-label{color:#4a9edd;border-color:#3a6a9a}
+.precip-section.sn-section{background:rgba(26,52,81,.4);border:1px solid #2a4a6a;border-radius:var(--r2);padding:6px 8px;margin-bottom:8px}
+/* NOGO section */
+.precip-section.nogo-section .precip-section-label{color:var(--red)}
+.precip-section.nogo-section{background:rgba(60,20,20,.3);border:1px solid #5a2020;border-radius:var(--r2);padding:6px 8px}
+.precip-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.precip-btn{
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);
+  color:var(--text2);font-size:var(--fs-sm);padding:7px 8px;cursor:pointer;
+  text-align:left;display:flex;align-items:center;gap:5px;line-height:1.2}
+.precip-btn .code{font-family:monospace;font-weight:700;color:var(--accent);min-width:54px;font-size:14px}
+.precip-btn.active{background:#1a3d5c;border-color:var(--accent);color:#fff}
+.precip-btn.no-hot{border-color:#5a2020;color:#cc8888}
+.precip-btn.no-hot .code{color:#ff7777}
+.precip-btn.no-hot.active{background:#3a1010;border-color:var(--red);color:#ffaaaa}
+/* SN button has blue tint when active */
+.precip-btn.sn-btn.active{background:#0e2840;border-color:#4a9edd}
+.precip-btn.sn-btn .code{color:#6ab4ee}
 
-/* ── Toggle buttons ── */
-.toggle-group { display: flex; gap: 4px; flex-wrap: wrap; }
-.toggle-btn {
-  flex: 1; min-width: 0; background: var(--bg); border: 1px solid var(--border);
-  border-radius: var(--r2); color: var(--text2); font-size: 12px; padding: 6px 4px;
-  cursor: pointer; text-align: center; transition: all 0.15s; white-space: nowrap;
-}
-.toggle-btn.active { background: var(--accent2); border-color: var(--accent); color: var(--white); font-weight: 600; }
-.toggle-btn.danger { border-color: var(--red); color: var(--red); }
-.toggle-btn.danger.active { background: var(--red2); border-color: var(--red); color: var(--white); }
+/* Result */
+.result-card{border-radius:var(--r);padding:16px;margin-bottom:12px}
+.result-card.ok{background:linear-gradient(135deg,#0d2d1a,#1a4a28);border:1px solid #2d7a40}
+.result-card.warn{background:linear-gradient(135deg,#2d2000,#4a3800);border:1px solid #8a6000}
+.result-card.no-go{background:linear-gradient(135deg,#2d0a0a,#4a1010);border:1px solid #8a2020}
+.result-card.none{background:var(--panel);border:1px solid var(--border)}
+.result-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.result-card.ok .result-label{color:var(--green)}
+.result-card.warn .result-label{color:var(--yellow)}
+.result-card.no-go .result-label{color:var(--red)}
+.result-hot{font-size:52px;font-weight:800;line-height:1}
+.result-card.ok .result-hot{color:var(--green)}
+.result-card.warn .result-hot{color:var(--yellow)}
+.result-hot small{font-size:17px;font-weight:400;color:var(--text2);margin-left:4px}
+.result-basis{font-size:12px;color:var(--text3);margin-top:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:8px;line-height:1.6}
+.result-basis b{color:var(--text2)}
 
-/* ── METAR input ── */
-.metar-row { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; }
-.metar-row input { font-family: 'Courier New', monospace; font-size: 15px; text-transform: uppercase; }
-.metar-row button { background: var(--accent2); border: none; color: white; border-radius: var(--r2); padding: 8px 12px; font-size: 13px; cursor: pointer; white-space: nowrap; }
-.metar-hint { font-size: 10px; color: var(--text3); margin-bottom: 6px; }
+/* HOT change table */
+.hot-change-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+.hot-change-table th{background:var(--panel2);color:var(--text3);font-size:11px;padding:5px 7px;text-align:center;border:1px solid var(--border)}
+.hot-change-table td{border:1px solid var(--border);padding:5px 7px;text-align:center}
+.hot-change-table .cur-row{background:rgba(74,158,221,.12);font-weight:700}
+.hot-change-table .worse{color:var(--orange)}
+.hot-change-table .nogo{color:var(--red);font-weight:700}
+.hot-change-table .ok{color:var(--green)}
 
-/* ── Precip selector ── */
-.precip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
-.precip-btn {
-  background: var(--bg); border: 1px solid var(--border); border-radius: var(--r2);
-  color: var(--text2); font-size: 12px; padding: 6px 8px; cursor: pointer;
-  text-align: left; display: flex; align-items: center; gap: 4px;
-}
-.precip-btn .code { font-family: monospace; font-weight: 600; color: var(--accent); min-width: 52px; }
-.precip-btn.active { background: #1a3d5c; border-color: var(--accent); color: var(--white); }
-.precip-btn.no-hot { border-color: var(--red); }
-.precip-btn.no-hot.active { background: #4a1a1a; border-color: var(--red); }
-.precip-separator { grid-column: 1/-1; border-bottom: 1px solid var(--border); margin: 2px 0; font-size: 10px; color: var(--text3); padding: 2px 0; }
+/* Alerts */
+.alert{border-radius:var(--r2);padding:9px 11px;margin-bottom:7px;font-size:13px;display:flex;gap:7px;align-items:flex-start;line-height:1.4}
+.alert.red{background:rgba(231,76,60,.15);border-left:3px solid var(--red);color:#ff9999}
+.alert.orange{background:rgba(230,126,34,.15);border-left:3px solid var(--orange);color:#ffcc88}
+.alert.yellow{background:rgba(241,196,15,.15);border-left:3px solid var(--yellow);color:#ffe066}
+.alert.blue{background:rgba(74,158,221,.15);border-left:3px solid var(--accent);color:#aaddff}
+.alert-icon{font-size:15px;flex-shrink:0}
 
-/* ── Vis input ── */
-.vis-row { display: grid; grid-template-columns: 1fr 80px; gap: 8px; align-items: end; }
-.vis-hint { font-size: 10px; color: var(--text3); margin-top: 3px; }
+/* SN Intensity reference table (AOMB verbatim) */
+.sn-ref-table{width:100%;border-collapse:collapse;font-size:12px}
+.sn-ref-table th,.sn-ref-table td{border:1px solid var(--border);padding:5px 6px;text-align:center;vertical-align:middle}
+.sn-ref-table th{background:var(--panel2);color:var(--text2);font-weight:700}
+.sn-ref-table .cur-row{background:rgba(74,158,221,.1)}
+.sn-ref-table .heavy-col{color:var(--sn-heavy)}
+.sn-ref-table .mod-col{color:var(--sn-mod)}
+.sn-ref-table .lt-col{color:var(--sn-lt)}
+.sn-ref-table .vl-col{color:var(--sn-vl)}
+.sn-ref-table .cur-vis{font-weight:700;text-decoration:underline}
 
-/* ── Ratio selector ── */
-.ratio-group { display: flex; gap: 4px; }
-.ratio-btn { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r2); color: var(--text2); font-size: 13px; font-weight: 600; padding: 7px 4px; cursor: pointer; text-align: center; }
-.ratio-btn.active { background: var(--accent2); border-color: var(--accent); color: white; }
-.ratio-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+/* Settings modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--panel);border-radius:var(--r) var(--r) 0 0;padding:20px;width:100%;max-width:520px;border-top:2px solid var(--accent);max-height:80vh;overflow-y:auto}
+.modal h2{font-size:16px;margin-bottom:14px;color:var(--accent)}
+.modal-row{margin-bottom:13px}
+.modal-footer{display:flex;gap:8px;margin-top:16px}
+.btn-primary{flex:1;background:var(--accent2);border:none;color:#fff;border-radius:var(--r2);padding:13px;font-size:15px;font-weight:700;cursor:pointer}
+.btn-cancel{flex:0 0 80px;background:var(--panel2);border:1px solid var(--border);color:var(--text2);border-radius:var(--r2);padding:13px;font-size:15px;cursor:pointer}
 
-/* ── Result ── */
-.result-card { border-radius: var(--r); padding: 14px; margin-bottom: 10px; }
-.result-card.ok { background: linear-gradient(135deg, #0d2d1a, #1a4a28); border: 1px solid #2d7a40; }
-.result-card.warn { background: linear-gradient(135deg, #2d2000, #4a3800); border: 1px solid #8a6000; }
-.result-card.no-go { background: linear-gradient(135deg, #2d0a0a, #4a1010); border: 1px solid #8a2020; }
-.result-card.none { background: var(--panel); border: 1px solid var(--border); }
-.result-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
-.result-card.ok .result-label { color: var(--green); }
-.result-card.warn .result-label { color: var(--yellow); }
-.result-card.no-go .result-label { color: var(--red); }
-.result-hot { font-size: 48px; font-weight: 800; line-height: 1; }
-.result-card.ok .result-hot { color: var(--green); }
-.result-card.warn .result-hot { color: var(--yellow); }
-.result-hot small { font-size: 16px; font-weight: 400; color: var(--text2); margin-left: 4px; }
-.result-range { font-size: 14px; color: var(--text2); margin-top: 2px; }
-.result-basis { font-size: 11px; color: var(--text3); margin-top: 6px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 6px; }
+/* PL table */
+.pl-table{width:100%;border-collapse:collapse;font-size:12px}
+.pl-table th,.pl-table td{border:1px solid var(--border);padding:4px 5px;text-align:center}
+.pl-table th{background:var(--panel2);color:var(--text2)}
+.pl-table .na{color:var(--red);font-weight:700}
+.pl-table .hl{background:rgba(74,158,221,.2);font-weight:700;color:var(--accent)}
 
-/* ── Alerts ── */
-.alert { border-radius: var(--r2); padding: 8px 10px; margin-bottom: 6px; font-size: 12px; display: flex; gap: 6px; align-items: flex-start; }
-.alert.red { background: rgba(231,76,60,0.15); border-left: 3px solid var(--red); color: #ff9999; }
-.alert.orange { background: rgba(230,126,34,0.15); border-left: 3px solid var(--orange); color: #ffcc88; }
-.alert.yellow { background: rgba(241,196,15,0.15); border-left: 3px solid var(--yellow); color: #ffe066; }
-.alert.blue { background: rgba(74,158,221,0.15); border-left: 3px solid var(--accent); color: #aaddff; }
-.alert-icon { font-size: 14px; flex-shrink: 0; }
-
-/* ── SN Intensity card ── */
-.sn-table { width: 100%; border-collapse: collapse; font-size: 11px; }
-.sn-table th, .sn-table td { border: 1px solid var(--border); padding: 4px 6px; text-align: center; }
-.sn-table th { background: var(--panel2); color: var(--text2); font-weight: 600; }
-.sn-table .highlight { background: rgba(74,158,221,0.2); color: var(--accent); font-weight: 700; }
-
-/* ── Settings Modal ── */
-.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: flex-end; justify-content: center; }
-.modal-overlay.open { display: flex; }
-.modal { background: var(--panel); border-radius: var(--r) var(--r) 0 0; padding: 20px; width: 100%; max-width: 480px; border-top: 2px solid var(--accent); max-height: 80vh; overflow-y: auto; }
-.modal h2 { font-size: 15px; margin-bottom: 14px; color: var(--accent); }
-.modal-row { margin-bottom: 12px; }
-.modal-footer { display: flex; gap: 8px; margin-top: 16px; }
-.btn-primary { flex: 1; background: var(--accent2); border: none; color: white; border-radius: var(--r2); padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer; }
-.btn-cancel { flex: 0 0 80px; background: var(--panel2); border: 1px solid var(--border); color: var(--text2); border-radius: var(--r2); padding: 12px; font-size: 14px; cursor: pointer; }
-
-/* ── Tab bar ── */
-.tabbar { display: flex; background: var(--panel); border-top: 1px solid var(--border); flex-shrink: 0; }
-.tab { flex: 1; padding: 8px 4px; text-align: center; font-size: 10px; color: var(--text3); cursor: pointer; border-top: 2px solid transparent; }
-.tab.active { color: var(--accent); border-top-color: var(--accent); }
-.tab-icon { font-size: 18px; display: block; }
-
-/* ── PL Allowance Table ── */
-.pl-table { width: 100%; border-collapse: collapse; font-size: 10px; }
-.pl-table th, .pl-table td { border: 1px solid var(--border); padding: 3px 5px; text-align: center; }
-.pl-table th { background: var(--panel2); color: var(--text2); font-size: 10px; }
-.pl-table .na { color: var(--red); font-weight: 600; }
-.pl-table .highlight { background: rgba(74,158,221,0.2); font-weight: 700; color: var(--accent); }
-
-/* ── VR warning ── */
-.vr-row { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
-.vr-input { width: 80px !important; }
-
-/* ── Misc ── */
-.divider { border: none; border-top: 1px solid var(--border); margin: 8px 0; }
-.text-sm { font-size: 11px; color: var(--text2); }
-.hidden { display: none !important; }
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hidden{display:none!important}
+.text-sm{font-size:13px;color:var(--text2)}
+.divider{border:none;border-top:1px solid var(--border);margin:8px 0}
 </style>
 </head>
 <body>
 <div class="app">
-  <!-- Header -->
-  <div class="header">
-    <div>
-      <div class="header h1">✈ HOT Calculator</div>
-      <div class="header sub">AOMB No.151 Rev.25.4.0 — B787 Composite</div>
-    </div>
-    <button class="btn-settings" onclick="openSettings()">⚙ 設定</button>
+
+<div class="header">
+  <div>
+    <div class="header h1">✈ HOT Calculator</div>
+    <div class="header sub">AOMB No.151 Rev.25.4.0 — B787 Composite</div>
+  </div>
+  <button class="btn-settings" onclick="openSettings()">⚙ 設定</button>
+</div>
+
+<div class="scroll" id="mainScroll">
+
+  <!-- Tab switcher -->
+  <div style="display:flex;gap:5px;margin-bottom:12px">
+    <button class="toggle-btn active" id="tab-main" onclick="switchTab('main')">HOT テーブル</button>
+    <button class="toggle-btn" id="tab-pl" onclick="switchTab('pl')">PL / Small Hail</button>
   </div>
 
-  <!-- Main scroll area -->
-  <div class="scroll" id="mainScroll">
+  <!-- ==================== MAIN TAB ==================== -->
+  <div id="view-main">
 
-    <!-- Tab: MAIN / PL -->
-    <div style="display:flex;gap:4px;margin-bottom:10px;">
-      <button class="toggle-btn active" id="tab-main" onclick="switchTab('main')">HOT テーブル</button>
-      <button class="toggle-btn" id="tab-pl" onclick="switchTab('pl')">PL / Small Hail</button>
+  <!-- 防氷液 -->
+  <div class="card">
+    <div class="card-title">防氷液</div>
+    <div style="margin-bottom:10px">
+      <label>防氷液選択</label>
+      <select id="sel-fluid" class="fluid-sel" onchange="onFluidChange()"></select>
     </div>
-
-    <!-- ========== MAIN TAB ========== -->
-    <div id="view-main">
-
-    <!-- Fluid card -->
-    <div class="card">
-      <div class="card-title">使用流体</div>
-      <div class="modal-row">
-        <label>流体選択</label>
-        <select id="sel-fluid" onchange="onFluidChange()"></select>
-      </div>
-      <div class="modal-row" id="row-ratio">
-        <label>希釈比 (fluid/water)</label>
-        <div class="ratio-group" id="ratio-group"></div>
-      </div>
+    <div id="row-ratio">
+      <label>希釈比 (fluid/water)</label>
+      <div class="ratio-group" id="ratio-group"></div>
     </div>
+  </div>
 
-    <!-- Conditions card -->
-    <div class="card">
-      <div class="card-title">気象条件</div>
+  <!-- 気象条件 -->
+  <div class="card">
+    <div class="card-title">気象条件</div>
 
-      <!-- METAR text input -->
-      <div class="metar-row">
-        <input type="text" id="metar-input" placeholder="例: -SN RASN FZDZ" autocomplete="off" autocorrect="off" spellcheck="false" oninput="parseMETAR()">
-        <button onclick="clearMETAR()">クリア</button>
-      </div>
-      <div class="metar-hint">現象コードを直接入力するか、下のボタンから選択</div>
-
-      <!-- Precip buttons -->
-      <div class="precip-grid" id="precip-grid"></div>
+    <!-- METAR text -->
+    <div class="metar-row">
+      <input type="text" id="metar-input" placeholder="例: -SN RASN FZDZ" autocomplete="off" autocorrect="off" spellcheck="false" oninput="parseMETAR()">
+      <button onclick="clearMETAR()">クリア</button>
     </div>
+    <div class="metar-hint">現象コードを直接入力するか、下のボタンから選択</div>
 
-    <!-- OAT / Time of day -->
-    <div class="card">
-      <div class="card-title">温度・時刻・視程</div>
-      <div class="row2" style="margin-bottom:10px;">
+    <!-- Weather layout: left=precip, right=params -->
+    <div class="wx-layout">
+      <!-- Left: precip buttons -->
+      <div class="wx-left" id="wx-left-col"></div>
+
+      <!-- Right: OAT, Day/Night, Vis (SN専用) -->
+      <div class="wx-right">
+        <!-- OAT -->
         <div>
           <label>OAT (°C)</label>
           <input type="number" id="inp-oat" value="0" step="0.5" onchange="calculate()" oninput="calculate()">
         </div>
+        <!-- Day/Night -->
         <div>
           <label>昼 / 夜</label>
           <div class="toggle-group">
@@ -227,96 +241,97 @@ select option { background: var(--bg); }
             <button class="toggle-btn" id="btn-night" onclick="setDayNight('night')">夜 🌙</button>
           </div>
         </div>
-      </div>
-      <div class="vis-row">
-        <div>
-          <label>視程 (m) — SN強度判定用</label>
-          <input type="number" id="inp-vis" placeholder="例: 1200" step="100" onchange="calculate()" oninput="calculate()">
+        <!-- SN Vis block (highlighted, always shown) -->
+        <div class="sn-block">
+          <div class="sn-block-title">❄ SN / SG 強度判定</div>
+          <div class="row2" style="gap:5px;margin-bottom:5px">
+            <div>
+              <label>視程</label>
+              <input type="number" id="inp-vis" placeholder="m" step="100" onchange="calculate()" oninput="calculate()">
+            </div>
+            <div>
+              <label>単位</label>
+              <select id="sel-vis-unit" onchange="calculate()">
+                <option value="m">m</option>
+                <option value="sm">SM</option>
+              </select>
+            </div>
+          </div>
+          <div id="sn-intensity-display"></div>
+          <div id="sn-vis-warning" style="font-size:11px;color:#ffcc44;margin-top:3px"></div>
         </div>
-        <div>
-          <label>単位</label>
-          <select id="sel-vis-unit" onchange="calculate()">
-            <option value="m">m</option>
-            <option value="sm">SM</option>
-          </select>
-        </div>
-      </div>
-      <div class="vis-hint" id="sn-intensity-hint"></div>
-    </div>
-
-    <!-- Result -->
-    <div id="result-area"></div>
-
-    <!-- Alerts -->
-    <div id="alerts-area"></div>
-
-    <!-- SN intensity table (collapsible) -->
-    <div id="sn-table-area" class="hidden">
-      <div class="card">
-        <div class="card-title">SN強度判定テーブル（参考）</div>
-        <table class="sn-table">
-          <thead>
-            <tr><th>昼夜</th><th>OAT</th><th>Heavy</th><th>Moderate</th><th>Light</th><th>V.Light</th></tr>
-          </thead>
-          <tbody id="sn-table-body"></tbody>
-        </table>
       </div>
     </div>
+  </div>
 
-    </div><!-- /view-main -->
+  <!-- Result -->
+  <div id="result-area"></div>
+  <div id="alerts-area"></div>
 
-    <!-- ========== PL TAB ========== -->
-    <div id="view-pl" class="hidden">
+  <!-- HOT change breakdown (OAT / vis / day-night) -->
+  <div id="hot-change-area"></div>
 
-    <div class="card">
-      <div class="card-title">Ice Pellets / Small Hail — Allowance Time</div>
-      <p class="text-sm" style="margin-bottom:10px;">PLまたはSmall Hailを含む降水現象の場合、<br>通常のHOTテーブルの代わりにこちらを適用。</p>
+  <!-- SN Intensity Reference Table (AOMB verbatim) - always shown -->
+  <div class="card">
+    <div class="card-title">Snowfall Intensity Conversion Table（AOMB No.151 原文）</div>
+    <div style="overflow-x:auto">
+      <table class="sn-ref-table" id="sn-ref-table">
+        <thead>
+          <tr>
+            <th rowspan="2">Time<br>of Day</th>
+            <th rowspan="2">OAT<br>(°C)</th>
+            <th colspan="4">Precipitation (Snowfall Intensity)</th>
+          </tr>
+          <tr>
+            <th class="heavy-col">Heavy</th>
+            <th class="mod-col">Moderate</th>
+            <th class="lt-col">Light</th>
+            <th class="vl-col">Very Light</th>
+          </tr>
+        </thead>
+        <tbody id="sn-ref-tbody"></tbody>
+      </table>
+    </div>
+  </div>
 
-      <!-- PL Fluid type -->
-      <div class="modal-row">
-        <label>流体種別（PL用）</label>
-        <div class="toggle-group">
-          <button class="toggle-btn active" id="pl-pg-btn" onclick="setPLFluidType('PG')">PG系<br><small>ABC-S Plus他</small></button>
-          <button class="toggle-btn" id="pl-eg-btn" onclick="setPLFluidType('EG')">EG系<br><small>UCAR EG106</small></button>
-        </div>
+  </div><!-- /view-main -->
+
+  <!-- ==================== PL TAB ==================== -->
+  <div id="view-pl" class="hidden">
+  <div class="card">
+    <div class="card-title">Ice Pellets / Small Hail — Allowance Time</div>
+    <p class="text-sm" style="margin-bottom:10px">PL / Small Hail を含む降水現象の場合、通常HOTテーブルの代わりに本テーブルを適用。<br><b>Type IV (100/0) のみ使用可。</b></p>
+    <div style="margin-bottom:10px">
+      <label>防氷液種別（PL用）</label>
+      <div class="toggle-group">
+        <button class="toggle-btn active" id="pl-pg-btn" onclick="setPLFluidType('PG')">PG系（ABC-S Plus 他）</button>
+        <button class="toggle-btn" id="pl-eg-btn" onclick="setPLFluidType('EG')">EG系（UCAR EG106）</button>
       </div>
-
-      <!-- PL Precipitation -->
-      <div class="modal-row">
-        <label>降水現象（PL）</label>
-        <div class="precip-grid" id="pl-precip-grid"></div>
-      </div>
-
-      <!-- OAT for PL -->
-      <div class="modal-row">
+    </div>
+    <div style="margin-bottom:10px">
+      <label>降水現象（PL）</label>
+      <div class="precip-grid" id="pl-precip-grid"></div>
+    </div>
+    <div class="row2" style="margin-bottom:10px">
+      <div>
         <label>OAT (°C)</label>
         <input type="number" id="pl-oat" value="0" step="0.5" onchange="calcPL()" oninput="calcPL()">
       </div>
-
-      <!-- VR -->
-      <div class="modal-row">
-        <label>VR (kts) — ※100kt未満はAllowance Time適用不可</label>
-        <div class="vr-row">
-          <input type="number" id="pl-vr" class="vr-input" placeholder="例: 145" onchange="calcPL()" oninput="calcPL()">
-          <span class="text-sm">kts</span>
-        </div>
+      <div>
+        <label>VR (kts) ※100kt未満は不可</label>
+        <input type="number" id="pl-vr" placeholder="例: 145" onchange="calcPL()" oninput="calcPL()">
       </div>
     </div>
+  </div>
+  <div id="pl-result-area"></div>
+  <div id="pl-alerts-area"></div>
+  <div class="card">
+    <div class="card-title" id="pl-table-title">Allowance Time Table — PG</div>
+    <div style="overflow-x:auto" id="pl-table-wrap"></div>
+  </div>
+  </div><!-- /view-pl -->
 
-    <!-- PL Result -->
-    <div id="pl-result-area"></div>
-    <div id="pl-alerts-area"></div>
-
-    <!-- PL Full Table -->
-    <div class="card">
-      <div class="card-title" id="pl-table-title">PL Allowance Time Table — PG</div>
-      <div style="overflow-x:auto;" id="pl-table-wrap"></div>
-    </div>
-
-    </div><!-- /view-pl -->
-
-  </div><!-- /scroll -->
-
+</div><!-- /scroll -->
 </div><!-- /app -->
 
 <!-- Settings Modal -->
@@ -324,7 +339,7 @@ select option { background: var(--bg); }
   <div class="modal">
     <h2>⚙ 設定</h2>
     <div class="modal-row">
-      <label>デフォルト流体</label>
+      <label>デフォルト防氷液</label>
       <select id="set-default-fluid"></select>
     </div>
     <div class="modal-row">
@@ -351,1191 +366,642 @@ select option { background: var(--bg); }
 
 <script>
 // ============================================================
-// DATA TABLES
-// All times in minutes. null = No HOT guideline.
-// Columns: [FZFG_IC_BR, SNFZFG, SN_VL, SN_MOD, SN_LT, SN_VVL, FZDZ, FZRA_LT, SNRA_MOD, COLD_WING]
-// Index:       0           1       2       3       4      5       6      7         8          9
+// DATA — same as v1, unchanged
+// Columns: [FZFG/IC/BR, SNFZFG, SN_VL, SN_MOD, SN_LT, SN_VVL, FZDZ, FZRA_LT, SNRA_MOD, COLD_WING]
 // ============================================================
-
-// OAT bands helper
-// Returns band index for each fluid type
-// "standard": -3+, -3/-8, -8/-14, -14/-18, -18/-25, -25+
-// "typeI":    -3+, -3/-6, -6/-10, -10-
-
-// HOT table format:
-// { oatLabel, min_oat, max_oat, ratios: { "100/0": [col0..col9], "75/25": [...], "50/50": [...] } }
-
 const FLUIDS = {
-  // ===== TYPE I =====
-  "Type I (Generic)": {
-    type: "I",
-    ratios: ["100/0", "75/25", "50/50"],
-    glycolType: "PG",
-    bands: [
-      { label: "-3°C以上",       oatMin: -3,    oatMax: 999,
-        "100/0": [10.5,3,  8,  3,  8,  14,9,  2,  2,  3  ],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-3〜-6°C",        oatMin: -6,    oatMax: -3,
-        "100/0": [8.5,3.5,6,  2.5,6,  12,7,  2,  null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-6〜-10°C",       oatMin: -10,   oatMax: -6,
-        "100/0": [8,  3,  5.5,2,  5.5,10,5.5,2,  null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-10°C以下",       oatMin: -999,  oatMax: -10,
-        "100/0": [7,  3,  4,  2,  4,  7,  null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      }
-    ]
-  },
-
-  // ===== TYPE II =====
-  "ABC-K PLUS (TypeII)": {
-    type: "II",
-    ratios: ["100/0", "75/25", "50/50"],
-    glycolType: "PG",
-    bands: [
-      { label: "-3°C以上",    oatMin: -3,   oatMax: 999,
-        "100/0": [187.5,45,75,60,100,110,115,60,  12.5,130 ],
-        "75/25": [125,  25,50,35,70, 95, 112,50,  10,  107.5],
-        "50/50": [50,   5, 10,7, 15, null,25,10,  null,null ]
-      },
-      { label: "-3〜-8°C",   oatMin: -8,   oatMax: -3,
-        "100/0": [47.5,40,70,55,90, null,62.5,17.5,null,null],
-        "75/25": [55,  25,50,35,65, null,37.5,9,   null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-8〜-14°C",  oatMin: -14,  oatMax: -8,
-        "100/0": [47.5,40,65,50,87.5,null,62.5,null,null,null],
-        "75/25": [55,  25,50,35,65,  null,37.5,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-14〜-18°C", oatMin: -18,  oatMax: -14,
-        "100/0": [42.5,1,  5, 2, 7,  null,null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-18〜-25°C", oatMin: -25,  oatMax: -18,
-        "100/0": [42.5,0,  2, 1, 3,  null,null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-25〜-29°C", oatMin: -29,  oatMax: -25,
-        "100/0": [42.5,0,  0, 0, 1,  null,null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      }
-    ]
-  },
-
-  "CLEANWING II (TypeII)": {
-    type: "II",
-    ratios: ["100/0", "75/25", "50/50"],
-    glycolType: "PG",
-    bands: [
-      { label: "-3°C以上",    oatMin: -3,   oatMax: 999,
-        "100/0": [122.5,20,40,30,55,95,60,25,  7,  32.5 ],
-        "75/25": [105,  20,35,25,45,80,57.5,20,5,  28.75],
-        "50/50": [47.5, 10,20,15,25,50,30,10,  null,null ]
-      },
-      { label: "-3〜-8°C",   oatMin: -8,   oatMax: -3,
-        "100/0": [97.5,15,30,22.5,40,80,42.5,20,null,null],
-        "75/25": [92.5,20,32.5,25,45,80,37.5,20,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-8〜-14°C",  oatMin: -14,  oatMax: -8,
-        "100/0": [97.5,15,27.5,20,35,65,42.5,null,null,null],
-        "75/25": [92.5,20,32.5,25,45,80,37.5,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-14〜-18°C", oatMin: -18,  oatMax: -14,
-        "100/0": [35,9,20,15,25,45,null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-18〜-25°C", oatMin: -25,  oatMax: -18,
-        "100/0": [35,5,10,7,15,30,null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      }
-    ]
-  },
-
-  "FCY-2 (TypeII)": {
-    type: "II",
-    ratios: ["100/0"],
-    glycolType: "PG",
-    bands: [
-      { label: "-3°C以上",    oatMin: -3,   oatMax: 999,
-        "100/0": [107.5,25,40,30,55,null,60,25,7,  26.5 ]
-      },
-      { label: "-3〜-8°C",   oatMin: -8,   oatMax: -3,
-        "100/0": [67.5,15,30,20,40,null,32.5,15,null,null]
-      },
-      { label: "-8〜-14°C",  oatMin: -14,  oatMax: -8,
-        "100/0": [67.5,10,25,15,30,null,32.5,null,null,null]
-      },
-      { label: "-14〜-18°C", oatMin: -18,  oatMax: -14,
-        "100/0": [30,1,5,2,7,null,null,null,null,null]
-      },
-      { label: "-18〜-25°C", oatMin: -25,  oatMax: -18,
-        "100/0": [30,0,2,1,3,null,null,null,null,null]
-      },
-      { label: "-25〜-28°C", oatMin: -28,  oatMax: -25,
-        "100/0": [30,0,0,0,1,null,null,null,null,null]
-      }
-    ]
-  },
-
-  "Type II (Generic)": {
-    type: "II",
-    ratios: ["100/0", "75/25", "50/50"],
-    glycolType: "PG",
-    bands: [
-      { label: "-3°C以上",    oatMin: -3,   oatMax: 999,
-        "100/0": [122.5,20,40,30,55,null,60,25,  6,  26  ],
-        "75/25": [75,   15,25,15,30,null,32.5,15,3.5,14.5],
-        "50/50": [22.5, 5, 10,7, 15,null,12, 6, null,null]
-      },
-      { label: "-3〜-8°C",   oatMin: -8,   oatMax: -3,
-        "100/0": [37.5,15,30,20,40,null,32.5,15,null,null],
-        "75/25": [40,  9, 15,10,25,null,22.5,9, null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-8〜-14°C",  oatMin: -14,  oatMax: -8,
-        "100/0": [37.5,10,25,15,30,null,32.5,null,null,null],
-        "75/25": [40,  7, 15,9, 20,null,22.5,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-14〜-18°C", oatMin: -18,  oatMax: -14,
-        "100/0": [17.5,1,5,2,7,null,null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-18〜-25°C", oatMin: -25,  oatMax: -18,
-        "100/0": [17.5,0,2,1,3,null,null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-25°C以下",  oatMin: -999, oatMax: -25,
-        "100/0": [17.5,0,0,0,1,null,null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      }
-    ]
-  },
-
-  // ===== TYPE IV =====
-  "ABC-S PLUS (TypeIV)": {
-    type: "IV",
-    ratios: ["100/0", "75/25", "50/50"],
-    glycolType: "PG",
-    bands: [
-      { label: "-3°C以上",    oatMin: -3,   oatMax: 999,
-        "100/0": [190,55,95,75,125,180,115,65,  17.5,112.5],
-        "75/25": [122.5,30,55,45,75,125,80,30,  9,  75   ],
-        "50/50": [42.5,15,25,15,30,60,27.5,15,  null,null ]
-      },
-      { label: "-3〜-8°C",   oatMin: -8,   oatMax: -3,
-        "100/0": [142.5,50,85,65,110,180,80,20,  null,null],
-        "75/25": [97.5, 30,50,40,65, 110,47.5,17.5,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-8〜-14°C",  oatMin: -14,  oatMax: -8,
-        "100/0": [142.5,45,75,60,105,177.5,80,20,null,null],
-        "75/25": [97.5, 25,45,35,60, 102.5,47.5,15,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-14〜-18°C", oatMin: -18,  oatMax: -14,
-        "100/0": [50,1,6,2,9,30,null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-18〜-25°C", oatMin: -25,  oatMax: -18,
-        "100/0": [50,0,2,1,3,10,null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-25〜-28°C", oatMin: -28,  oatMax: -25,
-        "100/0": [50,0,1,0,2,7,null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      }
-    ]
-  },
-
-  "CLEANSURFACE IV (TypeIV)": {
-    type: "IV",
-    ratios: ["100/0"],
-    glycolType: "PG",
-    bands: [
-      { label: "-3°C以上",    oatMin: -3,   oatMax: 999,
-        "100/0": [195,30,75,40,100,180,100,40,  12,  82.5 ]
-      },
-      { label: "-3〜-8°C",   oatMin: -8,   oatMax: -3,
-        "100/0": [90, 20,45,25,60, 142.5,60,25,  null,null]
-      },
-      { label: "-8〜-14°C",  oatMin: -14,  oatMax: -8,
-        "100/0": [90, 15,35,20,45, 105,60,null,null,null]
-      },
-      { label: "-14〜-18°C", oatMin: -18,  oatMax: -14,
-        "100/0": [30,10,20,15,30,65,null,null,null,null]
-      },
-      { label: "-18〜-25°C", oatMin: -25,  oatMax: -18,
-        "100/0": [30,5,10,7,15,35,null,null,null,null]
-      },
-      { label: "-25〜-28°C", oatMin: -28,  oatMax: -25,
-        "100/0": [25,4,9,6,15,30,null,null,null,null]
-      }
-    ]
-  },
-
-  "ECO-SHIELD® (TypeIV)": {
-    type: "IV",
-    ratios: ["100/0"],
-    glycolType: "PG",
-    bands: [
-      { label: "-3°C以上",    oatMin: -3,   oatMax: 999,
-        "100/0": [117.5,35,60,45,80,142.5,65,35,  12,  62.5 ]
-      },
-      { label: "-3〜-8°C",   oatMin: -8,   oatMax: -3,
-        "100/0": [112.5,30,55,40,70,125,87.5,30,null,null]
-      },
-      { label: "-8〜-14°C",  oatMin: -14,  oatMax: -8,
-        "100/0": [112.5,25,50,35,65,112.5,87.5,null,null,null]
-      },
-      { label: "-14〜-18°C", oatMin: -18,  oatMax: -14,
-        "100/0": [45,1,6,2,9,30,null,null,null,null]
-      },
-      { label: "-18〜-25°C", oatMin: -25,  oatMax: -18,
-        "100/0": [45,0,2,1,3,10,null,null,null,null]
-      },
-      { label: "-25〜-25.5°C", oatMin: -25.5, oatMax: -25,
-        "100/0": [45,0,1,0,2,7,null,null,null,null]
-      }
-    ]
-  },
-
-  "ECOWING AD-49 (TypeIV)": {
-    type: "IV",
-    ratios: ["100/0"],
-    glycolType: "PG",
-    bands: [
-      { label: "-3°C以上",    oatMin: -3,   oatMax: 999,
-        "100/0": [230,45,85,60,115,180,90,60,  8,  72.5 ]
-      },
-      { label: "-3〜-8°C",   oatMin: -8,   oatMax: -3,
-        "100/0": [57.5,35,65,45,90,177.5,75,20,null,null]
-      },
-      { label: "-8〜-14°C",  oatMin: -14,  oatMax: -8,
-        "100/0": [57.5,30,55,40,75,145,75,null,null,null]
-      },
-      { label: "-14〜-18°C", oatMin: -18,  oatMax: -14,
-        "100/0": [32.5,1,6,2,9,30,null,null,null,null]
-      },
-      { label: "-18〜-25°C", oatMin: -25,  oatMax: -18,
-        "100/0": [32.5,0,2,1,3,10,null,null,null,null]
-      },
-      { label: "-25〜-26°C", oatMin: -26,  oatMax: -25,
-        "100/0": [32.5,0,1,0,2,7,null,null,null,null]
-      }
-    ]
-  },
-
-  "FCY 9311 (TypeIV)": {
-    type: "IV",
-    ratios: ["100/0"],
-    glycolType: "PG",
-    bands: [
-      { label: "-3°C以上",    oatMin: -3,   oatMax: 999,
-        "100/0": [177.5,25,55,35,70,140,90,40,  12,  50  ]
-      },
-      { label: "-3〜-8°C",   oatMin: -8,   oatMax: -3,
-        "100/0": [90,  20,40,30,55,110,70,20,  null,null]
-      },
-      { label: "-8〜-14°C",  oatMin: -14,  oatMax: -8,
-        "100/0": [90,  20,35,25,50,97.5,70,null,null,null]
-      },
-      { label: "-14〜-18°C", oatMin: -18,  oatMax: -14,
-        "100/0": [42.5,10,20,15,30,60,null,null,null,null]
-      },
-      { label: "-18〜-25°C", oatMin: -25,  oatMax: -18,
-        "100/0": [42.5,5,10,7,15,35,null,null,null,null]
-      },
-      { label: "-25〜-29.5°C", oatMin: -29.5, oatMax: -25,
-        "100/0": [42.5,5,10,6,15,30,null,null,null,null]
-      }
-    ]
-  },
-
-  "POLAR GUARD® ADVANCE (TypeIV)": {
-    type: "IV",
-    ratios: ["100/0", "75/25", "50/50"],
-    glycolType: "PG",
-    bands: [
-      { label: "-3°C以上",    oatMin: -3,   oatMax: 999,
-        "100/0": [205,50,85,65,115,180,117.5,75,  12.5,107.5],
-        "75/25": [185,30,65,40,85, 180,110,  40,  9,   88.75],
-        "50/50": [87.5,7,20,10,25,70, 32.5, 9,   null,null ]
-      },
-      { label: "-3〜-8°C",   oatMin: -8,   oatMax: -3,
-        "100/0": [122.5,35,65,50,85,142.5,85,35,  null,null],
-        "75/25": [85,   25,50,30,65,130,  52.5,35,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-8〜-14°C",  oatMin: -14,  oatMax: -8,
-        "100/0": [122.5,30,50,40,75,120,85,null,null,null],
-        "75/25": [85,   20,45,25,57.5,120,52.5,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-14〜-18°C", oatMin: -18,  oatMax: -14,
-        "100/0": [37.5,8,25,10,35,97.5,null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-18〜-25°C", oatMin: -25,  oatMax: -18,
-        "100/0": [37.5,3,10,4,15,40,null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-25〜-30.5°C", oatMin: -30.5, oatMax: -25,
-        "100/0": [37.5,2,5,2,7,25,null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      }
-    ]
-  },
-
-  "POLAR GUARD® XTEND (TypeIV)": {
-    type: "IV",
-    ratios: ["100/0"],
-    glycolType: "PG",
-    bands: [
-      { label: "-3°C以上",    oatMin: -3,   oatMax: 999,
-        "100/0": [185,50,90,65,120,180,120,60,  17.5,102.5]
-      },
-      { label: "-3〜-8°C",   oatMin: -8,   oatMax: -3,
-        "100/0": [112.5,40,70,50,105,170,87.5,50,null,null]
-      },
-      { label: "-8〜-14°C",  oatMin: -14,  oatMax: -8,
-        "100/0": [112.5,35,60,45,90,142.5,87.5,null,null,null]
-      },
-      { label: "-14〜-18°C", oatMin: -18,  oatMax: -14,
-        "100/0": [32.5,15,30,20,40,80,null,null,null,null]
-      },
-      { label: "-18〜-25°C", oatMin: -25,  oatMax: -18,
-        "100/0": [32.5,5,10,6,15,30,null,null,null,null]
-      },
-      { label: "-25〜-29°C", oatMin: -29,  oatMax: -25,
-        "100/0": [32.5,3,6,4,9,20,null,null,null,null]
-      }
-    ]
-  },
-
-  "SAFEWING MP IV LAUNCH (TypeIV)": {
-    type: "IV",
-    ratios: ["100/0", "75/25", "50/50"],
-    glycolType: "PG",
-    bands: [
-      { label: "-3°C以上",    oatMin: -3,   oatMax: 999,
-        "100/0": [240,50,80,65,105,170,110,60,  12.5,107.5],
-        "75/25": [230,45,80,60,105,180,110,45,  11,  107.5],
-        "50/50": [125,20,35,25,45,85, 40, 20,  null,null ]
-      },
-      { label: "-3〜-8°C",   oatMin: -8,   oatMax: -3,
-        "100/0": [117.5,40,65,55,90,142.5,87.5,25,null,null],
-        "75/25": [80,   40,70,50,90,150,  47.5,25,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-8〜-14°C",  oatMin: -14,  oatMax: -8,
-        "100/0": [117.5,35,60,50,80,125,87.5,null,null,null],
-        "75/25": [80,   35,60,45,82.5,142.5,47.5,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-14〜-18°C", oatMin: -18,  oatMax: -14,
-        "100/0": [40,5,15,6,20,75,null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-18〜-25°C", oatMin: -25,  oatMax: -18,
-        "100/0": [40,2,6,2,9,30,null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-25〜-28.5°C", oatMin: -28.5, oatMax: -25,
-        "100/0": [40,1,4,1,6,20,null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      }
-    ]
-  },
-
-  "UCAR™ ENDURANCE EG106 (TypeIV)": {
-    type: "IV",
-    ratios: ["100/0"],
-    glycolType: "EG",
-    bands: [
-      { label: "-3°C以上",    oatMin: -3,   oatMax: 999,
-        "100/0": [157.5,30,60,40,80,162.5,90,50,  17.5,110 ]
-      },
-      { label: "-3〜-8°C",   oatMin: -8,   oatMax: -3,
-        "100/0": [205, 25,50,35,70,142.5,92.5,45,  null,null]
-      },
-      { label: "-8〜-14°C",  oatMin: -14,  oatMax: -8,
-        "100/0": [205, 25,45,30,65,125,92.5,null,null,null]
-      },
-      { label: "-14〜-18°C", oatMin: -18,  oatMax: -14,
-        "100/0": [47.5,15,35,25,50,105,null,null,null,null]
-      },
-      { label: "-18〜-25°C", oatMin: -25,  oatMax: -18,
-        "100/0": [47.5,15,30,20,40,90,null,null,null,null]
-      },
-      { label: "-25〜-29°C", oatMin: -29,  oatMax: -25,
-        "100/0": [47.5,15,30,20,40,80,null,null,null,null]
-      }
-    ]
-  },
-
-  "UCAR™ FLIGHTGUARD AD-49 (TypeIV)": {
-    type: "IV",
-    ratios: ["100/0"],
-    glycolType: "PG",
-    bands: [
-      { label: "-3°C以上",    oatMin: -3,   oatMax: 999,
-        "100/0": [230,45,85,60,115,180,90,60,  9,  72.5 ]
-      },
-      { label: "-3〜-8°C",   oatMin: -8,   oatMax: -3,
-        "100/0": [57.5,35,65,45,90,177.5,75,20,null,null]
-      },
-      { label: "-8〜-14°C",  oatMin: -14,  oatMax: -8,
-        "100/0": [57.5,30,55,40,75,145,75,null,null,null]
-      },
-      { label: "-14〜-18°C", oatMin: -18,  oatMax: -14,
-        "100/0": [32.5,1,6,2,9,30,null,null,null,null]
-      },
-      { label: "-18〜-25°C", oatMin: -25,  oatMax: -18,
-        "100/0": [32.5,0,2,1,3,10,null,null,null,null]
-      },
-      { label: "-25〜-26°C", oatMin: -26,  oatMax: -25,
-        "100/0": [32.5,0,1,0,2,7,null,null,null,null]
-      }
-    ]
-  },
-
-  "Type IV (Generic)": {
-    type: "IV",
-    ratios: ["100/0", "75/25", "50/50"],
-    glycolType: "PG",
-    bands: [
-      { label: "-3°C以上",    oatMin: -3,   oatMax: 999,
-        "100/0": [105,20,40,25,55,110,52.5,15,  7,  36.5 ],
-        "75/25": [122.5,30,55,40,75,125,80,30,  8,  63.5 ],
-        "50/50": [42.5,7,20,10,25,60,27.5,9,   null,null ]
-      },
-      { label: "-3〜-8°C",   oatMin: -8,   oatMax: -3,
-        "100/0": [25,  20,35,25,45,97.5,62.5,20,null,null],
-        "75/25": [80,  25,50,30,65,110,47.5,15,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-8〜-14°C",  oatMin: -14,  oatMax: -8,
-        "100/0": [25,  15,30,20,45,85,62.5,null,null,null],
-        "75/25": [80,  20,45,25,57.5,105,47.5,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-14〜-18°C", oatMin: -18,  oatMax: -14,
-        "100/0": [22.5,1,6,2,9,30,null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-18〜-25°C", oatMin: -25,  oatMax: -18,
-        "100/0": [22.5,0,2,1,3,10,null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      },
-      { label: "-25°C以下",  oatMin: -999, oatMax: -25,
-        "100/0": [22.5,0,1,0,2,7,null,null,null,null],
-        "75/25": [null,null,null,null,null,null,null,null,null,null],
-        "50/50": [null,null,null,null,null,null,null,null,null,null]
-      }
-    ]
-  }
+  "Type I (Generic)":{"type":"I","ratios":["100/0","75/25","50/50"],"glycolType":"PG","bands":[
+    {"label":"-3°C以上","oatMin":-3,"oatMax":999,"100/0":[10.5,3,8,3,8,14,9,2,2,3],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-3〜-6°C","oatMin":-6,"oatMax":-3,"100/0":[8.5,3.5,6,2.5,6,12,7,2,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-6〜-10°C","oatMin":-10,"oatMax":-6,"100/0":[8,3,5.5,2,5.5,10,5.5,2,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-10°C以下","oatMin":-999,"oatMax":-10,"100/0":[7,3,4,2,4,7,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]}
+  ]},
+  "ABC-K PLUS (TypeII)":{"type":"II","ratios":["100/0","75/25","50/50"],"glycolType":"PG","bands":[
+    {"label":"-3°C以上","oatMin":-3,"oatMax":999,"100/0":[187.5,45,75,60,100,110,115,60,12.5,130],"75/25":[125,25,50,35,70,95,112,50,10,107.5],"50/50":[50,5,10,7,15,null,25,10,null,null]},
+    {"label":"-3〜-8°C","oatMin":-8,"oatMax":-3,"100/0":[47.5,40,70,55,90,null,62.5,17.5,null,null],"75/25":[55,25,50,35,65,null,37.5,9,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-8〜-14°C","oatMin":-14,"oatMax":-8,"100/0":[47.5,40,65,50,87.5,null,62.5,null,null,null],"75/25":[55,25,50,35,65,null,37.5,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-14〜-18°C","oatMin":-18,"oatMax":-14,"100/0":[42.5,1,5,2,7,null,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-18〜-25°C","oatMin":-25,"oatMax":-18,"100/0":[42.5,0,2,1,3,null,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-25〜-29°C","oatMin":-29,"oatMax":-25,"100/0":[42.5,0,0,0,1,null,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]}
+  ]},
+  "CLEANWING II (TypeII)":{"type":"II","ratios":["100/0","75/25","50/50"],"glycolType":"PG","bands":[
+    {"label":"-3°C以上","oatMin":-3,"oatMax":999,"100/0":[122.5,20,40,30,55,95,60,25,7,32.5],"75/25":[105,20,35,25,45,80,57.5,20,5,28.75],"50/50":[47.5,10,20,15,25,50,30,10,null,null]},
+    {"label":"-3〜-8°C","oatMin":-8,"oatMax":-3,"100/0":[97.5,15,30,22.5,40,80,42.5,20,null,null],"75/25":[92.5,20,32.5,25,45,80,37.5,20,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-8〜-14°C","oatMin":-14,"oatMax":-8,"100/0":[97.5,15,27.5,20,35,65,42.5,null,null,null],"75/25":[92.5,20,32.5,25,45,80,37.5,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-14〜-18°C","oatMin":-18,"oatMax":-14,"100/0":[35,9,20,15,25,45,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-18〜-25°C","oatMin":-25,"oatMax":-18,"100/0":[35,5,10,7,15,30,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]}
+  ]},
+  "FCY-2 (TypeII)":{"type":"II","ratios":["100/0"],"glycolType":"PG","bands":[
+    {"label":"-3°C以上","oatMin":-3,"oatMax":999,"100/0":[107.5,25,40,30,55,null,60,25,7,26.5]},
+    {"label":"-3〜-8°C","oatMin":-8,"oatMax":-3,"100/0":[67.5,15,30,20,40,null,32.5,15,null,null]},
+    {"label":"-8〜-14°C","oatMin":-14,"oatMax":-8,"100/0":[67.5,10,25,15,30,null,32.5,null,null,null]},
+    {"label":"-14〜-18°C","oatMin":-18,"oatMax":-14,"100/0":[30,1,5,2,7,null,null,null,null,null]},
+    {"label":"-18〜-25°C","oatMin":-25,"oatMax":-18,"100/0":[30,0,2,1,3,null,null,null,null,null]},
+    {"label":"-25〜-28°C","oatMin":-28,"oatMax":-25,"100/0":[30,0,0,0,1,null,null,null,null,null]}
+  ]},
+  "Type II (Generic)":{"type":"II","ratios":["100/0","75/25","50/50"],"glycolType":"PG","bands":[
+    {"label":"-3°C以上","oatMin":-3,"oatMax":999,"100/0":[122.5,20,40,30,55,null,60,25,6,26],"75/25":[75,15,25,15,30,null,32.5,15,3.5,14.5],"50/50":[22.5,5,10,7,15,null,12,6,null,null]},
+    {"label":"-3〜-8°C","oatMin":-8,"oatMax":-3,"100/0":[37.5,15,30,20,40,null,32.5,15,null,null],"75/25":[40,9,15,10,25,null,22.5,9,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-8〜-14°C","oatMin":-14,"oatMax":-8,"100/0":[37.5,10,25,15,30,null,32.5,null,null,null],"75/25":[40,7,15,9,20,null,22.5,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-14〜-18°C","oatMin":-18,"oatMax":-14,"100/0":[17.5,1,5,2,7,null,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-18〜-25°C","oatMin":-25,"oatMax":-18,"100/0":[17.5,0,2,1,3,null,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-25°C以下","oatMin":-999,"oatMax":-25,"100/0":[17.5,0,0,0,1,null,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]}
+  ]},
+  "ABC-S PLUS (TypeIV)":{"type":"IV","ratios":["100/0","75/25","50/50"],"glycolType":"PG","bands":[
+    {"label":"-3°C以上","oatMin":-3,"oatMax":999,"100/0":[190,55,95,75,125,180,115,65,17.5,112.5],"75/25":[122.5,30,55,45,75,125,80,30,9,75],"50/50":[42.5,15,25,15,30,60,27.5,15,null,null]},
+    {"label":"-3〜-8°C","oatMin":-8,"oatMax":-3,"100/0":[142.5,50,85,65,110,180,80,20,null,null],"75/25":[97.5,30,50,40,65,110,47.5,17.5,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-8〜-14°C","oatMin":-14,"oatMax":-8,"100/0":[142.5,45,75,60,105,177.5,80,20,null,null],"75/25":[97.5,25,45,35,60,102.5,47.5,15,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-14〜-18°C","oatMin":-18,"oatMax":-14,"100/0":[50,1,6,2,9,30,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-18〜-25°C","oatMin":-25,"oatMax":-18,"100/0":[50,0,2,1,3,10,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-25〜-28°C","oatMin":-28,"oatMax":-25,"100/0":[50,0,1,0,2,7,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]}
+  ]},
+  "CLEANSURFACE IV (TypeIV)":{"type":"IV","ratios":["100/0"],"glycolType":"PG","bands":[
+    {"label":"-3°C以上","oatMin":-3,"oatMax":999,"100/0":[195,30,75,40,100,180,100,40,12,82.5]},
+    {"label":"-3〜-8°C","oatMin":-8,"oatMax":-3,"100/0":[90,20,45,25,60,142.5,60,25,null,null]},
+    {"label":"-8〜-14°C","oatMin":-14,"oatMax":-8,"100/0":[90,15,35,20,45,105,60,null,null,null]},
+    {"label":"-14〜-18°C","oatMin":-18,"oatMax":-14,"100/0":[30,10,20,15,30,65,null,null,null,null]},
+    {"label":"-18〜-25°C","oatMin":-25,"oatMax":-18,"100/0":[30,5,10,7,15,35,null,null,null,null]},
+    {"label":"-25〜-28°C","oatMin":-28,"oatMax":-25,"100/0":[25,4,9,6,15,30,null,null,null,null]}
+  ]},
+  "ECO-SHIELD® (TypeIV)":{"type":"IV","ratios":["100/0"],"glycolType":"PG","bands":[
+    {"label":"-3°C以上","oatMin":-3,"oatMax":999,"100/0":[117.5,35,60,45,80,142.5,65,35,12,62.5]},
+    {"label":"-3〜-8°C","oatMin":-8,"oatMax":-3,"100/0":[112.5,30,55,40,70,125,87.5,30,null,null]},
+    {"label":"-8〜-14°C","oatMin":-14,"oatMax":-8,"100/0":[112.5,25,50,35,65,112.5,87.5,null,null,null]},
+    {"label":"-14〜-18°C","oatMin":-18,"oatMax":-14,"100/0":[45,1,6,2,9,30,null,null,null,null]},
+    {"label":"-18〜-25°C","oatMin":-25,"oatMax":-18,"100/0":[45,0,2,1,3,10,null,null,null,null]},
+    {"label":"-25〜-25.5°C","oatMin":-25.5,"oatMax":-25,"100/0":[45,0,1,0,2,7,null,null,null,null]}
+  ]},
+  "ECOWING AD-49 (TypeIV)":{"type":"IV","ratios":["100/0"],"glycolType":"PG","bands":[
+    {"label":"-3°C以上","oatMin":-3,"oatMax":999,"100/0":[230,45,85,60,115,180,90,60,8,72.5]},
+    {"label":"-3〜-8°C","oatMin":-8,"oatMax":-3,"100/0":[57.5,35,65,45,90,177.5,75,20,null,null]},
+    {"label":"-8〜-14°C","oatMin":-14,"oatMax":-8,"100/0":[57.5,30,55,40,75,145,75,null,null,null]},
+    {"label":"-14〜-18°C","oatMin":-18,"oatMax":-14,"100/0":[32.5,1,6,2,9,30,null,null,null,null]},
+    {"label":"-18〜-25°C","oatMin":-25,"oatMax":-18,"100/0":[32.5,0,2,1,3,10,null,null,null,null]},
+    {"label":"-25〜-26°C","oatMin":-26,"oatMax":-25,"100/0":[32.5,0,1,0,2,7,null,null,null,null]}
+  ]},
+  "FCY 9311 (TypeIV)":{"type":"IV","ratios":["100/0"],"glycolType":"PG","bands":[
+    {"label":"-3°C以上","oatMin":-3,"oatMax":999,"100/0":[177.5,25,55,35,70,140,90,40,12,50]},
+    {"label":"-3〜-8°C","oatMin":-8,"oatMax":-3,"100/0":[90,20,40,30,55,110,70,20,null,null]},
+    {"label":"-8〜-14°C","oatMin":-14,"oatMax":-8,"100/0":[90,20,35,25,50,97.5,70,null,null,null]},
+    {"label":"-14〜-18°C","oatMin":-18,"oatMax":-14,"100/0":[42.5,10,20,15,30,60,null,null,null,null]},
+    {"label":"-18〜-25°C","oatMin":-25,"oatMax":-18,"100/0":[42.5,5,10,7,15,35,null,null,null,null]},
+    {"label":"-25〜-29.5°C","oatMin":-29.5,"oatMax":-25,"100/0":[42.5,5,10,6,15,30,null,null,null,null]}
+  ]},
+  "POLAR GUARD® ADVANCE (TypeIV)":{"type":"IV","ratios":["100/0","75/25","50/50"],"glycolType":"PG","bands":[
+    {"label":"-3°C以上","oatMin":-3,"oatMax":999,"100/0":[205,50,85,65,115,180,117.5,75,12.5,107.5],"75/25":[185,30,65,40,85,180,110,40,9,88.75],"50/50":[87.5,7,20,10,25,70,32.5,9,null,null]},
+    {"label":"-3〜-8°C","oatMin":-8,"oatMax":-3,"100/0":[122.5,35,65,50,85,142.5,85,35,null,null],"75/25":[85,25,50,30,65,130,52.5,35,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-8〜-14°C","oatMin":-14,"oatMax":-8,"100/0":[122.5,30,50,40,75,120,85,null,null,null],"75/25":[85,20,45,25,57.5,120,52.5,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-14〜-18°C","oatMin":-18,"oatMax":-14,"100/0":[37.5,8,25,10,35,97.5,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-18〜-25°C","oatMin":-25,"oatMax":-18,"100/0":[37.5,3,10,4,15,40,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-25〜-30.5°C","oatMin":-30.5,"oatMax":-25,"100/0":[37.5,2,5,2,7,25,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]}
+  ]},
+  "POLAR GUARD® XTEND (TypeIV)":{"type":"IV","ratios":["100/0"],"glycolType":"PG","bands":[
+    {"label":"-3°C以上","oatMin":-3,"oatMax":999,"100/0":[185,50,90,65,120,180,120,60,17.5,102.5]},
+    {"label":"-3〜-8°C","oatMin":-8,"oatMax":-3,"100/0":[112.5,40,70,50,105,170,87.5,50,null,null]},
+    {"label":"-8〜-14°C","oatMin":-14,"oatMax":-8,"100/0":[112.5,35,60,45,90,142.5,87.5,null,null,null]},
+    {"label":"-14〜-18°C","oatMin":-18,"oatMax":-14,"100/0":[32.5,15,30,20,40,80,null,null,null,null]},
+    {"label":"-18〜-25°C","oatMin":-25,"oatMax":-18,"100/0":[32.5,5,10,6,15,30,null,null,null,null]},
+    {"label":"-25〜-29°C","oatMin":-29,"oatMax":-25,"100/0":[32.5,3,6,4,9,20,null,null,null,null]}
+  ]},
+  "SAFEWING MP IV LAUNCH (TypeIV)":{"type":"IV","ratios":["100/0","75/25","50/50"],"glycolType":"PG","flagRed":true,"bands":[
+    {"label":"-3°C以上","oatMin":-3,"oatMax":999,"100/0":[240,50,80,65,105,170,110,60,12.5,107.5],"75/25":[230,45,80,60,105,180,110,45,11,107.5],"50/50":[125,20,35,25,45,85,40,20,null,null]},
+    {"label":"-3〜-8°C","oatMin":-8,"oatMax":-3,"100/0":[117.5,40,65,55,90,142.5,87.5,25,null,null],"75/25":[80,40,70,50,90,150,47.5,25,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-8〜-14°C","oatMin":-14,"oatMax":-8,"100/0":[117.5,35,60,50,80,125,87.5,null,null,null],"75/25":[80,35,60,45,82.5,142.5,47.5,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-14〜-18°C","oatMin":-18,"oatMax":-14,"100/0":[40,5,15,6,20,75,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-18〜-25°C","oatMin":-25,"oatMax":-18,"100/0":[40,2,6,2,9,30,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-25〜-28.5°C","oatMin":-28.5,"oatMax":-25,"100/0":[40,1,4,1,6,20,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]}
+  ]},
+  "UCAR™ ENDURANCE EG106 (TypeIV)":{"type":"IV","ratios":["100/0"],"glycolType":"EG","bands":[
+    {"label":"-3°C以上","oatMin":-3,"oatMax":999,"100/0":[157.5,30,60,40,80,162.5,90,50,17.5,110]},
+    {"label":"-3〜-8°C","oatMin":-8,"oatMax":-3,"100/0":[205,25,50,35,70,142.5,92.5,45,null,null]},
+    {"label":"-8〜-14°C","oatMin":-14,"oatMax":-8,"100/0":[205,25,45,30,65,125,92.5,null,null,null]},
+    {"label":"-14〜-18°C","oatMin":-18,"oatMax":-14,"100/0":[47.5,15,35,25,50,105,null,null,null,null]},
+    {"label":"-18〜-25°C","oatMin":-25,"oatMax":-18,"100/0":[47.5,15,30,20,40,90,null,null,null,null]},
+    {"label":"-25〜-29°C","oatMin":-29,"oatMax":-25,"100/0":[47.5,15,30,20,40,80,null,null,null,null]}
+  ]},
+  "UCAR™ FLIGHTGUARD AD-49 (TypeIV)":{"type":"IV","ratios":["100/0"],"glycolType":"PG","bands":[
+    {"label":"-3°C以上","oatMin":-3,"oatMax":999,"100/0":[230,45,85,60,115,180,90,60,9,72.5]},
+    {"label":"-3〜-8°C","oatMin":-8,"oatMax":-3,"100/0":[57.5,35,65,45,90,177.5,75,20,null,null]},
+    {"label":"-8〜-14°C","oatMin":-14,"oatMax":-8,"100/0":[57.5,30,55,40,75,145,75,null,null,null]},
+    {"label":"-14〜-18°C","oatMin":-18,"oatMax":-14,"100/0":[32.5,1,6,2,9,30,null,null,null,null]},
+    {"label":"-18〜-25°C","oatMin":-25,"oatMax":-18,"100/0":[32.5,0,2,1,3,10,null,null,null,null]},
+    {"label":"-25〜-26°C","oatMin":-26,"oatMax":-25,"100/0":[32.5,0,1,0,2,7,null,null,null,null]}
+  ]},
+  "Type IV (Generic)":{"type":"IV","ratios":["100/0","75/25","50/50"],"glycolType":"PG","flagRed":true,"bands":[
+    {"label":"-3°C以上","oatMin":-3,"oatMax":999,"100/0":[105,20,40,25,55,110,52.5,15,7,36.5],"75/25":[122.5,30,55,40,75,125,80,30,8,63.5],"50/50":[42.5,7,20,10,25,60,27.5,9,null,null]},
+    {"label":"-3〜-8°C","oatMin":-8,"oatMax":-3,"100/0":[25,20,35,25,45,97.5,62.5,20,null,null],"75/25":[80,25,50,30,65,110,47.5,15,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-8〜-14°C","oatMin":-14,"oatMax":-8,"100/0":[25,15,30,20,45,85,62.5,null,null,null],"75/25":[80,20,45,25,57.5,105,47.5,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-14〜-18°C","oatMin":-18,"oatMax":-14,"100/0":[22.5,1,6,2,9,30,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-18〜-25°C","oatMin":-25,"oatMax":-18,"100/0":[22.5,0,2,1,3,10,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
+    {"label":"-25°C以下","oatMin":-999,"oatMax":-25,"100/0":[22.5,0,1,0,2,7,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]}
+  ]}
 };
 
-// Column index mapping
-const COL = {
-  FZFG: 0, SNFZFG: 1, SN_VL: 2, SN_MOD: 3, SN_LT: 4, SN_VVL: 5,
-  FZDZ: 6, FZRA_LT: 7, SNRA_MOD: 8, COLD_WING: 9
-};
+const COL={FZFG:0,SNFZFG:1,SN_VL:2,SN_MOD:3,SN_LT:4,SN_VVL:5,FZDZ:6,FZRA_LT:7,SNRA_MOD:8,COLD_WING:9};
 
-// Precipitation phenomenon definitions
-const PRECIP_DEFS = [
-  { code: "FZFG",    label: "Freezing Fog",    col: "FZFG",    group: "fog",   noHot: false },
-  { code: "IC",      label: "Ice Crystals",    col: "FZFG",    group: "fog",   noHot: false, note:"FZFG時のみ" },
-  { code: "BR",      label: "Mist",            col: "FZFG",    group: "fog",   noHot: false, note:"OAT≤0°C" },
-  { code: "-SNFZFG", label: "Lt SN+FZFG",     col: "SNFZFG",  group: "snfog", noHot: false },
-  { code: "SNFZFG",  label: "Mod SN+FZFG",    col: "SNFZFG",  group: "snfog", noHot: false },
-  { code: "SN",      label: "Snow (SN)",       col: "SN_AUTO", group: "sn",    noHot: false, needVis: true },
-  { code: "SG",      label: "Snow Grains",     col: "SN_AUTO", group: "sn",    noHot: false, needVis: true },
-  { code: "-FZRA",   label: "Lt Freezing Rain",col: "FZRA_LT", group: "fz",    noHot: false },
-  { code: "FZDZ",    label: "Freezing Drizzle",col: "FZDZ",    group: "fz",    noHot: false },
-  { code: "SNRA",    label: "Mod SN+Rain",     col: "SNRA_MOD",group: "mix",   noHot: false },
-  { code: "RASN",    label: "Mod Rain+SN",     col: "SNRA_MOD",group: "mix",   noHot: false },
-  { code: "COLDWING",label: "Cold Soaked Wing",col: "COLD_WING",group:"spec",  noHot: false },
-  // No-HOT conditions
-  { code: "+PL",    label: "Heavy Ice Pellets", col: null,      group: "nogo",  noHot: true },
-  { code: "FZRA",   label: "Mod Freezing Rain", col: null,      group: "nogo",  noHot: true },
-  { code: "+FZRA",  label: "Heavy Freezing Rain",col: null,     group: "nogo",  noHot: true },
-  { code: "HA",     label: "Hail",              col: null,      group: "nogo",  noHot: true },
-  { code: "+SN",    label: "Heavy Snow",        col: null,      group: "nogo",  noHot: false, specialHeavySN: true },
-  // PL - refer to PL table
-  { code: "-PL",    label: "Lt Ice Pellets",    col: "PL",      group: "pl",    noHot: false, isPL: true },
-  { code: "PL",     label: "Mod Ice Pellets",   col: "PL",      group: "pl",    noHot: false, isPL: true },
+// Precip definitions grouped
+const PRECIP_GROUPS = [
+  { id:'fog', label:'Fog / Crystals', isSN:false, isNogo:false, items:[
+    {code:'FZFG',  label:'Freezing Fog',   col:'FZFG'},
+    {code:'IC',    label:'Ice Crystals',   col:'FZFG', note:'FZFG時のみ'},
+    {code:'BR',    label:'Mist',           col:'FZFG', note:'OAT≤0°C'},
+  ]},
+  { id:'snfog', label:'SN + Fog', isSN:false, isNogo:false, items:[
+    {code:'-SNFZFG',label:'Lt SN+FZFG',  col:'SNFZFG'},
+    {code:'SNFZFG', label:'Mod SN+FZFG', col:'SNFZFG'},
+  ]},
+  { id:'sn', label:'❄ Snow / SG — 強度は視程で自動判定', isSN:true, isNogo:false, items:[
+    {code:'SN', label:'Snow',        col:'SN_AUTO'},
+    {code:'SG', label:'Snow Grains', col:'SN_AUTO'},
+  ]},
+  { id:'fz', label:'Freezing Rain / Drizzle', isSN:false, isNogo:false, items:[
+    {code:'-FZRA', label:'Lt Freezing Rain',   col:'FZRA_LT'},
+    {code:'FZDZ',  label:'Freezing Drizzle',   col:'FZDZ'},
+  ]},
+  { id:'mix', label:'Mixed (SN+Rain)', isSN:false, isNogo:false, items:[
+    {code:'SNRA', label:'Mod SN+Rain', col:'SNRA_MOD'},
+    {code:'RASN', label:'Mod Rain+SN', col:'SNRA_MOD'},
+  ]},
+  { id:'spec', label:'Special', isSN:false, isNogo:false, items:[
+    {code:'COLDWING',label:'Cold Soaked Wing',col:'COLD_WING'},
+  ]},
+  { id:'nogo', label:'⛔ TAKEOFF NOT AUTHORIZED', isSN:false, isNogo:true, items:[
+    {code:'+PL',  label:'Heavy Ice Pellets', col:null},
+    {code:'FZRA', label:'Mod Freezing Rain', col:null},
+    {code:'+FZRA',label:'Heavy Freezing Rain',col:null},
+    {code:'HA',   label:'Hail',             col:null},
+    {code:'+SN',  label:'Heavy Snow',        col:null, specialHeavySN:true},
+  ]},
+  { id:'pl', label:'PL / Small Hail → PL タブ', isSN:false, isNogo:false, isPLGroup:true, items:[
+    {code:'-PL', label:'Lt Ice Pellets',  col:'PL', isPL:true},
+    {code:'PL',  label:'Mod Ice Pellets', col:'PL', isPL:true},
+  ]},
 ];
 
-// SN Intensity conversion table (minutes for visibility ranges)
-// Returns: 'heavy', 'moderate', 'light', 'vlight'
-function getSnIntensity(visMeter, oat, isNight) {
-  if (!visMeter || isNaN(visMeter)) return null;
-  const aboveMinus1 = oat > -1;
-  if (!isNight) {
-    // Day
-    if (aboveMinus1) {
-      if (visMeter <= 1000) return 'heavy';
-      if (visMeter <= 1400) return 'moderate';
-      if (visMeter <= 3000) return 'light';
-      return 'vlight';
-    } else {
-      if (visMeter <= 600)  return 'heavy';
-      if (visMeter <= 1400) return 'moderate';
-      if (visMeter <= 2600) return 'light';
-      return 'vlight';
-    }
-  } else {
-    // Night
-    if (aboveMinus1) {
-      if (visMeter <= 1400) return 'heavy';
-      if (visMeter <= 2600) return 'moderate';
-      if (visMeter <= 3600) return 'light';
-      return 'vlight';
-    } else {
-      if (visMeter <= 1000) return 'heavy';
-      if (visMeter <= 2600) return 'moderate';
-      if (visMeter <= 3600) return 'light';
-      return 'vlight';
-    }
+const ALL_PRECIP = PRECIP_GROUPS.flatMap(g=>g.items.map(p=>({...p,group:g.id,isNogo:g.isNogo,isPLGroup:g.isPLGroup})));
+
+// SN Intensity
+function getSnIntensity(visMeter,oat,isNight){
+  if(!visMeter||isNaN(visMeter))return null;
+  const a=oat>-1;
+  if(!isNight){
+    if(a){if(visMeter<=1000)return'heavy';if(visMeter<=1400)return'moderate';if(visMeter<=3000)return'light';return'vlight';}
+    else{if(visMeter<=600)return'heavy';if(visMeter<=1400)return'moderate';if(visMeter<=2600)return'light';return'vlight';}
+  }else{
+    if(a){if(visMeter<=1400)return'heavy';if(visMeter<=2600)return'moderate';if(visMeter<=3600)return'light';return'vlight';}
+    else{if(visMeter<=1000)return'heavy';if(visMeter<=2600)return'moderate';if(visMeter<=3600)return'light';return'vlight';}
   }
 }
-
-// SN intensity -> column
-function snIntensityToCol(intensity) {
-  switch(intensity) {
-    case 'vlight': return COL.SN_VVL;
-    case 'light':  return COL.SN_LT;
-    case 'moderate': return COL.SN_MOD;
-    default: return null; // heavy = no HOT from table (use heavy snow ops)
-  }
+function snIntensityToCol(i){
+  return i==='vlight'?COL.SN_VVL:i==='light'?COL.SN_LT:i==='moderate'?COL.SN_MOD:null;
 }
+const SN_INTENSITY_LABELS={heavy:'Heavy',moderate:'Moderate',light:'Light',vlight:'Very Light'};
+const SN_INTENSITY_COLORS={heavy:'#e74c3c',moderate:'#e67e22',light:'#f1c40f',vlight:'#88aaff'};
 
-// Get OAT band for fluid
-function getOatBand(fluid, oat) {
-  const bands = FLUIDS[fluid].bands;
-  for (let i = 0; i < bands.length; i++) {
-    const b = bands[i];
-    if (oat >= b.oatMin && oat < (b.oatMax === 999 ? 9999 : b.oatMax + 0.001)) {
-      // Special: topmost band includes oatMin
-      return i;
-    }
+function lookupHOT(fluidName,ratio,col,oat){
+  if(col===null||col===undefined)return null;
+  const f=FLUIDS[fluidName];if(!f)return null;
+  const bands=f.bands;let bi=-1;
+  for(let i=0;i<bands.length;i++){
+    const b=bands[i];const mx=b.oatMax===999?9999:b.oatMax;
+    if(i===0&&oat>=b.oatMin){bi=0;break;}
+    if(oat>b.oatMin&&oat<=mx){bi=i;break;}
   }
-  // Below lowest band
-  return bands.length - 1;
-}
-
-// Lookup HOT
-function lookupHOT(fluid, ratio, col, oat) {
-  if (col === null || col === undefined) return null;
-  const f = FLUIDS[fluid];
-  if (!f) return null;
-  const bands = f.bands;
-  let bandIdx = -1;
-  for (let i = 0; i < bands.length; i++) {
-    const b = bands[i];
-    const maxOat = b.oatMax === 999 ? 9999 : b.oatMax;
-    if (oat > b.oatMin && oat <= maxOat) { bandIdx = i; break; }
-    if (i === 0 && oat >= b.oatMin) { bandIdx = 0; break; }
-  }
-  if (bandIdx < 0) bandIdx = bands.length - 1;
-  const band = bands[bandIdx];
-  const arr = band[ratio];
-  if (!arr) return null;
+  if(bi<0)bi=bands.length-1;
+  const arr=bands[bi][ratio];if(!arr)return null;
   return arr[col];
 }
-
-// Format minutes as "h:mm" or "XX分"
-function fmtMin(m) {
-  if (m === null || m === undefined) return "—";
-  if (m < 60) return `${m}分`;
-  const h = Math.floor(m / 60);
-  const mm = Math.round(m % 60);
-  return `${h}:${mm.toString().padStart(2,'0')}`;
+function getOatBandIndex(fluidName,oat){
+  const bands=FLUIDS[fluidName].bands;
+  for(let i=0;i<bands.length;i++){
+    const b=bands[i];const mx=b.oatMax===999?9999:b.oatMax;
+    if(i===0&&oat>=b.oatMin)return 0;
+    if(oat>b.oatMin&&oat<=mx)return i;
+  }
+  return bands.length-1;
+}
+function fmtMin(m){
+  if(m===null||m===undefined)return'—';
+  if(m===0)return'0分';
+  if(m<60)return`${Math.round(m)}分`;
+  const h=Math.floor(m/60),mm=Math.round(m%60);
+  return`${h}:${mm.toString().padStart(2,'0')}`;
 }
 
-// ============================================================
-// PL / Ice Pellet Allowance Time Tables
-// ============================================================
-
-// PG table: rows = precip condition, cols = OAT bands [>0, 0~-5, -5~-10, -10~-16, -16~-22]
-// null = Not Authorized
-const PL_PG = [
-  { code: "-PL",      label: "Lt Ice Pellets (-PL)",               times: [50,50,30,30,20] },
-  { code: "-PLSN",    label: "Lt PL + Lt Snow (-PLSN)",            times: [40,40,15,15,null] },
-  { code: "-PLFZDZ",  label: "Lt PL + FZDZ",                       times: [null,25,10,null,null] },
-  { code: "-PLDZ",    label: "Lt PL + DZ",                         times: [25,null,null,null,null] },
-  { code: "-PLFZRA",  label: "Lt PL + Lt FZRA",                    times: [null,25,10,null,null] },
-  { code: "-PLRA",    label: "Lt PL + Lt RA",                      times: [25,null,null,null,null] },
-  { code: "-PLFZRASN",label: "Lt PL + Lt FZRA + Lt SN",            times: [null,20,null,null,null] },
-  { code: "-PLRASN",  label: "Lt PL + Lt RA + Lt SN",              times: [20,null,null,null,null] },
-  { code: "PL",       label: "Mod Ice Pellets (PL)",               times: [15,15,10,10,null] },
-  { code: "PLSN",     label: "Mod PL + Mod Snow (PLSN)",           times: [15,15,5,5,null] },
-  { code: "PLFZDZ",   label: "Mod PL + FZDZ",                      times: [null,10,7,null,null] },
-  { code: "PLDZ",     label: "Mod PL + DZ",                        times: [10,null,null,null,null] },
-  { code: "PLRA",     label: "Mod PL + Mod RA",                    times: [10,null,null,null,null] },
+// PL tables
+const PL_PG=[
+  {code:'-PL',    label:'Lt Ice Pellets (-PL)',         times:[50,50,30,30,20]},
+  {code:'-PLSN',  label:'Lt PL + Lt Snow',              times:[40,40,15,15,null]},
+  {code:'-PLFZDZ',label:'Lt PL + FZDZ',                 times:[null,25,10,null,null]},
+  {code:'-PLDZ',  label:'Lt PL + DZ',                   times:[25,null,null,null,null]},
+  {code:'-PLFZRA',label:'Lt PL + Lt FZRA',              times:[null,25,10,null,null]},
+  {code:'-PLRA',  label:'Lt PL + Lt RA',                times:[25,null,null,null,null]},
+  {code:'-PLFZRASN',label:'Lt PL + Lt FZRA + Lt SN',   times:[null,20,null,null,null]},
+  {code:'-PLRASN',label:'Lt PL + Lt RA + Lt SN',        times:[20,null,null,null,null]},
+  {code:'PL',     label:'Mod Ice Pellets (PL)',          times:[15,15,10,10,null]},
+  {code:'PLSN',   label:'Mod PL + Mod SN',              times:[15,15,5,5,null]},
+  {code:'PLFZDZ', label:'Mod PL + FZDZ',                times:[null,10,7,null,null]},
+  {code:'PLDZ',   label:'Mod PL + DZ',                  times:[10,null,null,null,null]},
+  {code:'PLRA',   label:'Mod PL + Mod RA',              times:[10,null,null,null,null]},
 ];
-
-const PL_EG = [
-  { code: "-PL",      label: "Lt Ice Pellets (-PL)",               times: [70,70,70,50,30] },
-  { code: "-PLSN",    label: "Lt PL + Lt Snow (-PLSN)",            times: [50,50,30,25,null] },
-  { code: "-PLFZDZ",  label: "Lt PL + FZDZ",                       times: [null,40,30,null,null] },
-  { code: "-PLDZ",    label: "Lt PL + DZ",                         times: [40,null,null,null,null] },
-  { code: "-PLFZRA",  label: "Lt PL + Lt FZRA",                    times: [null,40,30,null,null] },
-  { code: "-PLRA",    label: "Lt PL + Lt RA",                      times: [40,null,null,null,null] },
-  { code: "-PLFZRASN",label: "Lt PL + Lt FZRA + Lt SN",            times: [null,20,null,null,null] },
-  { code: "-PLRASN",  label: "Lt PL + Lt RA + Lt SN",              times: [20,null,null,null,null] },
-  { code: "PL",       label: "Mod Ice Pellets (PL)",               times: [35,35,35,15,10] },
-  { code: "PLSN",     label: "Mod PL + Mod Snow (PLSN)",           times: [25,25,15,10,null] },
-  { code: "PLFZDZ",   label: "Mod PL + FZDZ",                      times: [null,20,10,null,null] },
-  { code: "PLDZ",     label: "Mod PL + DZ",                        times: [20,null,null,null,null] },
-  { code: "PLRA",     label: "Mod PL + Mod RA",                    times: [15,null,null,null,null] },
+const PL_EG=[
+  {code:'-PL',    label:'Lt Ice Pellets (-PL)',         times:[70,70,70,50,30]},
+  {code:'-PLSN',  label:'Lt PL + Lt Snow',              times:[50,50,30,25,null]},
+  {code:'-PLFZDZ',label:'Lt PL + FZDZ',                 times:[null,40,30,null,null]},
+  {code:'-PLDZ',  label:'Lt PL + DZ',                   times:[40,null,null,null,null]},
+  {code:'-PLFZRA',label:'Lt PL + Lt FZRA',              times:[null,40,30,null,null]},
+  {code:'-PLRA',  label:'Lt PL + Lt RA',                times:[40,null,null,null,null]},
+  {code:'-PLFZRASN',label:'Lt PL + Lt FZRA + Lt SN',   times:[null,20,null,null,null]},
+  {code:'-PLRASN',label:'Lt PL + Lt RA + Lt SN',        times:[20,null,null,null,null]},
+  {code:'PL',     label:'Mod Ice Pellets (PL)',          times:[35,35,35,15,10]},
+  {code:'PLSN',   label:'Mod PL + Mod SN',              times:[25,25,15,10,null]},
+  {code:'PLFZDZ', label:'Mod PL + FZDZ',                times:[null,20,10,null,null]},
+  {code:'PLDZ',   label:'Mod PL + DZ',                  times:[20,null,null,null,null]},
+  {code:'PLRA',   label:'Mod PL + Mod RA',              times:[15,null,null,null,null]},
 ];
-
-const PL_OAT_BANDS = [
-  { label: ">0°C",       min: 0,   max: 999  },
-  { label: "0〜-5°C",   min: -5,  max: 0    },
-  { label: "-5〜-10°C", min: -10, max: -5   },
-  { label: "-10〜-16°C",min: -16, max: -10  },
-  { label: "-16〜-22°C",min: -22, max: -16  },
+const PL_OAT_BANDS=[
+  {label:'>0°C',min:0,max:999},{label:'0〜-5°C',min:-5,max:0},
+  {label:'-5〜-10°C',min:-10,max:-5},{label:'-10〜-16°C',min:-16,max:-10},
+  {label:'-16〜-22°C',min:-22,max:-16}
 ];
-
-function getPLOatBandIdx(oat) {
-  for (let i = 0; i < PL_OAT_BANDS.length; i++) {
-    const b = PL_OAT_BANDS[i];
-    if (oat > b.min || (i === 0 && oat >= b.min)) {
-      if (oat <= b.max) return i;
-    }
+function getPLOatBandIdx(oat){
+  if(oat>0)return 0;
+  for(let i=1;i<PL_OAT_BANDS.length;i++){
+    const b=PL_OAT_BANDS[i];if(oat>b.min&&oat<=b.max)return i;
   }
-  if (oat > 0) return 0;
-  return PL_OAT_BANDS.length - 1; // below -22
+  return PL_OAT_BANDS.length;// beyond last
 }
 
 // ============================================================
 // STATE
 // ============================================================
-let state = {
-  fluid: "POLAR GUARD® ADVANCE (TypeIV)",
-  ratio: "100/0",
-  oat: 0,
-  isNight: false,
-  visMeter: null,
-  selectedPrecip: [],
-  tab: "main",
-  plFluidType: "PG",
-  plPrecip: null,
-  plOat: 0,
-  plVR: null
+let state={
+  fluid:'SAFEWING MP IV LAUNCH (TypeIV)',ratio:'100/0',oat:0,isNight:false,
+  visMeter:null,selectedPrecip:[],tab:'main',
+  plFluidType:'PG',plPrecip:null,plOat:0,plVR:null
 };
-
-let settings = {
-  defaultFluid: "POLAR GUARD® ADVANCE (TypeIV)",
-  defaultRatio: "100/0",
-  defaultDayNight: "day"
-};
-let settingsTmp = {};
+let settings={defaultFluid:'SAFEWING MP IV LAUNCH (TypeIV)',defaultRatio:'100/0',defaultDayNight:'day'};
+let settingsTmp={};
 
 // ============================================================
 // INIT
 // ============================================================
-function init() {
+function init(){
   loadSettings();
   buildFluidSelectors();
   buildPrecipGrid();
   buildPLPrecipGrid();
   renderRatioGroup();
   loadFromSettings();
-  renderSNTable();
-  calculate();
-  calcPL();
-  renderPLTable();
+  renderSNRefTable();
+  calculate();calcPL();renderPLTable();
 }
 
-function loadSettings() {
-  try {
-    const s = JSON.parse(localStorage.getItem('hot_settings') || '{}');
-    if (s.defaultFluid && FLUIDS[s.defaultFluid]) settings.defaultFluid = s.defaultFluid;
-    if (s.defaultRatio) settings.defaultRatio = s.defaultRatio;
-    if (s.defaultDayNight) settings.defaultDayNight = s.defaultDayNight;
-  } catch(e) {}
+function loadSettings(){
+  try{const s=JSON.parse(localStorage.getItem('hot_settings')||'{}');
+    if(s.defaultFluid&&FLUIDS[s.defaultFluid])settings.defaultFluid=s.defaultFluid;
+    if(s.defaultRatio)settings.defaultRatio=s.defaultRatio;
+    if(s.defaultDayNight)settings.defaultDayNight=s.defaultDayNight;
+  }catch(e){}
 }
-
-function loadFromSettings() {
-  state.fluid = settings.defaultFluid;
-  state.ratio = settings.defaultRatio;
-  state.isNight = (settings.defaultDayNight === 'night');
-  document.getElementById('sel-fluid').value = state.fluid;
+function loadFromSettings(){
+  state.fluid=settings.defaultFluid;state.ratio=settings.defaultRatio;
+  state.isNight=(settings.defaultDayNight==='night');
+  document.getElementById('sel-fluid').value=state.fluid;
   onFluidChange();
-  if (state.isNight) {
-    document.getElementById('btn-day').classList.remove('active');
-    document.getElementById('btn-night').classList.add('active');
-  }
+  if(state.isNight){document.getElementById('btn-day').classList.remove('active');document.getElementById('btn-night').classList.add('active');}
 }
 
-function buildFluidSelectors() {
-  const sel = document.getElementById('sel-fluid');
-  const setSel = document.getElementById('set-default-fluid');
-  const groups = { "I": "Type I", "II": "Type II", "IV": "Type IV" };
-  const byType = { "I": [], "II": [], "IV": [] };
-  for (const name of Object.keys(FLUIDS)) byType[FLUIDS[name].type].push(name);
-  [sel, setSel].forEach(s => {
-    s.innerHTML = '';
-    for (const t of ["I","II","IV"]) {
-      const og = document.createElement('optgroup');
-      og.label = `Type ${t}`;
-      byType[t].forEach(n => {
-        const o = document.createElement('option');
-        o.value = n; o.textContent = n;
+function buildFluidSelectors(){
+  const byType={"I":[],"II":[],"IV":[]};
+  for(const n of Object.keys(FLUIDS))byType[FLUIDS[n].type].push(n);
+  ['sel-fluid','set-default-fluid'].forEach(id=>{
+    const sel=document.getElementById(id);sel.innerHTML='';
+    for(const t of["I","II","IV"]){
+      const og=document.createElement('optgroup');og.label=`Type ${t}`;
+      byType[t].forEach(n=>{
+        const o=document.createElement('option');o.value=n;o.textContent=n;
+        if(FLUIDS[n].flagRed)o.style.color='#ff6666';
         og.appendChild(o);
       });
-      s.appendChild(og);
+      sel.appendChild(og);
     }
+    sel.value=settings.defaultFluid;
   });
-  setSel.value = settings.defaultFluid;
 }
 
-function buildPrecipGrid() {
-  const grid = document.getElementById('precip-grid');
-  grid.innerHTML = '';
-  PRECIP_DEFS.forEach(p => {
-    if (p.group === 'pl') return; // PL is on PL tab
-    const btn = document.createElement('button');
-    btn.className = 'precip-btn' + (p.noHot ? ' no-hot' : '');
-    btn.dataset.code = p.code;
-    btn.innerHTML = `<span class="code">${p.code}</span><span>${p.label}${p.note ? '<br><small>'+p.note+'</small>' : ''}</span>`;
-    btn.onclick = () => togglePrecip(p.code);
+function buildPrecipGrid(){
+  const col=document.getElementById('wx-left-col');col.innerHTML='';
+  PRECIP_GROUPS.forEach(g=>{
+    const sec=document.createElement('div');
+    sec.className='precip-section'+(g.isSN?' sn-section':g.isNogo?' nogo-section':'');
+    const lbl=document.createElement('div');lbl.className='precip-section-label';lbl.textContent=g.label;
+    sec.appendChild(lbl);
+    const grid=document.createElement('div');grid.className='precip-grid';
+    g.items.forEach(p=>{
+      const btn=document.createElement('button');
+      btn.className='precip-btn'+(g.isNogo?' no-hot':'')+(g.isSN?' sn-btn':'');
+      btn.dataset.code=p.code;
+      btn.innerHTML=`<span class="code">${p.code}</span><span style="font-size:12px">${p.label}${p.note?'<br><small style="color:#5580a0">'+p.note+'</small>':''}</span>`;
+      btn.onclick=()=>togglePrecip(p.code);
+      grid.appendChild(btn);
+    });
+    sec.appendChild(grid);col.appendChild(sec);
+  });
+}
+
+function buildPLPrecipGrid(){
+  const grid=document.getElementById('pl-precip-grid');grid.innerHTML='';
+  const tbl=state.plFluidType==='EG'?PL_EG:PL_PG;
+  tbl.forEach(row=>{
+    const btn=document.createElement('button');btn.className='precip-btn';btn.dataset.plcode=row.code;
+    btn.innerHTML=`<span class="code">${row.code}</span><span style="font-size:11px">${row.label}</span>`;
+    btn.onclick=()=>selectPLPrecip(row.code);
+    if(state.plPrecip===row.code)btn.classList.add('active');
     grid.appendChild(btn);
   });
 }
 
-function buildPLPrecipGrid() {
-  const grid = document.getElementById('pl-precip-grid');
-  grid.innerHTML = '';
-  const table = state.plFluidType === 'EG' ? PL_EG : PL_PG;
-  table.forEach(row => {
-    const btn = document.createElement('button');
-    btn.className = 'precip-btn';
-    btn.dataset.plcode = row.code;
-    btn.innerHTML = `<span class="code">${row.code}</span><span style="font-size:10px">${row.label.replace(/.*?\(/,'').replace(')','')}</span>`;
-    btn.onclick = () => selectPLPrecip(row.code);
-    if (state.plPrecip === row.code) btn.classList.add('active');
-    grid.appendChild(btn);
+function renderRatioGroup(){
+  const f=FLUIDS[state.fluid];const rg=document.getElementById('ratio-group');const rowR=document.getElementById('row-ratio');
+  if(!f)return;
+  if(f.ratios.length<=1){rowR.style.display='none';state.ratio='100/0';return;}
+  rowR.style.display='';rg.innerHTML='';
+  ['100/0','75/25','50/50'].forEach(r=>{
+    const btn=document.createElement('button');btn.className='ratio-btn'+(state.ratio===r?' active':'');
+    btn.textContent=r;if(!f.ratios.includes(r))btn.disabled=true;
+    btn.onclick=()=>{state.ratio=r;renderRatioGroup();calculate();};rg.appendChild(btn);
+  });
+  if(!f.ratios.includes(state.ratio)){state.ratio=f.ratios[0];renderRatioGroup();}
+}
+
+function onFluidChange(){state.fluid=document.getElementById('sel-fluid').value;renderRatioGroup();calculate();}
+function setDayNight(v){
+  state.isNight=(v==='night');
+  document.getElementById('btn-day').classList.toggle('active',!state.isNight);
+  document.getElementById('btn-night').classList.toggle('active',state.isNight);
+  renderSNRefTable();calculate();
+}
+function togglePrecip(code){
+  const i=state.selectedPrecip.indexOf(code);
+  if(i>=0)state.selectedPrecip.splice(i,1);else state.selectedPrecip.push(code);
+  syncPrecipButtons();syncMETARInput();calculate();
+}
+function syncPrecipButtons(){
+  document.querySelectorAll('.precip-btn[data-code]').forEach(b=>{
+    b.classList.toggle('active',state.selectedPrecip.includes(b.dataset.code));
   });
 }
-
-function renderRatioGroup() {
-  const f = FLUIDS[state.fluid];
-  const rg = document.getElementById('ratio-group');
-  const rowRatio = document.getElementById('row-ratio');
-  if (!f) return;
-  if (f.ratios.length <= 1) {
-    rowRatio.style.display = 'none';
-    state.ratio = "100/0";
-    return;
-  }
-  rowRatio.style.display = '';
-  rg.innerHTML = '';
-  ["100/0","75/25","50/50"].forEach(r => {
-    const btn = document.createElement('button');
-    btn.className = 'ratio-btn' + (state.ratio === r ? ' active' : '');
-    btn.textContent = r;
-    if (!f.ratios.includes(r)) { btn.disabled = true; }
-    btn.onclick = () => { state.ratio = r; renderRatioGroup(); calculate(); };
-    rg.appendChild(btn);
-  });
-  if (!f.ratios.includes(state.ratio)) {
-    state.ratio = f.ratios[0];
-    renderRatioGroup();
-  }
+function syncMETARInput(){document.getElementById('metar-input').value=state.selectedPrecip.join(' ');}
+function parseMETAR(){
+  const tokens=document.getElementById('metar-input').value.toUpperCase().trim().split(/\s+/);
+  state.selectedPrecip=tokens.filter(t=>ALL_PRECIP.some(p=>p.code===t));
+  syncPrecipButtons();calculate();
 }
-
-function onFluidChange() {
-  state.fluid = document.getElementById('sel-fluid').value;
-  renderRatioGroup();
-  calculate();
+function clearMETAR(){state.selectedPrecip=[];document.getElementById('metar-input').value='';syncPrecipButtons();calculate();}
+function setPLFluidType(t){
+  state.plFluidType=t;state.plPrecip=null;
+  document.getElementById('pl-pg-btn').classList.toggle('active',t==='PG');
+  document.getElementById('pl-eg-btn').classList.toggle('active',t==='EG');
+  document.getElementById('pl-table-title').textContent=`Allowance Time Table — ${t}`;
+  buildPLPrecipGrid();calcPL();renderPLTable();
 }
-
-function setDayNight(v) {
-  state.isNight = (v === 'night');
-  document.getElementById('btn-day').classList.toggle('active', !state.isNight);
-  document.getElementById('btn-night').classList.toggle('active', state.isNight);
-  renderSNTable();
-  calculate();
-}
-
-function togglePrecip(code) {
-  const idx = state.selectedPrecip.indexOf(code);
-  if (idx >= 0) state.selectedPrecip.splice(idx, 1);
-  else state.selectedPrecip.push(code);
-  syncPrecipButtons();
-  syncMETARInput();
-  calculate();
-}
-
-function syncPrecipButtons() {
-  document.querySelectorAll('.precip-btn[data-code]').forEach(btn => {
-    btn.classList.toggle('active', state.selectedPrecip.includes(btn.dataset.code));
-  });
-}
-
-function syncMETARInput() {
-  document.getElementById('metar-input').value = state.selectedPrecip.join(' ');
-}
-
-function parseMETAR() {
-  const raw = document.getElementById('metar-input').value.toUpperCase();
-  const tokens = raw.trim().split(/\s+/);
-  state.selectedPrecip = [];
-  tokens.forEach(t => {
-    if (PRECIP_DEFS.some(p => p.code === t)) state.selectedPrecip.push(t);
-  });
-  syncPrecipButtons();
-  calculate();
-}
-
-function clearMETAR() {
-  state.selectedPrecip = [];
-  document.getElementById('metar-input').value = '';
-  syncPrecipButtons();
-  calculate();
-}
-
-function setPLFluidType(t) {
-  state.plFluidType = t;
-  state.plPrecip = null;
-  document.getElementById('pl-pg-btn').classList.toggle('active', t === 'PG');
-  document.getElementById('pl-eg-btn').classList.toggle('active', t === 'EG');
-  document.getElementById('pl-table-title').textContent = `PL Allowance Time Table — ${t}`;
-  buildPLPrecipGrid();
-  calcPL();
-  renderPLTable();
-}
-
-function selectPLPrecip(code) {
-  state.plPrecip = (state.plPrecip === code) ? null : code;
-  buildPLPrecipGrid();
-  calcPL();
-}
-
-function switchTab(tab) {
-  state.tab = tab;
-  document.getElementById('tab-main').classList.toggle('active', tab === 'main');
-  document.getElementById('tab-pl').classList.toggle('active', tab === 'pl');
-  document.getElementById('view-main').classList.toggle('hidden', tab !== 'main');
-  document.getElementById('view-pl').classList.toggle('hidden', tab !== 'pl');
+function selectPLPrecip(code){state.plPrecip=(state.plPrecip===code)?null:code;buildPLPrecipGrid();calcPL();}
+function switchTab(tab){
+  state.tab=tab;
+  document.getElementById('tab-main').classList.toggle('active',tab==='main');
+  document.getElementById('tab-pl').classList.toggle('active',tab==='pl');
+  document.getElementById('view-main').classList.toggle('hidden',tab!=='main');
+  document.getElementById('view-pl').classList.toggle('hidden',tab!=='pl');
 }
 
 // ============================================================
 // MAIN CALCULATION
 // ============================================================
-function calculate() {
-  const oat = parseFloat(document.getElementById('inp-oat').value);
-  const visRaw = parseFloat(document.getElementById('inp-vis').value);
-  const visUnit = document.getElementById('sel-vis-unit').value;
-  state.oat = isNaN(oat) ? 0 : oat;
-  state.visMeter = isNaN(visRaw) ? null : (visUnit === 'sm' ? visRaw * 1609.344 : visRaw);
+function calculate(){
+  const oat=parseFloat(document.getElementById('inp-oat').value);
+  const visRaw=parseFloat(document.getElementById('inp-vis').value);
+  const visUnit=document.getElementById('sel-vis-unit').value;
+  state.oat=isNaN(oat)?0:oat;
+  state.visMeter=isNaN(visRaw)?null:(visUnit==='sm'?visRaw*1609.344:visRaw);
 
-  const alerts = [];
-  const fluid = FLUIDS[state.fluid];
-  const ratio = state.ratio;
-
-  // Check no-go precip
-  const noGoPrecip = state.selectedPrecip.filter(c => {
-    const d = PRECIP_DEFS.find(p => p.code === c);
-    return d && d.noHot;
-  });
-  if (noGoPrecip.length > 0) {
-    renderNoGo(noGoPrecip, alerts);
-    return;
+  // Vis input color coding
+  const visInp=document.getElementById('inp-vis');
+  visInp.className='';
+  if(state.visMeter&&state.selectedPrecip.some(c=>{const d=ALL_PRECIP.find(p=>p.code===c);return d&&d.col==='SN_AUTO';})){
+    const si=getSnIntensity(state.visMeter,state.oat,state.isNight);
+    if(si)visInp.classList.add(`vis-${si}`);
   }
 
-  // Check PL in selection -> redirect
-  const hasPL = state.selectedPrecip.some(c => {
-    const d = PRECIP_DEFS.find(p => p.code === c);
-    return d && d.isPL;
-  });
+  const alerts=[];const fluid=FLUIDS[state.fluid];const ratio=state.ratio;
 
-  // Heavy snow
-  const hasHeavySN = state.selectedPrecip.includes('+SN');
+  // No-go check
+  const noGoPrecip=state.selectedPrecip.filter(c=>{const d=ALL_PRECIP.find(p=>p.code===c);return d&&d.isNogo&&!d.specialHeavySN;});
+  if(noGoPrecip.length>0){renderNoGo(noGoPrecip);renderSNIntensityDisplay(null);renderSNRefTable();return;}
 
-  // Determine column
-  let col = null;
-  let colBasis = '';
-  let snIntensityResult = null;
-  let snNeedsVis = false;
+  const hasHeavySN=state.selectedPrecip.includes('+SN');
+  const hasPL=state.selectedPrecip.some(c=>{const d=ALL_PRECIP.find(p=>p.code===c);return d&&d.isPL;});
 
-  // Find effective precip column (use the most restrictive / worst HOT)
-  // If multiple precip selected, we find the smallest HOT
-  let candidates = [];
-  state.selectedPrecip.forEach(code => {
-    const def = PRECIP_DEFS.find(p => p.code === code);
-    if (!def || def.isPL) return;
-    if (def.col === 'SN_AUTO') {
-      snNeedsVis = true;
-      const intensity = getSnIntensity(state.visMeter, state.oat, state.isNight);
-      snIntensityResult = intensity;
-      if (intensity === 'heavy') {
-        candidates.push({ col: null, code, label: `${code} (Heavy→Heavy SNオペ適用)`, forceHeavy: true });
-      } else if (intensity) {
-        candidates.push({ col: snIntensityToCol(intensity), code, label: `${code} (${intensity})` });
-      } else {
-        candidates.push({ col: null, code, label: `${code} (視程不明)`, noVis: true });
-      }
-    } else if (def.col === 'PL') {
-      // handled in PL tab
-    } else {
-      candidates.push({ col: COL[def.col], code, label: def.label || code });
+  // SN intensity
+  let snIntensityResult=null;let snNeedsVis=false;
+  let candidates=[];
+  state.selectedPrecip.forEach(code=>{
+    const def=ALL_PRECIP.find(p=>p.code===code);
+    if(!def||def.isPL||def.isNogo)return;
+    if(def.col==='SN_AUTO'){
+      snNeedsVis=true;
+      const intensity=getSnIntensity(state.visMeter,state.oat,state.isNight);
+      snIntensityResult=intensity;
+      if(intensity==='heavy'){candidates.push({col:null,code,label:`${code} (Heavy→Heavy SN Ops)`,forceHeavy:true});}
+      else if(intensity){candidates.push({col:snIntensityToCol(intensity),code,label:`${code} (${SN_INTENSITY_LABELS[intensity]})`});}
+      else{candidates.push({col:null,code,label:`${code} (視程不明)`,noVis:true});}
+    }else if(def.col&&def.col!=='PL'){
+      candidates.push({col:COL[def.col],code,label:def.label||code});
     }
   });
 
-  // Update SN hint
-  const snHint = document.getElementById('sn-intensity-hint');
-  if (snNeedsVis && state.visMeter) {
-    const intensityLabels = { heavy: '⚠ Heavy', moderate: 'Moderate', light: 'Light', vlight: 'Very Light' };
-    const iLabel = intensityLabels[snIntensityResult] || '—';
-    snHint.textContent = `SN強度判定: ${state.visMeter.toFixed(0)}m → ${iLabel}`;
-    snHint.style.color = snIntensityResult === 'heavy' ? '#ff6666' : snIntensityResult === 'moderate' ? '#ffcc44' : '#88ccff';
-    document.getElementById('sn-table-area').classList.remove('hidden');
-  } else if (snNeedsVis) {
-    snHint.textContent = '⚠ SN/SG選択中：視程を入力してください';
-    snHint.style.color = '#ffcc44';
-    document.getElementById('sn-table-area').classList.remove('hidden');
-  } else {
-    snHint.textContent = '';
-    document.getElementById('sn-table-area').classList.add('hidden');
+  renderSNIntensityDisplay(snIntensityResult);
+  // Vis warning
+  const visWarn=document.getElementById('sn-vis-warning');
+  if(snNeedsVis&&!state.visMeter){visWarn.textContent='⚠ SN/SG選択中：視程を入力してください';}
+  else{visWarn.textContent='';}
+  renderSNRefTable();
+
+  // No precip
+  if(candidates.length===0&&!hasPL&&!hasHeavySN){
+    document.getElementById('result-area').innerHTML=`<div class="result-card none"><div class="result-label">待機中</div><div class="text-sm" style="margin-top:6px">降水現象を選択してください</div></div>`;
+    document.getElementById('alerts-area').innerHTML='';document.getElementById('hot-change-area').innerHTML='';return;
+  }
+  if(hasHeavySN){
+    document.getElementById('result-area').innerHTML=`<div class="result-card no-go"><div class="result-label">⛔ HEAVY SNOW — 特別手順適用</div><div style="font-size:14px;margin-top:6px;color:#ffaaaa">Type I 使用不可。Type II/IV undiluted (100/0) のみ。<br>離陸前5分以内に主翼上面確認必須。</div></div>`;
+    document.getElementById('alerts-area').innerHTML='';document.getElementById('hot-change-area').innerHTML='';return;
+  }
+  if(hasPL&&candidates.length===0){
+    document.getElementById('result-area').innerHTML=`<div class="result-card warn"><div class="result-label">PL/Small Hail → PL タブを参照</div><div style="font-size:13px;margin-top:6px;color:#ffdd88">Ice Pellet系はPLタブのAllowance Time Tableを使用</div></div>`;
+    document.getElementById('alerts-area').innerHTML='';document.getElementById('hot-change-area').innerHTML='';return;
   }
 
-  // No precip selected
-  if (candidates.length === 0 && !hasPL && !hasHeavySN) {
-    document.getElementById('result-area').innerHTML = `
-      <div class="result-card none">
-        <div class="result-label">待機中</div>
-        <div class="text-sm" style="margin-top:6px;">降水現象を選択してください</div>
-      </div>`;
-    document.getElementById('alerts-area').innerHTML = '';
-    return;
-  }
-
-  // Heavy SN handling
-  if (hasHeavySN) {
-    document.getElementById('result-area').innerHTML = `
-      <div class="result-card no-go">
-        <div class="result-label">⛔ HEAVY SNOW — 特別手順適用</div>
-        <div style="font-size:14px;margin-top:6px;color:#ffaaaa;">Type I は使用不可。Type II/IV undiluted (100/0) のみ。<br>離陸前5分以内に主翼上面確認必須。</div>
-      </div>`;
-    document.getElementById('alerts-area').innerHTML = '';
-    return;
-  }
-
-  // PL redirect alert
-  if (hasPL && candidates.length === 0) {
-    document.getElementById('result-area').innerHTML = `
-      <div class="result-card warn">
-        <div class="result-label">PL/Small Hail → PL タブを参照</div>
-        <div style="font-size:13px;margin-top:6px;color:#ffdd88;">Ice Pellet系はPLタブの<br>Allowance Time Tableを使用してください</div>
-      </div>`;
-    document.getElementById('alerts-area').innerHTML = '';
-    return;
-  }
-
-  // Find worst (minimum non-null HOT)
-  let minHOT = Infinity;
-  let minCol = null;
-  let minBasis = '';
-  let hasForceHeavy = false;
-  let hasNoVis = false;
-
-  candidates.forEach(c => {
-    if (c.forceHeavy) { hasForceHeavy = true; return; }
-    if (c.noVis) { hasNoVis = true; return; }
-    if (c.col === null || c.col === undefined) return;
-    const v = lookupHOT(state.fluid, ratio, c.col, state.oat);
-    if (v !== null && v < minHOT) {
-      minHOT = v;
-      minCol = c.col;
-      minBasis = c.label;
-    }
+  // Find worst HOT
+  let minHOT=Infinity,minCol=null,minBasis='',hasForceHeavy=false,hasNoVis=false;
+  candidates.forEach(c=>{
+    if(c.forceHeavy){hasForceHeavy=true;return;}
+    if(c.noVis){hasNoVis=true;return;}
+    if(c.col===null||c.col===undefined)return;
+    const v=lookupHOT(state.fluid,ratio,c.col,state.oat);
+    if(v!==null&&v<minHOT){minHOT=v;minCol=c.col;minBasis=c.label;}
   });
 
-  if (hasForceHeavy) {
-    document.getElementById('result-area').innerHTML = `
-      <div class="result-card no-go">
-        <div class="result-label">⛔ HEAVY SNOW — 特別手順適用</div>
-        <div style="font-size:14px;margin-top:6px;">Heavy SNのため通常HOTテーブル適用不可。<br>Operations in Heavy Snow を参照してください。</div>
-      </div>`;
-    document.getElementById('alerts-area').innerHTML = '';
-    return;
-  }
+  if(hasForceHeavy){document.getElementById('result-area').innerHTML=`<div class="result-card no-go"><div class="result-label">⛔ HEAVY SNOW</div><div style="font-size:14px;margin-top:6px">Operations in Heavy Snow を参照してください。</div></div>`;document.getElementById('alerts-area').innerHTML='';document.getElementById('hot-change-area').innerHTML='';return;}
+  if(hasNoVis&&minHOT===Infinity){document.getElementById('result-area').innerHTML=`<div class="result-card warn"><div class="result-label">⚠ 視程を入力してください</div></div>`;document.getElementById('alerts-area').innerHTML='';document.getElementById('hot-change-area').innerHTML='';return;}
+  if(minHOT===Infinity||minCol===null){document.getElementById('result-area').innerHTML=`<div class="result-card no-go"><div class="result-label">⛔ NO HOT GUIDELINE</div><div style="font-size:14px;margin-top:6px;color:#ffaaaa">この条件・気温でのHOT指針なし。離陸不可。</div></div>`;document.getElementById('alerts-area').innerHTML='';document.getElementById('hot-change-area').innerHTML='';return;}
 
-  if (hasNoVis && minHOT === Infinity) {
-    document.getElementById('result-area').innerHTML = `
-      <div class="result-card warn">
-        <div class="result-label">⚠ 視程を入力してください</div>
-        <div style="font-size:13px;margin-top:6px;">SN/SGのHOT算出には視程（m）が必要です</div>
-      </div>`;
-    document.getElementById('alerts-area').innerHTML = '';
-    return;
-  }
+  // Alerts
+  if([COL.FZRA_LT,COL.SNRA_MOD,COL.COLD_WING].includes(minCol)&&state.oat<=0)
+    alerts.push({cls:'red',icon:'⛔',text:'0°C以下では選択列のHOT指針なし（*5ルール）。再確認が必要です。'});
+  if([COL.FZRA_LT,COL.SNRA_MOD].includes(minCol)&&state.oat<=-10&&fluid.type!=='I')
+    alerts.push({cls:'red',icon:'⛔',text:'-10°C以下ではFZRA/SNRAのHOT指針なし（*6ルール）。'});
+  if(state.selectedPrecip.includes('COLDWING')&&ratio!=='100/0')
+    alerts.push({cls:'orange',icon:'⚠',text:'Cold Soaked Wing: 50/50希釈は使用不可。100/0を使用（*14ルール）。'});
+  if(hasPL&&(fluid.type==='I'||fluid.type==='II'))
+    alerts.push({cls:'red',icon:'⛔',text:'PL/Small Hailの場合、Type I/II は anti-icing に使用不可。Type IV のみ使用可。'});
+  if(state.selectedPrecip.includes('BR')&&state.oat>0)
+    alerts.push({cls:'orange',icon:'⚠',text:'Mist(BR)のHOTはOAT 0°C以下の場合のみ適用（*10ルール）。'});
 
-  // Check if HOT exists
-  if (minHOT === Infinity || minCol === null) {
-    // Check if col exists at all for this fluid
-    document.getElementById('result-area').innerHTML = `
-      <div class="result-card no-go">
-        <div class="result-label">⛔ NO HOT GUIDELINE</div>
-        <div style="font-size:14px;margin-top:6px;color:#ffaaaa;">この条件・気温でのHOT指針なし。<br>離陸不可（再除防氷が必要）。</div>
-      </div>`;
-    document.getElementById('alerts-area').innerHTML = '';
-    return;
-  }
-
-  // Special rules
-  // *5: No HOT below 0°C for FZRA / Cold wing / SNRA for some
-  if ([COL.FZRA_LT, COL.SNRA_MOD, COL.COLD_WING].includes(minCol) && state.oat <= 0) {
-    alerts.push({ cls: 'red', icon: '⛔', text: '0°C以下では選択列のHOTなし（*5ルール）。再確認が必要です。' });
-  }
-  // *6: No HOT below -10°C for FZRA/SNRA in some fluids
-  if ([COL.FZRA_LT, COL.SNRA_MOD].includes(minCol) && state.oat <= -10 && fluid.type !== 'I') {
-    alerts.push({ cls: 'red', icon: '⛔', text: '-10°C以下ではFZRA/SNRAのHOT指針なし（*6ルール）。' });
-  }
-
-  // Cold soaked wing alert
-  if (state.selectedPrecip.includes('COLDWING') && ratio !== '100/0') {
-    alerts.push({ cls: 'orange', icon: '⚠', text: 'Cold Soaked Wing: 50/50希釈は使用不可。100/0を使用してください（*14ルール）。' });
-  }
-
-  // OAT drop warnings
-  const bandIdx = getOatBandIndex(state.fluid, state.oat);
-  if (bandIdx < FLUIDS[state.fluid].bands.length - 1) {
-    const nextBand = FLUIDS[state.fluid].bands[bandIdx + 1];
-    const dropNeeded = state.oat - nextBand.oatMin;
-    if (dropNeeded >= 0 && dropNeeded <= 3) {
-      const nextHOT = nextBand[ratio] ? nextBand[ratio][minCol] : null;
-      if (nextHOT !== null) {
-        alerts.push({ cls: 'yellow', icon: '🌡', text: `気温があと${dropNeeded.toFixed(1)}°C下がると次の帯域 (${nextBand.label}) に入ります。HOTは${fmtMin(nextHOT)}になります。` });
-      } else {
-        alerts.push({ cls: 'orange', icon: '🌡', text: `気温があと${dropNeeded.toFixed(1)}°C下がると次の帯域 (${nextBand.label}) に入り、HOT指針がなくなります。` });
-      }
-    }
-  }
-
-  // Day/Night SN intensity change warning
-  if (snNeedsVis && state.visMeter) {
-    const otherIntensity = getSnIntensity(state.visMeter, state.oat, !state.isNight);
-    if (otherIntensity !== snIntensityResult) {
-      alerts.push({ cls: 'blue', icon: state.isNight ? '☀' : '🌙', text: `${state.isNight ? '昼間' : '夜間'}はSN強度判定が変わります（${snIntensityResult} → ${otherIntensity}）。気象変化に注意。` });
-    }
-  }
-
-  // Type I/II + PL warning
-  if (hasPL && (fluid.type === 'I' || fluid.type === 'II')) {
-    alerts.push({ cls: 'red', icon: '⛔', text: 'PL/Small Hailの場合、Type I/II は anti-icing に使用不可。Type IV fluid のみ使用可。' });
-  }
-
-  // BR/Mist: only valid at OAT <= 0
-  if (state.selectedPrecip.includes('BR') && state.oat > 0) {
-    alerts.push({ cls: 'orange', icon: '⚠', text: 'Mist(BR)のHOTはOAT 0°C以下の場合のみ適用（*10ルール）。' });
+  // SN intensity basis text
+  let snBasisText='';
+  if(snIntensityResult&&snNeedsVis){
+    snBasisText=`<b>SN強度: ${SN_INTENSITY_LABELS[snIntensityResult]}</b> (${state.visMeter?state.visMeter.toFixed(0)+'m':'—'} / ${state.isNight?'夜':'昼'} / OAT ${state.oat}°C)<br>`;
   }
 
   // Render result
-  const resultArea = document.getElementById('result-area');
-  const pct = Math.min(100, (minHOT / 240) * 100);
-  const cardClass = minHOT >= 60 ? 'ok' : minHOT >= 20 ? 'warn' : 'warn';
-  resultArea.innerHTML = `
+  const cardClass=minHOT>=60?'ok':'warn';
+  document.getElementById('result-area').innerHTML=`
     <div class="result-card ${cardClass}">
       <div class="result-label">✅ Holdover Time</div>
       <div class="result-hot">${fmtMin(minHOT)}</div>
-      <div class="result-basis">適用条件: ${minBasis}<br>
-        流体: ${state.fluid} / ${ratio}<br>
-        OAT: ${state.oat}°C / ${state.isNight ? '夜' : '昼'}
+      <div class="result-basis">
+        ${snBasisText}<b>適用条件:</b> ${minBasis}<br>
+        <b>防氷液:</b> ${state.fluid}<br>
+        <b>希釈比:</b> ${ratio} / <b>OAT:</b> ${state.oat}°C / ${state.isNight?'夜':'昼'}
       </div>
     </div>`;
 
-  // Render alerts
-  const alertsArea = document.getElementById('alerts-area');
-  alertsArea.innerHTML = alerts.map(a =>
-    `<div class="alert ${a.cls}"><span class="alert-icon">${a.icon}</span><span>${a.text}</span></div>`
-  ).join('');
+  document.getElementById('alerts-area').innerHTML=alerts.map(a=>`<div class="alert ${a.cls}"><span class="alert-icon">${a.icon}</span><span>${a.text}</span></div>`).join('');
+
+  // HOT change breakdown
+  renderHOTChangeTable(minCol,minBasis,snIntensityResult,snNeedsVis);
 }
 
-function getOatBandIndex(fluidName, oat) {
-  const bands = FLUIDS[fluidName].bands;
-  for (let i = 0; i < bands.length; i++) {
-    const b = bands[i];
-    const maxOat = b.oatMax === 999 ? 9999 : b.oatMax;
-    if (i === 0 && oat >= b.oatMin) return 0;
-    if (oat > b.oatMin && oat <= maxOat) return i;
+function renderHOTChangeTable(minCol,minBasis,snIntensityResult,snNeedsVis){
+  const area=document.getElementById('hot-change-area');
+  if(minCol===null){area.innerHTML='';return;}
+  const fluid=FLUIDS[state.fluid];const ratio=state.ratio;
+  let html=`<div class="card"><div class="card-title">HOT変化シミュレーション</div>`;
+
+  // OAT change table
+  html+=`<div style="font-size:12px;color:var(--text3);margin-bottom:4px">▼ OAT変化によるHOT変化</div>`;
+  html+=`<table class="hot-change-table"><thead><tr><th>気温帯域</th><th>HOT</th><th>備考</th></tr></thead><tbody>`;
+  fluid.bands.forEach((band,i)=>{
+    const curBandIdx=getOatBandIndex(state.fluid,state.oat);
+    const arr=band[ratio];if(!arr)return;
+    const v=arr[minCol];const isCur=(i===curBandIdx);
+    const label=band.label;
+    let cls='',note='';
+    if(v===null){cls='nogo';note='指針なし';}
+    else if(v<(arr[minCol]||0)&&!isCur){cls='worse';}
+    else if(isCur){cls='ok';}
+    html+=`<tr class="${isCur?'cur-row':''}"><td style="text-align:left;font-size:12px">${label}</td><td class="${cls}">${v!==null?fmtMin(v):'<span class="nogo">指針なし</span>'}</td><td style="font-size:11px;color:var(--text3)">${isCur?'← 現在':note}</td></tr>`;
+  });
+  html+=`</tbody></table>`;
+
+  // Day/Night change
+  if(snNeedsVis&&state.visMeter){
+    const otherIsNight=!state.isNight;
+    const otherIntensity=getSnIntensity(state.visMeter,state.oat,otherIsNight);
+    const otherCol=otherIntensity?snIntensityToCol(otherIntensity):null;
+    const otherHOT=otherCol!==null?lookupHOT(state.fluid,ratio,otherCol,state.oat):null;
+    const curHOT=lookupHOT(state.fluid,ratio,minCol,state.oat);
+    if(otherIntensity!==snIntensityResult){
+      html+=`<div style="margin-top:10px;font-size:12px;color:var(--text3)">▼ 昼夜変化によるHOT変化（現在視程 ${state.visMeter.toFixed(0)}m）</div>`;
+      html+=`<table class="hot-change-table"><thead><tr><th>昼夜</th><th>SN強度</th><th>HOT</th></tr></thead><tbody>`;
+      html+=`<tr class="cur-row"><td>${state.isNight?'夜':'昼'}</td><td style="color:${SN_INTENSITY_COLORS[snIntensityResult]}">${SN_INTENSITY_LABELS[snIntensityResult]}</td><td class="ok">${fmtMin(curHOT)}</td></tr>`;
+      html+=`<tr><td>${otherIsNight?'夜':'昼'}</td><td style="color:${SN_INTENSITY_COLORS[otherIntensity]||'#aaa'}">${SN_INTENSITY_LABELS[otherIntensity]||'—'}</td><td class="${otherHOT?'worse':'nogo'}">${otherHOT!==null?fmtMin(otherHOT):'指針なし'}</td></tr>`;
+      html+=`</tbody></table>`;
+    }
   }
-  return bands.length - 1;
+
+  // Vis degradation table (SN only, current→worse)
+  if(snNeedsVis&&state.visMeter){
+    const visSteps=[
+      {vis:state.visMeter,label:`現在 ${state.visMeter.toFixed(0)}m`,isCur:true},
+    ];
+    // Add worse breakpoints below current vis
+    const allBreakpoints=[3600,3000,2600,2000,1400,1000,600,400];
+    allBreakpoints.forEach(v=>{if(v<state.visMeter){visSteps.push({vis:v,label:`${v}m`,isCur:false});}});
+    if(visSteps.length>1){
+      html+=`<div style="margin-top:10px;font-size:12px;color:var(--text3)">▼ 視程悪化によるHOT変化（${state.isNight?'夜':'昼'} / OAT ${state.oat}°C）</div>`;
+      html+=`<table class="hot-change-table"><thead><tr><th>視程</th><th>SN強度</th><th>HOT</th></tr></thead><tbody>`;
+      let lastIntensity=null;
+      visSteps.forEach(step=>{
+        const si=getSnIntensity(step.vis,state.oat,state.isNight);
+        const sc=si?snIntensityToCol(si):null;
+        const sv=sc!==null?lookupHOT(state.fluid,ratio,sc,state.oat):(si==='heavy'?null:null);
+        const changed=(si!==lastIntensity);lastIntensity=si;
+        html+=`<tr class="${step.isCur?'cur-row':''}">
+          <td style="font-family:monospace">${step.label}</td>
+          <td style="color:${si?SN_INTENSITY_COLORS[si]:'#aaa'}">${si?SN_INTENSITY_LABELS[si]:'—'}${changed&&!step.isCur?' ←変化':''}</td>
+          <td class="${step.isCur?'ok':sv===null?'nogo':'worse'}">${si==='heavy'?'<span class="nogo">Heavy SN Ops</span>':sv!==null?fmtMin(sv):'<span class="nogo">指針なし</span>'}</td>
+        </tr>`;
+      });
+      html+=`</tbody></table>`;
+    }
+  }
+
+  html+=`</div>`;area.innerHTML=html;
 }
 
-function renderNoGo(codes, alerts) {
-  const resultArea = document.getElementById('result-area');
-  resultArea.innerHTML = `
-    <div class="result-card no-go">
-      <div class="result-label">⛔ TAKEOFF NOT AUTHORIZED</div>
-      <div style="font-size:15px;margin-top:8px;color:#ff9999;">
-        ${codes.map(c => `<b>${c}</b>`).join(', ')} の降水中は離陸不可。<br>
-        再除防氷が必要です。
-      </div>
-    </div>`;
-  document.getElementById('alerts-area').innerHTML = `
-    <div class="alert red"><span class="alert-icon">⛔</span><span>+PL、FZRA/+FZRA、またはHA(Hail)が存在する場合は離陸不可。離陸を開始しないでください。</span></div>`;
+function renderNoGo(codes){
+  document.getElementById('result-area').innerHTML=`<div class="result-card no-go"><div class="result-label">⛔ TAKEOFF NOT AUTHORIZED</div><div style="font-size:15px;margin-top:8px;color:#ff9999">${codes.map(c=>`<b>${c}</b>`).join(', ')} の降水中は離陸不可。再除防氷が必要です。</div></div>`;
+  document.getElementById('alerts-area').innerHTML=`<div class="alert red"><span class="alert-icon">⛔</span><span>+PL / FZRA / +FZRA / HA が存在する場合は離陸不可。</span></div>`;
+  document.getElementById('hot-change-area').innerHTML='';
 }
 
-// ============================================================
-// SN TABLE
-// ============================================================
-function renderSNTable() {
-  const tbody = document.getElementById('sn-table-body');
-  const vis = state.visMeter;
-  const oat = state.oat;
-  const rows = [
-    { day: '昼', oatRange: '>-1°C', above: true,  night: false,
-      heavy: '≤1000m', moderate: '1000<≤1400m', light: '1400<≤3000m', vlight: '>3000m' },
-    { day: '昼', oatRange: '≤-1°C', above: false, night: false,
-      heavy: '≤600m',  moderate: '600<≤1400m',  light: '1400<≤2600m', vlight: '>2600m' },
-    { day: '夜', oatRange: '>-1°C', above: true,  night: true,
-      heavy: '≤1400m', moderate: '1400<≤2600m', light: '2600<≤3600m', vlight: '>3600m' },
-    { day: '夜', oatRange: '≤-1°C', above: false, night: true,
-      heavy: '≤1000m', moderate: '1000<≤2600m', light: '2600<≤3600m', vlight: '>3600m' },
+function renderSNIntensityDisplay(intensity){
+  const el=document.getElementById('sn-intensity-display');
+  if(!intensity){el.innerHTML='';return;}
+  const color=SN_INTENSITY_COLORS[intensity]||'#aaa';
+  const label=SN_INTENSITY_LABELS[intensity]||'—';
+  el.innerHTML=`<span class="sn-intensity-badge ${intensity}">${label}</span>`;
+}
+
+// SN Reference table (AOMB verbatim, fixed values)
+function renderSNRefTable(){
+  const tbody=document.getElementById('sn-ref-tbody');
+  const rows=[
+    {day:'Day',oatRange:'Above -1',above:true,night:false,
+     heavy:'≤ 1,000 (5/8)',mod:'1,000 < ≤ 1,400 (7/8)',lt:'1,400 < ≤ 3,000 (1 7/8)',vl:'> 3,000 (1 7/8)'},
+    {day:'Day',oatRange:'-1 and below',above:false,night:false,
+     heavy:'≤ 600 (3/8)',mod:'600 < ≤ 1,400 (7/8)',lt:'1,400 < ≤ 2,600 (1 5/8)',vl:'> 2,600 (1 5/8)'},
+    {day:'Night',oatRange:'Above -1',above:true,night:true,
+     heavy:'≤ 1,400 (7/8)',mod:'1,400 < ≤ 2,600 (1 5/8)',lt:'2,600 < ≤ 3,600 (2 1/4)',vl:'> 3,600 (2 1/4)'},
+    {day:'Night',oatRange:'-1 and below',above:false,night:true,
+     heavy:'≤ 1,000 (5/8)',mod:'1,000 < ≤ 2,600 (1 5/8)',lt:'2,600 < ≤ 3,600 (2 1/4)',vl:'> 3,600 (2 1/4)'},
   ];
-  tbody.innerHTML = rows.map(r => {
-    const current = (r.night === state.isNight && r.above === (oat > -1));
-    return `<tr style="${current ? 'background:rgba(74,158,221,0.1)' : ''}">
-      <td>${r.day}</td><td>${r.oatRange}</td>
-      <td>${r.heavy}</td><td>${r.moderate}</td><td>${r.light}</td><td>${r.vlight}</td>
+  const curIntensity=state.visMeter?getSnIntensity(state.visMeter,state.oat,state.isNight):null;
+  tbody.innerHTML=rows.map(r=>{
+    const isCurRow=(r.night===state.isNight&&r.above===(state.oat>-1));
+    // Determine which column the current vis falls in
+    const rowIntensity=state.visMeter?getSnIntensity(state.visMeter,state.oat,r.night):null;
+    const hlHeavy=isCurRow&&curIntensity==='heavy';
+    const hlMod=isCurRow&&curIntensity==='moderate';
+    const hlLt=isCurRow&&curIntensity==='light';
+    const hlVl=isCurRow&&curIntensity==='vlight';
+    return`<tr class="${isCurRow?'cur-row':''}">
+      <td>${r.day}</td><td style="white-space:nowrap;font-size:11px">${r.oatRange}</td>
+      <td class="heavy-col${hlHeavy?' cur-vis':''}">${r.heavy}</td>
+      <td class="mod-col${hlMod?' cur-vis':''}">${r.mod}</td>
+      <td class="lt-col${hlLt?' cur-vis':''}">${r.lt}</td>
+      <td class="vl-col${hlVl?' cur-vis':''}">${r.vl}</td>
     </tr>`;
   }).join('');
 }
@@ -1543,147 +1009,76 @@ function renderSNTable() {
 // ============================================================
 // PL CALCULATION
 // ============================================================
-function calcPL() {
-  const plOat = parseFloat(document.getElementById('pl-oat').value) || 0;
-  const plVR = parseFloat(document.getElementById('pl-vr').value);
-  state.plOat = plOat;
-  state.plVR = isNaN(plVR) ? null : plVR;
-
-  const resultArea = document.getElementById('pl-result-area');
-  const alertsArea = document.getElementById('pl-alerts-area');
-
-  if (!state.plPrecip) {
-    resultArea.innerHTML = `<div class="result-card none"><div class="result-label">降水現象を選択してください</div></div>`;
-    alertsArea.innerHTML = '';
-    return;
-  }
-
-  const table = state.plFluidType === 'EG' ? PL_EG : PL_PG;
-  const row = table.find(r => r.code === state.plPrecip);
-  if (!row) { resultArea.innerHTML = ''; return; }
-
-  const bandIdx = getPLOatBandIdx(plOat);
-  if (bandIdx >= PL_OAT_BANDS.length) {
-    resultArea.innerHTML = `<div class="result-card no-go"><div class="result-label">⛔ -22°C以下 — Operations Not Authorized</div></div>`;
-    alertsArea.innerHTML = '';
-    return;
-  }
-  const allowMin = bandIdx < row.times.length ? row.times[bandIdx] : null;
-
-  const alerts = [];
-
-  // VR checks
-  if (state.plVR !== null && state.plVR < 100) {
-    alerts.push({ cls: 'red', icon: '⛔', text: 'VR < 100kt: Allowance Time適用不可。離陸不可。' });
-  }
-  // *2: VR < 115kt warning for specific bands
-  if (state.plFluidType === 'PG') {
-    const plCode = state.plPrecip;
-    if ((plCode === '-PL' || plCode === '-PLSN') && bandIdx === 3) {
-      alerts.push({ cls: 'orange', icon: '⚠', text: 'VR < 115kt の場合は離陸不可（*2ルール）。' });
+function calcPL(){
+  const plOat=parseFloat(document.getElementById('pl-oat').value)||0;
+  const plVR=parseFloat(document.getElementById('pl-vr').value);
+  state.plOat=plOat;state.plVR=isNaN(plVR)?null:plVR;
+  const resultArea=document.getElementById('pl-result-area');
+  const alertsArea=document.getElementById('pl-alerts-area');
+  if(!state.plPrecip){resultArea.innerHTML=`<div class="result-card none"><div class="result-label">降水現象を選択してください</div></div>`;alertsArea.innerHTML='';return;}
+  const tbl=state.plFluidType==='EG'?PL_EG:PL_PG;
+  const row=tbl.find(r=>r.code===state.plPrecip);
+  if(!row){resultArea.innerHTML='';return;}
+  const bi=getPLOatBandIdx(plOat);
+  if(bi>=PL_OAT_BANDS.length){resultArea.innerHTML=`<div class="result-card no-go"><div class="result-label">⛔ -22°C以下 — Operations Not Authorized</div></div>`;alertsArea.innerHTML='';return;}
+  const allowMin=bi<row.times.length?row.times[bi]:null;
+  const alerts=[];
+  if(state.plVR!==null&&state.plVR<100)alerts.push({cls:'red',icon:'⛔',text:'VR < 100kt: Allowance Time適用不可。離陸不可。'});
+  if(state.plFluidType==='PG'&&(state.plPrecip==='-PL'||state.plPrecip==='-PLSN')&&bi===3)
+    alerts.push({cls:'orange',icon:'⚠',text:'VR < 115kt の場合は離陸不可（*2ルール）。'});
+  if(bi<PL_OAT_BANDS.length-1){
+    const nb=PL_OAT_BANDS[bi+1];const drop=plOat-nb.min;
+    if(drop>=0&&drop<=3){
+      const na=bi+1<row.times.length?row.times[bi+1]:null;
+      alerts.push({cls:na?'yellow':'orange',icon:'🌡',text:`気温があと${drop.toFixed(1)}°C下がると (${nb.label}) ${na?`Allowance Time ${na}分`:'Operations Not Authorized'}。`});
     }
   }
-
-  // Temperature change within allowance
-  if (bandIdx < PL_OAT_BANDS.length - 1) {
-    const nextBand = PL_OAT_BANDS[bandIdx + 1];
-    const dropNeeded = plOat - nextBand.min;
-    if (dropNeeded >= 0 && dropNeeded <= 3) {
-      const nextAllow = bandIdx + 1 < row.times.length ? row.times[bandIdx + 1] : null;
-      if (nextAllow) {
-        alerts.push({ cls: 'yellow', icon: '🌡', text: `気温があと${dropNeeded.toFixed(1)}°C下がると (${nextBand.label}) のAllowance Time ${nextAllow}分が適用されます。` });
-      } else {
-        alerts.push({ cls: 'orange', icon: '🌡', text: `気温があと${dropNeeded.toFixed(1)}°C下がると (${nextBand.label}) ではOperations Not Authorized。` });
-      }
-    }
-  }
-
-  if (!allowMin) {
-    resultArea.innerHTML = `<div class="result-card no-go"><div class="result-label">⛔ Operations Not Authorized</div><div style="font-size:14px;color:#ffaaaa;margin-top:6px;">この温度範囲ではAllowance Timeなし。<br>離陸不可。</div></div>`;
-  } else {
-    resultArea.innerHTML = `
-      <div class="result-card ok">
-        <div class="result-label">✅ Allowance Time</div>
-        <div class="result-hot">${allowMin}<small>分</small></div>
-        <div class="result-basis">
-          条件: ${row.label}<br>
-          OAT: ${plOat}°C (帯域: ${PL_OAT_BANDS[bandIdx].label})<br>
-          流体種別: ${state.plFluidType}<br>
-          ⚠ Type IV Fluid (100/0) のみ使用可
-        </div>
-      </div>`;
-  }
-  alertsArea.innerHTML = alerts.map(a =>
-    `<div class="alert ${a.cls}"><span class="alert-icon">${a.icon}</span><span>${a.text}</span></div>`
-  ).join('');
+  if(!allowMin){resultArea.innerHTML=`<div class="result-card no-go"><div class="result-label">⛔ Operations Not Authorized</div><div style="font-size:14px;color:#ffaaaa;margin-top:6px">この温度範囲ではAllowance Timeなし。離陸不可。</div></div>`;}
+  else{resultArea.innerHTML=`<div class="result-card ok"><div class="result-label">✅ Allowance Time</div><div class="result-hot">${allowMin}<small>分</small></div><div class="result-basis"><b>条件:</b> ${row.label}<br><b>OAT:</b> ${plOat}°C (${PL_OAT_BANDS[bi].label})<br><b>防氷液種別:</b> ${state.plFluidType}<br>⚠ Type IV Fluid (100/0) のみ使用可</div></div>`;}
+  alertsArea.innerHTML=alerts.map(a=>`<div class="alert ${a.cls}"><span class="alert-icon">${a.icon}</span><span>${a.text}</span></div>`).join('');
+  renderPLTable();
 }
 
-function renderPLTable() {
-  const table = state.plFluidType === 'EG' ? PL_EG : PL_PG;
-  const wrap = document.getElementById('pl-table-wrap');
-  const bands = PL_OAT_BANDS;
-  let html = `<table class="pl-table">
-    <thead><tr><th>降水現象</th>${bands.map(b => `<th>${b.label}</th>`).join('')}</tr></thead>
-    <tbody>`;
-  table.forEach(row => {
-    html += `<tr>`;
-    html += `<td style="text-align:left;font-size:10px"><b>${row.code}</b></td>`;
-    row.times.forEach((t, i) => {
-      const hl = row.code === state.plPrecip ? ' class="highlight"' : '';
-      html += t ? `<td${hl}>${t}分</td>` : `<td class="na">N/A</td>`;
-    });
-    html += `</tr>`;
+function renderPLTable(){
+  const tbl=state.plFluidType==='EG'?PL_EG:PL_PG;
+  const wrap=document.getElementById('pl-table-wrap');
+  let html=`<table class="pl-table"><thead><tr><th>降水現象</th>${PL_OAT_BANDS.map(b=>`<th>${b.label}</th>`).join('')}</tr></thead><tbody>`;
+  tbl.forEach(row=>{
+    html+=`<tr><td style="text-align:left"><b>${row.code}</b></td>`;
+    row.times.forEach(t=>{const hl=row.code===state.plPrecip?' class="hl"':'';html+=t?`<td${hl}>${t}分</td>`:`<td class="na">N/A</td>`;});
+    html+=`</tr>`;
   });
-  html += `</tbody></table>`;
-  wrap.innerHTML = html;
+  html+=`</tbody></table>`;wrap.innerHTML=html;
 }
 
 // ============================================================
-// SETTINGS MODAL
+// SETTINGS
 // ============================================================
-function openSettings() {
-  settingsTmp = { ...settings };
-  document.getElementById('set-default-fluid').value = settings.defaultFluid;
-  document.getElementById('set-default-ratio').value = settings.defaultRatio;
-  document.getElementById('set-day-btn').classList.toggle('active', settings.defaultDayNight === 'day');
-  document.getElementById('set-night-btn').classList.toggle('active', settings.defaultDayNight === 'night');
+function openSettings(){
+  settingsTmp={...settings};
+  document.getElementById('set-default-fluid').value=settings.defaultFluid;
+  document.getElementById('set-default-ratio').value=settings.defaultRatio;
+  document.getElementById('set-day-btn').classList.toggle('active',settings.defaultDayNight==='day');
+  document.getElementById('set-night-btn').classList.toggle('active',settings.defaultDayNight==='night');
   document.getElementById('settings-modal').classList.add('open');
 }
-function closeSettings() {
-  document.getElementById('settings-modal').classList.remove('open');
+function closeSettings(){document.getElementById('settings-modal').classList.remove('open');}
+function setSettingDayNight(v){
+  settingsTmp.defaultDayNight=v;
+  document.getElementById('set-day-btn').classList.toggle('active',v==='day');
+  document.getElementById('set-night-btn').classList.toggle('active',v==='night');
 }
-function setSettingDayNight(v) {
-  settingsTmp.defaultDayNight = v;
-  document.getElementById('set-day-btn').classList.toggle('active', v === 'day');
-  document.getElementById('set-night-btn').classList.toggle('active', v === 'night');
+function saveSettings(){
+  settings.defaultFluid=document.getElementById('set-default-fluid').value;
+  settings.defaultRatio=document.getElementById('set-default-ratio').value;
+  settings.defaultDayNight=settingsTmp.defaultDayNight||settings.defaultDayNight;
+  try{localStorage.setItem('hot_settings',JSON.stringify(settings));}catch(e){}
+  closeSettings();state.fluid=settings.defaultFluid;
+  document.getElementById('sel-fluid').value=state.fluid;onFluidChange();
 }
-function saveSettings() {
-  settings.defaultFluid = document.getElementById('set-default-fluid').value;
-  settings.defaultRatio = document.getElementById('set-default-ratio').value;
-  settings.defaultDayNight = settingsTmp.defaultDayNight || settings.defaultDayNight;
-  try { localStorage.setItem('hot_settings', JSON.stringify(settings)); } catch(e) {}
-  closeSettings();
-  // Apply
-  state.fluid = settings.defaultFluid;
-  document.getElementById('sel-fluid').value = state.fluid;
-  onFluidChange();
-}
+document.getElementById('settings-modal').addEventListener('click',function(e){if(e.target===this)closeSettings();});
 
-// Close modal on overlay click
-document.getElementById('settings-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeSettings();
-});
-
-// ============================================================
-// SERVICE WORKER REGISTRATION
-// ============================================================
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
-  });
-}
-
-// Start
+if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 init();
 </script>
 </body>
