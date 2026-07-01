@@ -1,0 +1,24 @@
+{
+  "name": "HOT Calculator — B787 AOMB No.151",
+  "short_name": "HOT Calc",
+  "description": "Holdover Time Calculator for B787 de-icing operations (AOMB No.151 Rev.25.4.0)",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d1b2a",
+  "theme_color": "#1a2a3a",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
