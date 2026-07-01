@@ -1095,7 +1095,7 @@ function renderPLChangeTable(row,curBandIdx){
   area.innerHTML=html;
 }
 
-
+function renderPLTable(){
   const tbl=state.plFluidType==='EG'?PL_EG:PL_PG;
   const wrap=document.getElementById('pl-table-wrap');
   let html=`<table class="pl-table"><thead><tr><th>降水現象</th>${PL_OAT_BANDS.map(b=>`<th>${b.label}</th>`).join('')}</tr></thead><tbody>`;
