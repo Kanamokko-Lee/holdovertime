@@ -329,27 +329,44 @@ select option{background:var(--bg)}
         <div class="card-title">Ice Pellets / Small Hail</div>
         <p class="text-sm" style="margin-bottom:10px">PL / Small Hail を含む降水現象に適用。<br><b>Type IV (100/0) のみ使用可。</b></p>
         <div style="margin-bottom:10px">
-          <label>防氷液種別（PL用）</label>
-          <div class="toggle-group">
-            <button class="toggle-btn active" id="pl-pg-btn" onclick="setPLFluidType('PG')">PG系</button>
-            <button class="toggle-btn" id="pl-eg-btn" onclick="setPLFluidType('EG')">EG系 (UCAR EG106)</button>
-          </div>
+          <label>使用防氷液（HOTテーブルと連動）</label>
+          <div id="pl-fluid-display" style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:8px 11px;font-size:13px;color:var(--accent);font-weight:600"></div>
         </div>
         <div style="margin-bottom:10px">
-          <label>OAT (°C)</label>
-          <div style="display:flex;gap:5px;align-items:stretch">
-            <div style="display:flex;gap:5px;align-items:center">
-              <input type="number" id="pl-oat" value="0" step="1" onchange="calcPL()" oninput="calcPL()" style="flex:1;min-width:0;text-align:center;font-size:18px;font-weight:700">
+          <label>OAT (°C)（HOTテーブルと連動）</label>
+          <div style="display:flex;gap:5px;align-items:center;margin-bottom:10px">
+            <input type="number" id="pl-oat" value="0" step="1" onchange="onPLOatChange()" oninput="onPLOatChange()" style="width:80px;text-align:center;font-size:18px;font-weight:700">
+            <div style="display:flex;gap:4px">
               <div style="display:flex;flex-direction:column;gap:3px">
-                <button class="step-btn big" onclick="stepPLOat(5)" style="font-size:11px;padding:3px 7px;min-width:34px">+5</button>
-                <button class="step-btn big" onclick="stepPLOat(1)" style="font-size:13px;padding:3px 7px;min-width:34px">+1</button>
-                <button class="step-btn big" onclick="stepPLOat(-1)" style="font-size:13px;padding:3px 7px;min-width:34px">−1</button>
-                <button class="step-btn big" onclick="stepPLOat(-5)" style="font-size:11px;padding:3px 7px;min-width:34px">−5</button>
+                <button class="step-btn big" onclick="stepBothOAT(5)" style="font-size:12px;padding:6px 11px;min-width:46px">+5</button>
+                <button class="step-btn big" onclick="stepBothOAT(-5)" style="font-size:12px;padding:6px 11px;min-width:46px">−5</button>
               </div>
-              <span style="color:var(--text2);font-size:14px;font-weight:600">°C</span>
+              <div style="display:flex;flex-direction:column;gap:3px">
+                <button class="step-btn big" onclick="stepBothOAT(1)" style="font-size:14px;padding:6px 11px;min-width:46px">+1</button>
+                <button class="step-btn big" onclick="stepBothOAT(-1)" style="font-size:14px;padding:6px 11px;min-width:46px">−1</button>
+              </div>
             </div>
+            <span style="color:var(--text2);font-size:14px;font-weight:600">°C</span>
           </div>
-        </div>
+          <label>視程（HOTテーブルと連動）</label>
+          <div style="display:flex;gap:5px;align-items:center;margin-bottom:6px">
+            <input type="number" id="pl-vis" placeholder="—" step="100" onchange="onPLVisChange()" oninput="onPLVisChange()" style="width:80px;text-align:center;font-size:16px">
+            <div style="display:flex;gap:4px">
+              <div style="display:flex;flex-direction:column;gap:3px">
+                <button class="step-btn big" onclick="stepBothVis(1000)" style="font-size:12px;padding:6px 8px;min-width:46px">+1k</button>
+                <button class="step-btn big" onclick="stepBothVis(-1000)" style="font-size:12px;padding:6px 8px;min-width:46px">−1k</button>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px">
+                <button class="step-btn big" onclick="stepBothVis(100)" style="font-size:12px;padding:6px 8px;min-width:46px">+100</button>
+                <button class="step-btn big" onclick="stepBothVis(-100)" style="font-size:12px;padding:6px 8px;min-width:46px">−100</button>
+              </div>
+            </div>
+            <select id="pl-vis-unit" onchange="onPLVisChange()" style="width:50px;font-size:13px;padding:7px 3px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);color:var(--text)">
+              <option value="m">m</option>
+              <option value="sm">SM</option>
+            </select>
+          </div>
+          <div id="pl-sn-info" style="font-size:12px;margin-top:2px;margin-bottom:8px"></div></div>
         <div>
           <label>VR (kts) ※100kt未満は適用不可</label>
           <input type="number" id="pl-vr" placeholder="例: 145" onchange="calcPL()" oninput="calcPL()">
@@ -903,6 +920,7 @@ function switchTab(tab){
   document.getElementById('tab-pl').classList.toggle('active',tab==='pl');
   document.getElementById('view-main').classList.toggle('hidden',tab!=='main');
   document.getElementById('view-pl').classList.toggle('hidden',tab!=='pl');
+  if(tab==='pl')syncPLFromMain();
 }
 
 // ============================================================
@@ -1023,6 +1041,7 @@ function calculate(){
 
   // HOT change breakdown
   renderHOTChangeTable(minCol,minBasis,snIntensityResult,snNeedsVis);
+  if(state.tab==='pl')syncPLFromMain();
 }
 
 function buildInlineWarnings(minCol,ratio,snIntensityResult,snNeedsVis){
@@ -1215,8 +1234,113 @@ function renderSNRefTable(){
 // ============================================================
 // PL CALCULATION
 // ============================================================
+// ── PL tab linkage ──
+function syncPLFromMain(){
+  // Sync OAT
+  const mainOat=parseFloat(document.getElementById('inp-oat').value)||0;
+  const plOatInp=document.getElementById('pl-oat');
+  if(plOatInp)plOatInp.value=mainOat;
+  // Sync Vis
+  const mainVis=document.getElementById('inp-vis').value;
+  const plVisInp=document.getElementById('pl-vis');
+  if(plVisInp)plVisInp.value=mainVis;
+  const mainUnit=document.getElementById('sel-vis-unit').value;
+  const plUnit=document.getElementById('pl-vis-unit');
+  if(plUnit)plUnit.value=mainUnit;
+  // Sync fluid display and PG/EG type
+  const f=FLUIDS[state.fluid];
+  const disp=document.getElementById('pl-fluid-display');
+  if(disp){
+    const isPLOK=f&&f.type==='IV';
+    const isEG=f&&f.glycolType==='EG';
+    state.plFluidType=isEG?'EG':'PG';
+    let txt=state.fluid;
+    if(!isPLOK){txt+=' <span style="color:var(--red)">(Type IV以外 — PLには使用不可)</span>';}
+    else if(isEG){txt+=' <span style="color:var(--accent)">(EG系)</span>';}
+    else{txt+=' <span style="color:var(--green)">(PG系)</span>';}
+    disp.innerHTML=txt;
+    const tblTitle=document.getElementById('pl-table-title');
+    if(tblTitle)tblTitle.textContent='Allowance Time Table — '+(isEG?'EG':'PG');
+  }
+  updatePLSnInfo();
+  calcPL();
+}
+
+function onPLOatChange(){
+  // Sync back to main
+  const v=document.getElementById('pl-oat').value;
+  const mainOat=document.getElementById('inp-oat');
+  if(mainOat)mainOat.value=v;
+  updatePLSnInfo();
+  calculate();
+  calcPL();
+}
+
+function onPLVisChange(){
+  const v=document.getElementById('pl-vis').value;
+  const mainVis=document.getElementById('inp-vis');
+  if(mainVis)mainVis.value=v;
+  const unit=document.getElementById('pl-vis-unit').value;
+  const mainUnit=document.getElementById('sel-vis-unit');
+  if(mainUnit)mainUnit.value=unit;
+  updatePLSnInfo();
+  calculate();
+  calcPL();
+}
+
+function stepBothOAT(delta){
+  const inp=document.getElementById('inp-oat');
+  const plInp=document.getElementById('pl-oat');
+  const cur=parseFloat(inp.value)||0;
+  const nv=cur+delta;
+  inp.value=nv;
+  if(plInp)plInp.value=nv;
+  updatePLSnInfo();
+  calculate();
+  calcPL();
+}
+
+function stepBothVis(delta){
+  const inp=document.getElementById('inp-vis');
+  const plInp=document.getElementById('pl-vis');
+  const cur=parseFloat(inp.value)||0;
+  const nv=Math.max(0,cur+delta);
+  const val=nv===0?'':nv;
+  inp.value=val;
+  if(plInp)plInp.value=val;
+  updatePLSnInfo();
+  calculate();
+  calcPL();
+}
+
+function updatePLSnInfo(){
+  const el=document.getElementById('pl-sn-info');
+  if(!el)return;
+  const visRaw=parseFloat(document.getElementById('pl-vis')?document.getElementById('pl-vis').value:'');
+  const oat=parseFloat(document.getElementById('pl-oat')?document.getElementById('pl-oat').value:0)||0;
+  const isNight=state.isNight;
+  const unit=(document.getElementById('pl-vis-unit')||{}).value||'m';
+  const visMeter=isNaN(visRaw)?null:(unit==='sm'?visRaw*1609.344:visRaw);
+  // Check if SN is in mix
+  const hasSN=state.plMix.includes('sn');
+  if(!hasSN){el.innerHTML='';return;}
+  if(!visMeter){el.innerHTML='<span style="color:#ffcc44">⚠ SN含む: 視程を入力してください</span>';return;}
+  const si=getSnIntensity(visMeter,oat,isNight);
+  const color=SN_INTENSITY_COLORS[si]||'#aaa';
+  const label=SN_INTENSITY_LABELS[si]||'—';
+  // Determine which PL+SN code applies: -SN = light SN in AOMB PL table
+  let snNote='';
+  if(si==='heavy'){snNote='(Heavy SN — PLとの組み合わせ適用不可の可能性)';}
+  else if(si==='moderate'){snNote='(Moderate SN → PLSNコード適用)';}
+  else{snNote='(Light/Very Light SN → -PLSNコード適用)';}
+  el.innerHTML=`SN強度: <span style="color:${color};font-weight:700">${label}</span> <span style="color:var(--text3);font-size:11px">${snNote}</span>`;
+  // Auto-update plMix SN intensity if needed
+  resolvePLCode();
+}
+
 function calcPL(){
-  const plOat=parseFloat(document.getElementById('pl-oat').value)||0;
+  const plOatInp=document.getElementById('pl-oat');
+  const plOat=plOatInp?parseFloat(plOatInp.value)||0:state.oat;
   const plVR=parseFloat(document.getElementById('pl-vr').value);
   state.plOat=plOat;state.plVR=isNaN(plVR)?null:plVR;
   const resultArea=document.getElementById('pl-result-area');
@@ -1242,7 +1366,7 @@ function calcPL(){
   if(!allowMin){resultArea.innerHTML=`<div class="result-card no-go"><div class="result-label">⛔ Operations Not Authorized</div><div style="font-size:14px;color:#ffaaaa;margin-top:6px">この温度範囲ではAllowance Timeなし。離陸不可。</div></div>`;}
   else{
     const plInlineWarn=buildPLInlineWarnings(row,bi);
-    resultArea.innerHTML=`<div class="result-card ok"><div class="result-label">✅ Allowance Time</div><div style="display:flex;align-items:flex-start;gap:10px"><div><div class="result-hot">${allowMin}<small>分</small></div><div style="font-size:11px;color:var(--text3);margin-top:2px">Type IV / ${state.plFluidType} / ${PL_OAT_BANDS[bi].label}</div></div>${plInlineWarn?`<div style="flex:1;font-size:12px;line-height:1.8;margin-top:4px">${plInlineWarn}</div>`:''}</div></div>`;
+    resultArea.innerHTML=`<div class="result-card ok"><div class="result-label">✅ Allowance Time</div><div style="display:flex;align-items:flex-start;gap:10px"><div><div class="result-hot">${allowMin}<small>分</small></div><div style="font-size:11px;color:var(--text3);margin-top:2px">${state.fluid} / ${PL_OAT_BANDS[bi].label}</div></div>${plInlineWarn?`<div style="flex:1;font-size:12px;line-height:1.8;margin-top:4px">${plInlineWarn}</div>`:''}</div></div>`;
   }
   alertsArea.innerHTML=alerts.map(a=>`<div class="alert ${a.cls}"><span class="alert-icon">${a.icon}</span><span>${a.text}</span></div>`).join('');
   renderPLTable();
@@ -1253,22 +1377,26 @@ function calcPL(){
 
 function buildPLInlineWarnings(row,curBandIdx){
   const lines=[];
-  // Show next bands where time decreases or goes N/A
+  const curT=curBandIdx<row.times.length?row.times[curBandIdx]:null;
+  let lastT=curT;
+  // Walk downward through bands, show every value-change boundary
   for(let i=curBandIdx+1;i<PL_OAT_BANDS.length;i++){
     const t=i<row.times.length?row.times[i]:null;
     const band=PL_OAT_BANDS[i];
     if(t===null){
-      lines.push(`<span style="color:var(--red)">🌡 ${band.min}°C以下→ <b>N/A</b></span>`);
-      break;// once N/A, everything below is N/A
-    } else {
-      const prevT=curBandIdx<row.times.length?row.times[curBandIdx]:null;
-      if(prevT!==null&&t<prevT){
-        lines.push(`<span style="color:var(--yellow)">🌡 ${band.min}°C以下→ <b>${t}分</b></span>`);
+      if(lastT!==null){
+        // First N/A boundary: show it
+        lines.push(`<span style="color:var(--red)">🌡 ${band.min}°C以下→ <b>N/A</b></span>`);
       }
+      break;
     }
-    if(lines.length>=3)break;
+    if(t!==lastT){
+      const color=t<(lastT||999)?'var(--yellow)':'var(--green)';
+      lines.push(`<span style="color:${color}">🌡 ${band.min}°C以下→ <b>${t}分</b></span>`);
+      lastT=t;
+    }
+    if(lines.length>=4)break;
   }
-  // Also show if we're already in a band with higher-temp band having more time
   return lines.join('<br>');
 }
 
