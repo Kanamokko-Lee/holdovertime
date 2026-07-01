@@ -228,18 +228,15 @@ select option{background:var(--bg)}
         <div class="card-title">温度 / 時刻</div>
         <div style="margin-bottom:10px">
           <label>OAT (°C)</label>
-          <div style="display:flex;gap:5px;align-items:stretch">
-            <!-- ±5 column left -->
+          <div style="display:flex;gap:5px;align-items:center">
+            <input type="number" id="inp-oat" value="0" step="0.5" onchange="calculate()" oninput="calculate()" style="flex:1;min-width:0;text-align:center;font-size:18px;font-weight:700">
             <div style="display:flex;flex-direction:column;gap:3px">
-              <button class="step-btn big" onclick="stepOAT(5)" style="flex:1;font-size:13px;padding:4px 8px">+5</button>
-              <button class="step-btn big" onclick="stepOAT(-5)" style="flex:1;font-size:13px;padding:4px 8px">−5</button>
+              <button class="step-btn big" onclick="stepOAT(5)" style="font-size:11px;padding:3px 7px;min-width:34px">+5</button>
+              <button class="step-btn big" onclick="stepOAT(1)" style="font-size:13px;padding:3px 7px;min-width:34px">+1</button>
+              <button class="step-btn big" onclick="stepOAT(-1)" style="font-size:13px;padding:3px 7px;min-width:34px">−1</button>
+              <button class="step-btn big" onclick="stepOAT(-5)" style="font-size:11px;padding:3px 7px;min-width:34px">−5</button>
             </div>
-            <!-- ±1 + input -->
-            <div class="stepper" style="flex:1">
-              <button class="step-btn big" onclick="stepOAT(-1)">−1</button>
-              <input type="number" id="inp-oat" value="0" step="0.5" onchange="calculate()" oninput="calculate()">
-              <button class="step-btn big" onclick="stepOAT(1)">+1</button>
-            </div>
+            <span style="color:var(--text2);font-size:14px;font-weight:600">°C</span>
           </div>
         </div>
         <div>
@@ -256,22 +253,17 @@ select option{background:var(--bg)}
         <div class="card-title sn-block-title" style="color:#4a9edd;text-transform:uppercase;font-size:12px;margin-bottom:8px">❄ SN / SG 強度判定</div>
         <div style="margin-bottom:8px">
           <label>視程</label>
-          <div style="display:flex;gap:5px;align-items:stretch">
-            <!-- ±1k vertical left -->
-            <div style="display:flex;flex-direction:column;gap:3px">
-              <button class="step-btn big" onclick="stepVis(1000)" style="flex:1;font-size:12px;padding:4px 7px">+1k</button>
-              <button class="step-btn big" onclick="stepVis(-1000)" style="flex:1;font-size:12px;padding:4px 7px">−1k</button>
+          <div style="display:flex;gap:5px;align-items:center">
+            <div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0">
+              <button class="step-btn big" onclick="stepVis(1000)" style="font-size:11px;padding:3px 7px;min-width:34px">+1k</button>
+              <button class="step-btn big" onclick="stepVis(-1000)" style="font-size:11px;padding:3px 7px;min-width:34px">−1k</button>
             </div>
-            <!-- input + ±100 vertical right -->
-            <div style="display:flex;flex-direction:column;gap:3px;flex:1">
-              <input type="number" id="inp-vis" placeholder="m" step="100" onchange="calculate()" oninput="calculate()" style="width:100%;text-align:center">
-              <div style="display:flex;gap:3px">
-                <button class="step-btn" onclick="stepVis(-100)" style="flex:1;font-size:12px;padding:5px 4px">−100</button>
-                <button class="step-btn" onclick="stepVis(100)" style="flex:1;font-size:12px;padding:5px 4px">+100</button>
-              </div>
+            <input type="number" id="inp-vis" placeholder="—" step="100" onchange="calculate()" oninput="calculate()" style="flex:1;min-width:0;text-align:center;font-size:16px">
+            <div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0">
+              <button class="step-btn big" onclick="stepVis(100)" style="font-size:11px;padding:3px 7px;min-width:34px">+100</button>
+              <button class="step-btn big" onclick="stepVis(-100)" style="font-size:11px;padding:3px 7px;min-width:34px">−100</button>
             </div>
-            <!-- unit select -->
-            <select id="sel-vis-unit" onchange="calculate()" style="width:52px;flex-shrink:0;align-self:center;font-size:13px;padding:8px 4px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);color:var(--text)">
+            <select id="sel-vis-unit" onchange="calculate()" style="width:50px;flex-shrink:0;font-size:13px;padding:7px 3px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);color:var(--text)">
               <option value="m">m</option>
               <option value="sm">SM</option>
             </select>
@@ -346,14 +338,15 @@ select option{background:var(--bg)}
         <div style="margin-bottom:10px">
           <label>OAT (°C)</label>
           <div style="display:flex;gap:5px;align-items:stretch">
-            <div style="display:flex;flex-direction:column;gap:3px">
-              <button class="step-btn big" onclick="stepPLOat(5)" style="flex:1;font-size:13px;padding:4px 8px">+5</button>
-              <button class="step-btn big" onclick="stepPLOat(-5)" style="flex:1;font-size:13px;padding:4px 8px">−5</button>
-            </div>
-            <div class="stepper" style="flex:1">
-              <button class="step-btn big" onclick="stepPLOat(-1)">−1</button>
-              <input type="number" id="pl-oat" value="0" step="1" onchange="calcPL()" oninput="calcPL()">
-              <button class="step-btn big" onclick="stepPLOat(1)">+1</button>
+            <div style="display:flex;gap:5px;align-items:center">
+              <input type="number" id="pl-oat" value="0" step="1" onchange="calcPL()" oninput="calcPL()" style="flex:1;min-width:0;text-align:center;font-size:18px;font-weight:700">
+              <div style="display:flex;flex-direction:column;gap:3px">
+                <button class="step-btn big" onclick="stepPLOat(5)" style="font-size:11px;padding:3px 7px;min-width:34px">+5</button>
+                <button class="step-btn big" onclick="stepPLOat(1)" style="font-size:13px;padding:3px 7px;min-width:34px">+1</button>
+                <button class="step-btn big" onclick="stepPLOat(-1)" style="font-size:13px;padding:3px 7px;min-width:34px">−1</button>
+                <button class="step-btn big" onclick="stepPLOat(-5)" style="font-size:11px;padding:3px 7px;min-width:34px">−5</button>
+              </div>
+              <span style="color:var(--text2);font-size:14px;font-weight:600">°C</span>
             </div>
           </div>
         </div>
@@ -365,8 +358,29 @@ select option{background:var(--bg)}
     </div>
     <div>
       <div class="card" style="height:100%">
-        <div class="card-title">降水現象（PL）</div>
-        <div class="precip-grid" id="pl-precip-grid"></div>
+        <div class="card-title">降水現象の構成要素</div>
+        <!-- PL intensity -->
+        <div style="margin-bottom:8px">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:3px">Ice Pellets 強度</div>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="pl-int-none" onclick="setPLInt(0)">なし</button>
+            <button class="toggle-btn" id="pl-int-lt" onclick="setPLInt(1)">Light (-PL)</button>
+            <button class="toggle-btn" id="pl-int-mod" onclick="setPLInt(2)">Moderate (PL)</button>
+          </div>
+        </div>
+        <!-- Mixed precip -->
+        <div style="margin-bottom:8px">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:3px">混合降水（複数選択可）</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px">
+            <button class="precip-btn" id="plm-sn" onclick="togglePLMix('sn')"><span class="code" style="white-space:nowrap">SN</span><span class="lbl" style="white-space:nowrap;font-size:11px">Snow</span></button>
+            <button class="precip-btn" id="plm-fzdz" onclick="togglePLMix('fzdz')"><span class="code" style="white-space:nowrap">FZDZ</span><span class="lbl" style="white-space:nowrap;font-size:11px">Frz Drizzle</span></button>
+            <button class="precip-btn" id="plm-dz" onclick="togglePLMix('dz')"><span class="code" style="white-space:nowrap">DZ</span><span class="lbl" style="white-space:nowrap;font-size:11px">Drizzle</span></button>
+            <button class="precip-btn" id="plm-fzra" onclick="togglePLMix('fzra')"><span class="code" style="white-space:nowrap">FZRA</span><span class="lbl" style="white-space:nowrap;font-size:11px">Frz Rain (Lt)</span></button>
+            <button class="precip-btn" id="plm-ra" onclick="togglePLMix('ra')"><span class="code" style="white-space:nowrap">RA</span><span class="lbl" style="white-space:nowrap;font-size:11px">Rain (Lt)</span></button>
+          </div>
+        </div>
+        <!-- Resolved code -->
+        <div id="pl-resolved-code" style="font-size:13px;color:var(--accent);font-family:monospace;min-height:18px;padding:4px 0"></div>
       </div>
     </div>
   </div>
@@ -688,7 +702,9 @@ function getPLOatBandIdx(oat){
 let state={
   fluid:'SAFEWING MP IV LAUNCH (TypeIV)',ratio:'100/0',oat:0,isNight:false,
   visMeter:null,selectedPrecip:[],tab:'main',
-  plFluidType:'PG',plPrecip:null,plOat:0,plVR:null
+  plFluidType:'PG',plPrecip:null,plOat:0,plVR:null,
+  plInt:0,       // 0=none, 1=light(-PL), 2=moderate(PL)
+  plMix:[]       // array of: 'sn','fzdz','dz','fzra','ra'
 };
 let settings={defaultFluid:'SAFEWING MP IV LAUNCH (TypeIV)',defaultRatio:'100/0',defaultDayNight:'day'};
 let settingsTmp={};
@@ -765,15 +781,72 @@ function buildPrecipGrid(){
 }
 
 function buildPLPrecipGrid(){
-  const grid=document.getElementById('pl-precip-grid');grid.innerHTML='';
-  const tbl=state.plFluidType==='EG'?PL_EG:PL_PG;
-  tbl.forEach(row=>{
-    const btn=document.createElement('button');btn.className='precip-btn';btn.dataset.plcode=row.code;
-    btn.innerHTML=`<span class="code" style="white-space:nowrap">${row.code}</span><span class="lbl" style="white-space:nowrap">${row.label}</span>`;
-    btn.onclick=()=>selectPLPrecip(row.code);
-    if(state.plPrecip===row.code)btn.classList.add('active');
-    grid.appendChild(btn);
+  // Now using static component buttons; just sync their visual state
+  syncPLButtons();
+}
+
+function setPLInt(v){
+  state.plInt=v;
+  // Clear incompatible mixes when switching intensity
+  if(v===0)state.plMix=[];
+  syncPLButtons();
+  resolvePLCode();
+}
+
+function togglePLMix(key){
+  const idx=state.plMix.indexOf(key);
+  if(idx>=0)state.plMix.splice(idx,1);else state.plMix.push(key);
+  syncPLButtons();
+  resolvePLCode();
+}
+
+function syncPLButtons(){
+  ['none','lt','mod'].forEach((s,i)=>{
+    const el=document.getElementById('pl-int-'+s);
+    if(el)el.classList.toggle('active',state.plInt===i);
   });
+  ['sn','fzdz','dz','fzra','ra'].forEach(k=>{
+    const el=document.getElementById('plm-'+k);
+    if(el)el.classList.toggle('active',state.plMix.includes(k));
+  });
+}
+
+// Resolve the component selection to a PL table code
+function resolvePLCode(){
+  if(state.plInt===0){state.plPrecip=null;document.getElementById('pl-resolved-code').textContent='— 現象なし';calcPL();return;}
+  const prefix=state.plInt===1?'-':''; // Light=-PL, Mod=PL
+  const mix=state.plMix;
+  let code=null;
+  const lt=state.plInt===1;
+  const mod=state.plInt===2;
+  // Map mix combos to PL table codes
+  if(mix.length===0){code=lt?'-PL':'PL';}
+  else if(mix.length===1){
+    const m=mix[0];
+    if(lt){
+      if(m==='sn')code='-PLSN';
+      else if(m==='fzdz')code='-PLFZDZ';
+      else if(m==='dz')code='-PLDZ';
+      else if(m==='fzra')code='-PLFZRA';
+      else if(m==='ra')code='-PLRA';
+    } else {
+      if(m==='sn')code='PLSN';
+      else if(m==='fzdz')code='PLFZDZ';
+      else if(m==='dz')code='PLDZ';
+      else if(m==='ra')code='PLRA';
+      else if(m==='fzra')code=null; // Mod PL + Mod FZRA not in table
+    }
+  } else if(mix.length===2&&lt){
+    const sorted=[...mix].sort().join(',');
+    if(sorted==='fzra,sn'||sorted==='fzra,sn')code='-PLFZRASN';
+    else if(sorted==='ra,sn')code='-PLRASN';
+    else if(sorted==='fzdz,sn')code='-PLFZDZ'; // treat as FZDZ mix
+  }
+  state.plPrecip=code;
+  const el=document.getElementById('pl-resolved-code');
+  if(code){el.textContent='→ 適用コード: '+code;}
+  else{el.innerHTML='<span style="color:var(--red)">⛔ この組み合わせはテーブルにありません</span>';}
+  calcPL();
 }
 
 function renderRatioGroup(){
@@ -814,13 +887,16 @@ function parseMETAR(){
 }
 function clearMETAR(){state.selectedPrecip=[];document.getElementById('metar-input').value='';syncPrecipButtons();calculate();}
 function setPLFluidType(t){
-  state.plFluidType=t;state.plPrecip=null;
+  state.plFluidType=t;state.plPrecip=null;state.plInt=0;state.plMix=[];
   document.getElementById('pl-pg-btn').classList.toggle('active',t==='PG');
   document.getElementById('pl-eg-btn').classList.toggle('active',t==='EG');
   document.getElementById('pl-table-title').textContent=`Allowance Time Table — ${t}`;
-  buildPLPrecipGrid();calcPL();renderPLTable();
+  syncPLButtons();
+  const rc=document.getElementById('pl-resolved-code');
+  if(rc)rc.textContent='';
+  calcPL();renderPLTable();
 }
-function selectPLPrecip(code){state.plPrecip=(state.plPrecip===code)?null:code;buildPLPrecipGrid();calcPL();}
+function selectPLPrecip(code){state.plPrecip=(state.plPrecip===code)?null:code;calcPL();}
 function switchTab(tab){
   state.tab=tab;
   document.getElementById('tab-main').classList.toggle('active',tab==='main');
@@ -924,19 +1000,22 @@ function calculate(){
   // SN intensity basis text
   let snBasisText='';
   if(snIntensityResult&&snNeedsVis){
-    snBasisText=`<b>SN強度: ${SN_INTENSITY_LABELS[snIntensityResult]}</b> (${state.visMeter?state.visMeter.toFixed(0)+'m':'—'} / ${state.isNight?'夜':'昼'} / OAT ${state.oat}°C)<br>`;
+    const color=SN_INTENSITY_COLORS[snIntensityResult]||'#aaa';
+    snBasisText=`SN: <span style="color:${color};font-weight:700">${SN_INTENSITY_LABELS[snIntensityResult]}</span> (${state.visMeter?state.visMeter.toFixed(0)+'m':'—'} / ${state.isNight?'夜':'昼'})`;
   }
 
   // Render result
   const cardClass=minHOT>=60?'ok':'warn';
+  const inlineWarnings=buildInlineWarnings(minCol,ratio,snIntensityResult,snNeedsVis);
   document.getElementById('result-area').innerHTML=`
     <div class="result-card ${cardClass}">
       <div class="result-label">✅ Holdover Time</div>
-      <div class="result-hot">${fmtMin(minHOT)}</div>
-      <div class="result-basis">
-        ${snBasisText}<b>適用条件:</b> ${minBasis}<br>
-        <b>防氷液:</b> ${state.fluid}<br>
-        <b>希釈比:</b> ${ratio} / <b>OAT:</b> ${state.oat}°C / ${state.isNight?'夜':'昼'}
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <div>
+          <div class="result-hot">${fmtMin(minHOT)}</div>
+          ${snBasisText?`<div style="font-size:11px;color:var(--text3);margin-top:3px">${snBasisText}</div>`:''}
+        </div>
+        ${inlineWarnings?`<div style="flex:1;font-size:12px;line-height:1.6">${inlineWarnings}</div>`:''}
       </div>
     </div>`;
 
@@ -944,6 +1023,58 @@ function calculate(){
 
   // HOT change breakdown
   renderHOTChangeTable(minCol,minBasis,snIntensityResult,snNeedsVis);
+}
+
+function buildInlineWarnings(minCol,ratio,snIntensityResult,snNeedsVis){
+  if(minCol===null)return'';
+  const fluid=FLUIDS[state.fluid];
+  let lines=[];
+
+  // OAT next-band warning
+  const bi=getOatBandIndex(state.fluid,state.oat);
+  const bands=fluid.bands;
+  if(bi<bands.length-1){
+    const nb=bands[bi+1];
+    const nextArr=nb[ratio];
+    const nextV=nextArr?nextArr[minCol]:null;
+    const threshold=nb.oatMin;
+    const dropTo=threshold; // °C at which next band starts
+    if(nextV!==null){
+      lines.push(`<span style="color:var(--yellow)">🌡 ${dropTo}°C以下→ <b>${fmtMin(nextV)}</b></span>`);
+    } else {
+      lines.push(`<span style="color:var(--orange)">🌡 ${dropTo}°C以下→ <b>指針なし</b></span>`);
+    }
+  }
+
+  // Vis degradation warnings (SN only)
+  if(snNeedsVis&&state.visMeter&&snIntensityResult){
+    const curIntensity=snIntensityResult;
+    // Find thresholds where intensity gets worse
+    const breakpoints=[3600,3000,2600,2000,1400,1000,600,400,200];
+    let shownIntensities=new Set([curIntensity]);
+    for(const bp of breakpoints){
+      if(bp>=state.visMeter)continue;// already at or past this
+      const si=getSnIntensity(bp,state.oat,state.isNight);
+      if(!si||shownIntensities.has(si))continue;
+      shownIntensities.add(si);
+      if(si==='heavy'){
+        lines.push(`<span style="color:var(--red)">👁 ${bp}m以下→ <b>Heavy SN Ops</b></span>`);
+      } else {
+        const sc=snIntensityToCol(si);
+        const sv=sc!==null?lookupHOT(state.fluid,ratio,sc,state.oat):null;
+        const siLabel=SN_INTENSITY_LABELS[si];
+        const color=SN_INTENSITY_COLORS[si]||'#aaa';
+        if(sv!==null){
+          lines.push(`<span style="color:${color}">👁 ${bp}m以下→ ${siLabel} → <b>${fmtMin(sv)}</b></span>`);
+        } else {
+          lines.push(`<span style="color:var(--red)">👁 ${bp}m以下→ ${siLabel} → <b>指針なし</b></span>`);
+        }
+      }
+      if(lines.length>=4)break;
+    }
+  }
+
+  return lines.join('<br>');
 }
 
 function renderHOTChangeTable(minCol,minBasis,snIntensityResult,snNeedsVis){
