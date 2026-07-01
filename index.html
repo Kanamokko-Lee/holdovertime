@@ -14,7 +14,7 @@
   --bg:#0d1b2a;--panel:#1a2d42;--panel2:#1e3451;--border:#2c4a6a;
   --accent:#4a9edd;--accent2:#2d7abf;
   --green:#2ecc71;--yellow:#f1c40f;--orange:#e67e22;--red:#e74c3c;--red2:#c0392b;
-  --sn-vl:#88aaff;--sn-lt:#f1c40f;--sn-mod:#e67e22;--sn-heavy:#e74c3c;
+  --sn-vl:#a8e06a;--sn-lt:#f1c40f;--sn-mod:#e67e22;--sn-heavy:#e74c3c;
   --text:#d8e8f4;--text2:#8aaccc;--text3:#5580a0;--white:#fff;
   --r:8px;--r2:5px;
 }
@@ -108,7 +108,7 @@ select option{background:var(--bg)}
 .sn-block{background:#0e2035;border:2px solid #3a6a9a;border-radius:var(--r2);padding:10px}
 .sn-block-title{font-size:12px;font-weight:700;color:#4a9edd;margin-bottom:8px;text-transform:uppercase}
 .sn-intensity-badge{display:inline-block;border-radius:4px;padding:3px 10px;font-size:13px;font-weight:700;margin-top:4px;letter-spacing:.03em}
-.sn-intensity-badge.vlight{background:rgba(136,170,255,.2);color:var(--sn-vl);border:1px solid var(--sn-vl)}
+.sn-intensity-badge.vlight{background:rgba(168,224,106,.15);color:var(--sn-vl);border:1px solid var(--sn-vl)}
 .sn-intensity-badge.light{background:rgba(241,196,15,.18);color:var(--sn-lt);border:1px solid var(--sn-lt)}
 .sn-intensity-badge.moderate{background:rgba(230,126,34,.2);color:var(--sn-mod);border:1px solid var(--sn-mod)}
 .sn-intensity-badge.heavy{background:rgba(231,76,60,.2);color:var(--sn-heavy);border:1px solid var(--sn-heavy)}
@@ -364,8 +364,8 @@ select option{background:var(--bg)}
           <div style="font-size:11px;color:var(--text3);margin-bottom:3px">Ice Pellets 強度</div>
           <div class="toggle-group">
             <button class="toggle-btn active" id="pl-int-none" onclick="setPLInt(0)">なし</button>
-            <button class="toggle-btn" id="pl-int-lt" onclick="setPLInt(1)">Light (-PL)</button>
-            <button class="toggle-btn" id="pl-int-mod" onclick="setPLInt(2)">Moderate (PL)</button>
+            <button class="toggle-btn" id="pl-int-lt" onclick="setPLInt(1)">−PL</button>
+            <button class="toggle-btn" id="pl-int-mod" onclick="setPLInt(2)">PL</button>
           </div>
         </div>
         <!-- Mixed precip -->
@@ -380,7 +380,7 @@ select option{background:var(--bg)}
           </div>
         </div>
         <!-- Resolved code -->
-        <div id="pl-resolved-code" style="font-size:13px;color:var(--accent);font-family:monospace;min-height:18px;padding:4px 0"></div>
+        <div id="pl-resolved-code" style="font-size:20px;font-weight:800;color:#f1c40f;font-family:monospace;min-height:28px;padding:4px 0;letter-spacing:.03em"></div>
       </div>
     </div>
   </div>
@@ -620,7 +620,7 @@ function snIntensityToCol(i){
   return i==='vlight'?COL.SN_VVL:i==='light'?COL.SN_LT:i==='moderate'?COL.SN_MOD:null;
 }
 const SN_INTENSITY_LABELS={heavy:'Heavy',moderate:'Moderate',light:'Light',vlight:'Very Light'};
-const SN_INTENSITY_COLORS={heavy:'#e74c3c',moderate:'#e67e22',light:'#f1c40f',vlight:'#88aaff'};
+const SN_INTENSITY_COLORS={heavy:'#e74c3c',moderate:'#e67e22',light:'#f1c40f',vlight:'#a8e06a'};
 
 function lookupHOT(fluidName,ratio,col,oat){
   if(col===null||col===undefined)return null;
@@ -845,7 +845,7 @@ function resolvePLCode(){
   state.plPrecip=code;
   const el=document.getElementById('pl-resolved-code');
   if(code){el.textContent='→ 適用コード: '+code;}
-  else{el.innerHTML='<span style="color:var(--red)">⛔ この組み合わせはテーブルにありません</span>';}
+  else{el.innerHTML='<span style="color:var(--red);font-size:13px;font-weight:700">⛔ この組み合わせはテーブルにありません</span>';}
   calcPL();
 }
 
@@ -1049,11 +1049,10 @@ function buildInlineWarnings(minCol,ratio,snIntensityResult,snNeedsVis){
   // Vis degradation warnings (SN only)
   if(snNeedsVis&&state.visMeter&&snIntensityResult){
     const curIntensity=snIntensityResult;
-    // Find thresholds where intensity gets worse
     const breakpoints=[3600,3000,2600,2000,1400,1000,600,400,200];
     let shownIntensities=new Set([curIntensity]);
     for(const bp of breakpoints){
-      if(bp>=state.visMeter)continue;// already at or past this
+      if(bp>=state.visMeter)continue;
       const si=getSnIntensity(bp,state.oat,state.isNight);
       if(!si||shownIntensities.has(si))continue;
       shownIntensities.add(si);
@@ -1065,13 +1064,35 @@ function buildInlineWarnings(minCol,ratio,snIntensityResult,snNeedsVis){
         const siLabel=SN_INTENSITY_LABELS[si];
         const color=SN_INTENSITY_COLORS[si]||'#aaa';
         if(sv!==null){
-          lines.push(`<span style="color:${color}">👁 ${bp}m以下→ ${siLabel} → <b>${fmtMin(sv)}</b></span>`);
+          lines.push(`<span style="color:${color}">👁 ${bp}m以下→ <span style="color:${color}">${siLabel}</span> → <b>${fmtMin(sv)}</b></span>`);
         } else {
           lines.push(`<span style="color:var(--red)">👁 ${bp}m以下→ ${siLabel} → <b>指針なし</b></span>`);
         }
       }
-      if(lines.length>=4)break;
+      if(lines.length>=5)break;
     }
+  }
+
+  // Day/Night change warning (SN intensity changes at day/night boundary)
+  if(snNeedsVis&&state.visMeter&&snIntensityResult){
+    const otherNight=!state.isNight;
+    const otherSI=getSnIntensity(state.visMeter,state.oat,otherNight);
+    if(otherSI&&otherSI!==snIntensityResult){
+      const otherCol=snIntensityToCol(otherSI);
+      const otherHOT=otherCol!==null?lookupHOT(state.fluid,ratio,otherCol,state.oat):null;
+      const otherColor=SN_INTENSITY_COLORS[otherSI]||'#aaa';
+      const icon=otherNight?'🌙':'☀';
+      if(otherSI==='heavy'){
+        lines.push(`<span style="color:var(--red)">${icon} 日${otherNight?'没':'出'}後→ <b>Heavy SN Ops</b></span>`);
+      } else if(otherHOT!==null){
+        lines.push(`<span style="color:${otherColor}">${icon} 日${otherNight?'没':'出'}後→ <span style="color:${otherColor}">${SN_INTENSITY_LABELS[otherSI]}</span> → <b>${fmtMin(otherHOT)}</b></span>`);
+      } else {
+        lines.push(`<span style="color:var(--red)">${icon} 日${otherNight?'没':'出'}後→ <b>指針なし</b></span>`);
+      }
+    }
+  } else if(!snNeedsVis){
+    // Non-SN: just check OAT band day/night doesn't matter, but show if night matters for SN
+    // nothing extra needed
   }
 
   return lines.join('<br>');
@@ -1219,12 +1240,36 @@ function calcPL(){
     }
   }
   if(!allowMin){resultArea.innerHTML=`<div class="result-card no-go"><div class="result-label">⛔ Operations Not Authorized</div><div style="font-size:14px;color:#ffaaaa;margin-top:6px">この温度範囲ではAllowance Timeなし。離陸不可。</div></div>`;}
-  else{resultArea.innerHTML=`<div class="result-card ok"><div class="result-label">✅ Allowance Time</div><div class="result-hot">${allowMin}<small>分</small></div><div class="result-basis"><b>条件:</b> ${row.label}<br><b>OAT:</b> ${plOat}°C (${PL_OAT_BANDS[bi].label})<br><b>防氷液種別:</b> ${state.plFluidType}<br>⚠ Type IV Fluid (100/0) のみ使用可</div></div>`;}
+  else{
+    const plInlineWarn=buildPLInlineWarnings(row,bi);
+    resultArea.innerHTML=`<div class="result-card ok"><div class="result-label">✅ Allowance Time</div><div style="display:flex;align-items:flex-start;gap:10px"><div><div class="result-hot">${allowMin}<small>分</small></div><div style="font-size:11px;color:var(--text3);margin-top:2px">Type IV / ${state.plFluidType} / ${PL_OAT_BANDS[bi].label}</div></div>${plInlineWarn?`<div style="flex:1;font-size:12px;line-height:1.8;margin-top:4px">${plInlineWarn}</div>`:''}</div></div>`;
+  }
   alertsArea.innerHTML=alerts.map(a=>`<div class="alert ${a.cls}"><span class="alert-icon">${a.icon}</span><span>${a.text}</span></div>`).join('');
   renderPLTable();
 
   // PL OAT change table
   renderPLChangeTable(row,bi);
+}
+
+function buildPLInlineWarnings(row,curBandIdx){
+  const lines=[];
+  // Show next bands where time decreases or goes N/A
+  for(let i=curBandIdx+1;i<PL_OAT_BANDS.length;i++){
+    const t=i<row.times.length?row.times[i]:null;
+    const band=PL_OAT_BANDS[i];
+    if(t===null){
+      lines.push(`<span style="color:var(--red)">🌡 ${band.min}°C以下→ <b>N/A</b></span>`);
+      break;// once N/A, everything below is N/A
+    } else {
+      const prevT=curBandIdx<row.times.length?row.times[curBandIdx]:null;
+      if(prevT!==null&&t<prevT){
+        lines.push(`<span style="color:var(--yellow)">🌡 ${band.min}°C以下→ <b>${t}分</b></span>`);
+      }
+    }
+    if(lines.length>=3)break;
+  }
+  // Also show if we're already in a band with higher-temp band having more time
+  return lines.join('<br>');
 }
 
 function renderPLChangeTable(row,curBandIdx){
