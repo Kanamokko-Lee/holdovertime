@@ -10,122 +10,132 @@
 <link rel="manifest" href="manifest.json">
 <title>HOT Calculator — B787 AOMB No.151</title>
 <style>
-:root {
-  --bg:#0d1b2a; --panel:#1a2d42; --panel2:#1e3451; --border:#2c4a6a;
-  --accent:#4a9edd; --accent2:#2d7abf;
-  --green:#2ecc71; --yellow:#f1c40f; --orange:#e67e22; --red:#e74c3c; --red2:#c0392b;
-  --sn-vl:#88aaff; --sn-lt:#f1c40f; --sn-mod:#e67e22; --sn-heavy:#e74c3c;
-  --text:#d8e8f4; --text2:#8aaccc; --text3:#5580a0; --white:#fff;
-  --r:8px; --r2:5px;
-  --fs-base:15px; --fs-sm:13px; --fs-xs:11px; --fs-lg:18px;
+:root{
+  --bg:#0d1b2a;--panel:#1a2d42;--panel2:#1e3451;--border:#2c4a6a;
+  --accent:#4a9edd;--accent2:#2d7abf;
+  --green:#2ecc71;--yellow:#f1c40f;--orange:#e67e22;--red:#e74c3c;--red2:#c0392b;
+  --sn-vl:#88aaff;--sn-lt:#f1c40f;--sn-mod:#e67e22;--sn-heavy:#e74c3c;
+  --text:#d8e8f4;--text2:#8aaccc;--text3:#5580a0;--white:#fff;
+  --r:8px;--r2:5px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;font-size:var(--fs-base)}
-.app{display:flex;flex-direction:column;height:100vh;max-width:520px;margin:0 auto}
-/* Header */
-.header{background:var(--panel);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;font-size:15px}
+
+/* ── App layout ── */
+.app{display:flex;flex-direction:column;height:100vh;max-width:900px;margin:0 auto}
+.header{background:var(--panel);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .header h1{font-size:17px;font-weight:700;color:var(--accent)}
 .header .sub{font-size:11px;color:var(--text3)}
 .btn-settings{background:none;border:1px solid var(--border);color:var(--text2);padding:6px 12px;border-radius:var(--r2);font-size:13px;cursor:pointer}
-/* Scroll */
 .scroll{flex:1;overflow-y:auto;padding:12px}
-/* Cards */
-.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:12px}
+
+/* ── Two-column top layout ── */
+.top-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.top-cols .card{margin-bottom:0}
+
+/* ── Cards ── */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:13px;margin-bottom:10px}
 .card-title{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
-/* Inputs */
-label{font-size:var(--fs-xs);color:var(--text2);display:block;margin-bottom:4px}
+
+/* ── Inputs & labels ── */
+label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
 input[type=number],input[type=text],select{
   width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);
-  color:var(--text);font-size:17px;padding:9px 11px;outline:none;-webkit-appearance:none}
+  color:var(--text);font-size:16px;padding:9px 10px;outline:none;-webkit-appearance:none}
 input:focus,select:focus{border-color:var(--accent)}
 select option{background:var(--bg)}
-/* Fluid select special colors */
-select.fluid-sel option.flag-red{color:#ff6666}
-/* Toggle btns */
+
+/* ── Toggle buttons ── */
 .toggle-group{display:flex;gap:4px}
-.toggle-btn{
-  flex:1;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);
-  color:var(--text2);font-size:var(--fs-sm);padding:8px 5px;cursor:pointer;text-align:center;transition:all .15s}
+.toggle-btn{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);color:var(--text2);font-size:14px;padding:8px 5px;cursor:pointer;text-align:center;transition:all .15s}
 .toggle-btn.active{background:var(--accent2);border-color:var(--accent);color:#fff;font-weight:700}
-/* METAR */
+
+/* ── METAR ── */
 .metar-row{display:flex;gap:6px;align-items:center;margin-bottom:6px}
-.metar-row input{font-family:'Courier New',monospace;font-size:16px;text-transform:uppercase;letter-spacing:.05em}
-.metar-row button{background:var(--accent2);border:none;color:#fff;border-radius:var(--r2);padding:9px 13px;font-size:13px;cursor:pointer;white-space:nowrap}
+.metar-row input{font-family:'Courier New',monospace;font-size:15px;text-transform:uppercase}
+.metar-row button{background:var(--accent2);border:none;color:#fff;border-radius:var(--r2);padding:9px 13px;font-size:13px;cursor:pointer;white-space:nowrap;flex-shrink:0}
 .metar-hint{font-size:11px;color:var(--text3);margin-bottom:8px}
-/* Ratio */
+
+/* ── Ratio ── */
 .ratio-group{display:flex;gap:4px}
 .ratio-btn{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);color:var(--text2);font-size:14px;font-weight:700;padding:8px 4px;cursor:pointer;text-align:center}
 .ratio-btn.active{background:var(--accent2);border-color:var(--accent);color:#fff}
 .ratio-btn:disabled{opacity:.3;cursor:not-allowed}
 
-/* ── WEATHER SECTION: two-column layout ── */
-.wx-layout{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.wx-left,.wx-right{display:flex;flex-direction:column;gap:8px}
+/* ── Stepper input (±buttons) ── */
+.stepper{display:flex;align-items:stretch;gap:0;border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.stepper input{flex:1;border:none;border-radius:0;text-align:center;font-size:16px;padding:8px 4px;min-width:0}
+.stepper input:focus{border:none;outline:none}
+.step-btn{
+  background:#2a4a6a;border:none;color:var(--accent);
+  font-size:18px;font-weight:700;padding:0 12px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .12s;flex-shrink:0;min-width:42px;line-height:1}
+.step-btn:active,.step-btn:hover{background:#3a6a9a;color:#fff}
+.step-btn.big{background:#1e3c5a;font-size:15px;padding:0 8px;min-width:38px}
+.step-btn.big:hover{background:#2a5a8a}
 
-/* OAT + Day/Night block */
-.oat-block{background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:10px}
-.oat-block label{font-size:12px;color:var(--text2);margin-bottom:4px}
-.oat-big{font-size:28px;font-weight:800;color:var(--text);font-family:monospace;letter-spacing:-.02em}
-.oat-unit{font-size:14px;color:var(--text3)}
+/* ── Vis row ── */
+.vis-row{display:flex;gap:5px;align-items:flex-end}
+.vis-unit-sel{width:60px!important;flex-shrink:0}
 
-/* SN vis block – highlighted */
+/* ── Precip sections ── */
+.precip-section{margin-bottom:7px}
+.precip-section-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;padding:3px 0;border-bottom:1px solid var(--border);margin-bottom:4px}
+.precip-section.sn-section .precip-section-label{color:#4a9edd;border-color:#3a6a9a}
+.precip-section.sn-section{background:rgba(26,52,81,.4);border:1px solid #2a4a6a;border-radius:var(--r2);padding:5px 7px;margin-bottom:7px}
+.precip-section.nogo-section .precip-section-label{color:var(--red)}
+.precip-section.nogo-section{background:rgba(60,20,20,.3);border:1px solid #5a2020;border-radius:var(--r2);padding:5px 7px}
+.precip-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.precip-btn{
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);
+  color:var(--text2);font-size:12px;padding:6px 6px;cursor:pointer;
+  text-align:left;display:flex;align-items:center;gap:4px;
+  white-space:nowrap;overflow:hidden}
+.precip-btn .code{
+  font-family:monospace;font-weight:700;color:var(--accent);
+  font-size:13px;flex-shrink:0;white-space:nowrap}
+.precip-btn .lbl{
+  font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.precip-btn.active{background:#1a3d5c;border-color:var(--accent);color:#fff}
+.precip-btn.no-hot{border-color:#5a2020;color:#cc8888}
+.precip-btn.no-hot .code{color:#ff7777}
+.precip-btn.no-hot.active{background:#3a1010;border-color:var(--red);color:#ffaaaa}
+.precip-btn.sn-btn.active{background:#0e2840;border-color:#4a9edd}
+.precip-btn.sn-btn .code{color:#6ab4ee}
+
+/* ── SN block (right side) ── */
 .sn-block{background:#0e2035;border:2px solid #3a6a9a;border-radius:var(--r2);padding:10px}
-.sn-block-title{font-size:11px;font-weight:700;color:#4a9edd;margin-bottom:6px;text-transform:uppercase}
-.sn-intensity-badge{
-  display:inline-block;border-radius:4px;padding:3px 10px;font-size:13px;font-weight:700;
-  margin-top:4px;letter-spacing:.03em}
+.sn-block-title{font-size:12px;font-weight:700;color:#4a9edd;margin-bottom:8px;text-transform:uppercase}
+.sn-intensity-badge{display:inline-block;border-radius:4px;padding:3px 10px;font-size:13px;font-weight:700;margin-top:4px;letter-spacing:.03em}
 .sn-intensity-badge.vlight{background:rgba(136,170,255,.2);color:var(--sn-vl);border:1px solid var(--sn-vl)}
 .sn-intensity-badge.light{background:rgba(241,196,15,.18);color:var(--sn-lt);border:1px solid var(--sn-lt)}
 .sn-intensity-badge.moderate{background:rgba(230,126,34,.2);color:var(--sn-mod);border:1px solid var(--sn-mod)}
 .sn-intensity-badge.heavy{background:rgba(231,76,60,.2);color:var(--sn-heavy);border:1px solid var(--sn-heavy)}
-/* vis input color coding */
 .vis-vlight{color:var(--sn-vl)!important;border-color:var(--sn-vl)!important}
 .vis-light{color:var(--sn-lt)!important;border-color:var(--sn-lt)!important}
 .vis-moderate{color:var(--sn-mod)!important;border-color:var(--sn-mod)!important}
 .vis-heavy{color:var(--sn-heavy)!important;border-color:var(--sn-heavy)!important}
 
-/* Precip grid – grouped */
-.precip-section{margin-bottom:8px}
-.precip-section-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;padding:4px 0 4px 2px;border-bottom:1px solid var(--border);margin-bottom:5px}
-/* SN section has blue accent border */
-.precip-section.sn-section .precip-section-label{color:#4a9edd;border-color:#3a6a9a}
-.precip-section.sn-section{background:rgba(26,52,81,.4);border:1px solid #2a4a6a;border-radius:var(--r2);padding:6px 8px;margin-bottom:8px}
-/* NOGO section */
-.precip-section.nogo-section .precip-section-label{color:var(--red)}
-.precip-section.nogo-section{background:rgba(60,20,20,.3);border:1px solid #5a2020;border-radius:var(--r2);padding:6px 8px}
-.precip-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
-.precip-btn{
-  background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);
-  color:var(--text2);font-size:var(--fs-sm);padding:7px 8px;cursor:pointer;
-  text-align:left;display:flex;align-items:center;gap:5px;line-height:1.2}
-.precip-btn .code{font-family:monospace;font-weight:700;color:var(--accent);min-width:54px;font-size:14px}
-.precip-btn.active{background:#1a3d5c;border-color:var(--accent);color:#fff}
-.precip-btn.no-hot{border-color:#5a2020;color:#cc8888}
-.precip-btn.no-hot .code{color:#ff7777}
-.precip-btn.no-hot.active{background:#3a1010;border-color:var(--red);color:#ffaaaa}
-/* SN button has blue tint when active */
-.precip-btn.sn-btn.active{background:#0e2840;border-color:#4a9edd}
-.precip-btn.sn-btn .code{color:#6ab4ee}
-
-/* Result */
-.result-card{border-radius:var(--r);padding:16px;margin-bottom:12px}
+/* ── Result ── */
+.result-card{border-radius:var(--r);padding:14px;margin-bottom:10px}
 .result-card.ok{background:linear-gradient(135deg,#0d2d1a,#1a4a28);border:1px solid #2d7a40}
 .result-card.warn{background:linear-gradient(135deg,#2d2000,#4a3800);border:1px solid #8a6000}
 .result-card.no-go{background:linear-gradient(135deg,#2d0a0a,#4a1010);border:1px solid #8a2020}
 .result-card.none{background:var(--panel);border:1px solid var(--border)}
-.result-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.result-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px}
 .result-card.ok .result-label{color:var(--green)}
 .result-card.warn .result-label{color:var(--yellow)}
 .result-card.no-go .result-label{color:var(--red)}
-.result-hot{font-size:52px;font-weight:800;line-height:1}
+.result-hot{font-size:50px;font-weight:800;line-height:1}
 .result-card.ok .result-hot{color:var(--green)}
 .result-card.warn .result-hot{color:var(--yellow)}
 .result-hot small{font-size:17px;font-weight:400;color:var(--text2);margin-left:4px}
-.result-basis{font-size:12px;color:var(--text3);margin-top:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:8px;line-height:1.6}
+.result-basis{font-size:12px;color:var(--text3);margin-top:7px;border-top:1px solid rgba(255,255,255,.1);padding-top:7px;line-height:1.6}
 .result-basis b{color:var(--text2)}
 
-/* HOT change table */
-.hot-change-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+/* ── HOT change table ── */
+.hot-change-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px}
 .hot-change-table th{background:var(--panel2);color:var(--text3);font-size:11px;padding:5px 7px;text-align:center;border:1px solid var(--border)}
 .hot-change-table td{border:1px solid var(--border);padding:5px 7px;text-align:center}
 .hot-change-table .cur-row{background:rgba(74,158,221,.12);font-weight:700}
@@ -133,15 +143,15 @@ select.fluid-sel option.flag-red{color:#ff6666}
 .hot-change-table .nogo{color:var(--red);font-weight:700}
 .hot-change-table .ok{color:var(--green)}
 
-/* Alerts */
-.alert{border-radius:var(--r2);padding:9px 11px;margin-bottom:7px;font-size:13px;display:flex;gap:7px;align-items:flex-start;line-height:1.4}
+/* ── Alerts ── */
+.alert{border-radius:var(--r2);padding:8px 10px;margin-bottom:6px;font-size:13px;display:flex;gap:7px;align-items:flex-start;line-height:1.4}
 .alert.red{background:rgba(231,76,60,.15);border-left:3px solid var(--red);color:#ff9999}
 .alert.orange{background:rgba(230,126,34,.15);border-left:3px solid var(--orange);color:#ffcc88}
 .alert.yellow{background:rgba(241,196,15,.15);border-left:3px solid var(--yellow);color:#ffe066}
 .alert.blue{background:rgba(74,158,221,.15);border-left:3px solid var(--accent);color:#aaddff}
 .alert-icon{font-size:15px;flex-shrink:0}
 
-/* SN Intensity reference table (AOMB verbatim) */
+/* ── SN Reference Table ── */
 .sn-ref-table{width:100%;border-collapse:collapse;font-size:12px}
 .sn-ref-table th,.sn-ref-table td{border:1px solid var(--border);padding:5px 6px;text-align:center;vertical-align:middle}
 .sn-ref-table th{background:var(--panel2);color:var(--text2);font-weight:700}
@@ -152,27 +162,26 @@ select.fluid-sel option.flag-red{color:#ff6666}
 .sn-ref-table .vl-col{color:var(--sn-vl)}
 .sn-ref-table .cur-vis{font-weight:700;text-decoration:underline}
 
-/* Settings modal */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;align-items:flex-end;justify-content:center}
-.modal-overlay.open{display:flex}
-.modal{background:var(--panel);border-radius:var(--r) var(--r) 0 0;padding:20px;width:100%;max-width:520px;border-top:2px solid var(--accent);max-height:80vh;overflow-y:auto}
-.modal h2{font-size:16px;margin-bottom:14px;color:var(--accent)}
-.modal-row{margin-bottom:13px}
-.modal-footer{display:flex;gap:8px;margin-top:16px}
-.btn-primary{flex:1;background:var(--accent2);border:none;color:#fff;border-radius:var(--r2);padding:13px;font-size:15px;font-weight:700;cursor:pointer}
-.btn-cancel{flex:0 0 80px;background:var(--panel2);border:1px solid var(--border);color:var(--text2);border-radius:var(--r2);padding:13px;font-size:15px;cursor:pointer}
-
-/* PL table */
+/* ── PL table ── */
 .pl-table{width:100%;border-collapse:collapse;font-size:12px}
 .pl-table th,.pl-table td{border:1px solid var(--border);padding:4px 5px;text-align:center}
 .pl-table th{background:var(--panel2);color:var(--text2)}
 .pl-table .na{color:var(--red);font-weight:700}
 .pl-table .hl{background:rgba(74,158,221,.2);font-weight:700;color:var(--accent)}
 
+/* ── Settings modal ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--panel);border-radius:var(--r) var(--r) 0 0;padding:20px;width:100%;max-width:900px;border-top:2px solid var(--accent);max-height:80vh;overflow-y:auto}
+.modal h2{font-size:16px;margin-bottom:14px;color:var(--accent)}
+.modal-row{margin-bottom:13px}
+.modal-footer{display:flex;gap:8px;margin-top:16px}
+.btn-primary{flex:1;background:var(--accent2);border:none;color:#fff;border-radius:var(--r2);padding:12px;font-size:15px;font-weight:700;cursor:pointer}
+.btn-cancel{flex:0 0 80px;background:var(--panel2);border:1px solid var(--border);color:var(--text2);border-radius:var(--r2);padding:12px;font-size:15px;cursor:pointer}
+
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .hidden{display:none!important}
 .text-sm{font-size:13px;color:var(--text2)}
-.divider{border:none;border-top:1px solid var(--border);margin:8px 0}
 </style>
 </head>
 <body>
@@ -188,7 +197,6 @@ select.fluid-sel option.flag-red{color:#ff6666}
 
 <div class="scroll" id="mainScroll">
 
-  <!-- Tab switcher -->
   <div style="display:flex;gap:5px;margin-bottom:12px">
     <button class="toggle-btn active" id="tab-main" onclick="switchTab('main')">HOT テーブル</button>
     <button class="toggle-btn" id="tab-pl" onclick="switchTab('pl')">PL / Small Hail</button>
@@ -197,81 +205,89 @@ select.fluid-sel option.flag-red{color:#ff6666}
   <!-- ==================== MAIN TAB ==================== -->
   <div id="view-main">
 
-  <!-- 防氷液 -->
-  <div class="card">
-    <div class="card-title">防氷液</div>
-    <div style="margin-bottom:10px">
-      <label>防氷液選択</label>
-      <select id="sel-fluid" class="fluid-sel" onchange="onFluidChange()"></select>
-    </div>
-    <div id="row-ratio">
-      <label>希釈比 (fluid/water)</label>
-      <div class="ratio-group" id="ratio-group"></div>
-    </div>
-  </div>
+  <!-- TOP: 2-column (fluid+params LEFT / precip RIGHT) -->
+  <div class="top-cols">
 
-  <!-- 気象条件 -->
-  <div class="card">
-    <div class="card-title">気象条件</div>
-
-    <!-- METAR text -->
-    <div class="metar-row">
-      <input type="text" id="metar-input" placeholder="例: -SN RASN FZDZ" autocomplete="off" autocorrect="off" spellcheck="false" oninput="parseMETAR()">
-      <button onclick="clearMETAR()">クリア</button>
-    </div>
-    <div class="metar-hint">現象コードを直接入力するか、下のボタンから選択</div>
-
-    <!-- Weather layout: left=precip, right=params -->
-    <div class="wx-layout">
-      <!-- Left: precip buttons -->
-      <div class="wx-left" id="wx-left-col"></div>
-
-      <!-- Right: OAT, Day/Night, Vis (SN専用) -->
-      <div class="wx-right">
-        <!-- OAT -->
-        <div>
-          <label>OAT (°C)</label>
-          <input type="number" id="inp-oat" value="0" step="0.5" onchange="calculate()" oninput="calculate()">
+    <!-- LEFT column: fluid + OAT + vis -->
+    <div>
+      <!-- 防氷液 -->
+      <div class="card">
+        <div class="card-title">防氷液</div>
+        <div style="margin-bottom:10px">
+          <label>防氷液選択</label>
+          <select id="sel-fluid" class="fluid-sel" onchange="onFluidChange()"></select>
         </div>
-        <!-- Day/Night -->
+        <div id="row-ratio">
+          <label>希釈比 (fluid/water)</label>
+          <div class="ratio-group" id="ratio-group"></div>
+        </div>
+      </div>
+
+      <!-- OAT + Day/Night -->
+      <div class="card">
+        <div class="card-title">温度 / 時刻</div>
+        <div style="margin-bottom:10px">
+          <label>OAT (°C)</label>
+          <div class="stepper">
+            <button class="step-btn big" onclick="stepOAT(-1)" title="-1°C">−1</button>
+            <input type="number" id="inp-oat" value="0" step="0.5" onchange="calculate()" oninput="calculate()">
+            <button class="step-btn big" onclick="stepOAT(1)" title="+1°C">+1</button>
+          </div>
+        </div>
         <div>
           <label>昼 / 夜</label>
           <div class="toggle-group">
-            <button class="toggle-btn active" id="btn-day" onclick="setDayNight('day')">昼 ☀</button>
-            <button class="toggle-btn" id="btn-night" onclick="setDayNight('night')">夜 🌙</button>
+            <button class="toggle-btn active" id="btn-day" onclick="setDayNight('day')">☀ 昼</button>
+            <button class="toggle-btn" id="btn-night" onclick="setDayNight('night')">🌙 夜</button>
           </div>
-        </div>
-        <!-- SN Vis block (highlighted, always shown) -->
-        <div class="sn-block">
-          <div class="sn-block-title">❄ SN / SG 強度判定</div>
-          <div class="row2" style="gap:5px;margin-bottom:5px">
-            <div>
-              <label>視程</label>
-              <input type="number" id="inp-vis" placeholder="m" step="100" onchange="calculate()" oninput="calculate()">
-            </div>
-            <div>
-              <label>単位</label>
-              <select id="sel-vis-unit" onchange="calculate()">
-                <option value="m">m</option>
-                <option value="sm">SM</option>
-              </select>
-            </div>
-          </div>
-          <div id="sn-intensity-display"></div>
-          <div id="sn-vis-warning" style="font-size:11px;color:#ffcc44;margin-top:3px"></div>
         </div>
       </div>
-    </div>
-  </div>
+
+      <!-- SN Vis -->
+      <div class="card sn-block" style="border:2px solid #3a6a9a">
+        <div class="card-title sn-block-title" style="color:#4a9edd;text-transform:uppercase;font-size:12px;margin-bottom:8px">❄ SN / SG 強度判定</div>
+        <div style="margin-bottom:8px">
+          <label>視程</label>
+          <div class="vis-row">
+            <button class="step-btn big" onclick="stepVis(-1000)" title="-1000m" style="border-radius:var(--r2) 0 0 var(--r2)">−1k</button>
+            <div class="stepper" style="flex:1;border-radius:0;border-left:none;border-right:none">
+              <input type="number" id="inp-vis" placeholder="m" step="100" onchange="calculate()" oninput="calculate()" style="border:none">
+              <button class="step-btn" onclick="stepVis(100)" title="+100m">+100</button>
+            </div>
+            <button class="step-btn big" onclick="stepVis(1000)" title="+1000m" style="border-radius:0 var(--r2) var(--r2) 0">+1k</button>
+            <select id="sel-vis-unit" class="vis-unit-sel" onchange="calculate()" style="width:60px;flex-shrink:0;margin-left:5px;border-radius:var(--r2)">
+              <option value="m">m</option>
+              <option value="sm">SM</option>
+            </select>
+          </div>
+        </div>
+        <div id="sn-intensity-display"></div>
+        <div id="sn-vis-warning" style="font-size:11px;color:#ffcc44;margin-top:3px"></div>
+      </div>
+
+    </div><!-- /LEFT col -->
+
+    <!-- RIGHT column: precip + METAR -->
+    <div>
+      <div class="card" style="height:100%">
+        <div class="card-title">気象条件</div>
+        <div class="metar-row">
+          <input type="text" id="metar-input" placeholder="例: -SN RASN FZDZ" autocomplete="off" autocorrect="off" spellcheck="false" oninput="parseMETAR()">
+          <button onclick="clearMETAR()">クリア</button>
+        </div>
+        <div class="metar-hint">コードを直接入力するか下のボタンで選択</div>
+        <div id="wx-left-col"></div>
+      </div>
+    </div><!-- /RIGHT col -->
+
+  </div><!-- /top-cols -->
 
   <!-- Result -->
   <div id="result-area"></div>
   <div id="alerts-area"></div>
-
-  <!-- HOT change breakdown (OAT / vis / day-night) -->
   <div id="hot-change-area"></div>
 
-  <!-- SN Intensity Reference Table (AOMB verbatim) - always shown -->
+  <!-- SN Reference Table -->
   <div class="card">
     <div class="card-title">Snowfall Intensity Conversion Table（AOMB No.151 原文）</div>
     <div style="overflow-x:auto">
@@ -279,8 +295,8 @@ select.fluid-sel option.flag-red{color:#ff6666}
         <thead>
           <tr>
             <th rowspan="2">Time<br>of Day</th>
-            <th rowspan="2">OAT<br>(°C)</th>
-            <th colspan="4">Precipitation (Snowfall Intensity)</th>
+            <th rowspan="2">OAT (°C)</th>
+            <th colspan="4">Visibility [meter (statute mile)]</th>
           </tr>
           <tr>
             <th class="heavy-col">Heavy</th>
@@ -298,33 +314,44 @@ select.fluid-sel option.flag-red{color:#ff6666}
 
   <!-- ==================== PL TAB ==================== -->
   <div id="view-pl" class="hidden">
-  <div class="card">
-    <div class="card-title">Ice Pellets / Small Hail — Allowance Time</div>
-    <p class="text-sm" style="margin-bottom:10px">PL / Small Hail を含む降水現象の場合、通常HOTテーブルの代わりに本テーブルを適用。<br><b>Type IV (100/0) のみ使用可。</b></p>
-    <div style="margin-bottom:10px">
-      <label>防氷液種別（PL用）</label>
-      <div class="toggle-group">
-        <button class="toggle-btn active" id="pl-pg-btn" onclick="setPLFluidType('PG')">PG系（ABC-S Plus 他）</button>
-        <button class="toggle-btn" id="pl-eg-btn" onclick="setPLFluidType('EG')">EG系（UCAR EG106）</button>
+  <div class="top-cols">
+    <div>
+      <div class="card">
+        <div class="card-title">Ice Pellets / Small Hail</div>
+        <p class="text-sm" style="margin-bottom:10px">PL / Small Hail を含む降水現象に適用。<br><b>Type IV (100/0) のみ使用可。</b></p>
+        <div style="margin-bottom:10px">
+          <label>防氷液種別（PL用）</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="pl-pg-btn" onclick="setPLFluidType('PG')">PG系</button>
+            <button class="toggle-btn" id="pl-eg-btn" onclick="setPLFluidType('EG')">EG系 (UCAR EG106)</button>
+          </div>
+        </div>
+        <div style="margin-bottom:10px">
+          <label>OAT (°C)</label>
+          <div class="stepper">
+            <button class="step-btn big" onclick="stepPLOat(-1)">−1</button>
+            <input type="number" id="pl-oat" value="0" step="1" onchange="calcPL()" oninput="calcPL()">
+            <button class="step-btn big" onclick="stepPLOat(1)">+1</button>
+          </div>
+        </div>
+        <div>
+          <label>VR (kts) ※100kt未満は適用不可</label>
+          <input type="number" id="pl-vr" placeholder="例: 145" onchange="calcPL()" oninput="calcPL()">
+        </div>
       </div>
     </div>
-    <div style="margin-bottom:10px">
-      <label>降水現象（PL）</label>
-      <div class="precip-grid" id="pl-precip-grid"></div>
-    </div>
-    <div class="row2" style="margin-bottom:10px">
-      <div>
-        <label>OAT (°C)</label>
-        <input type="number" id="pl-oat" value="0" step="0.5" onchange="calcPL()" oninput="calcPL()">
-      </div>
-      <div>
-        <label>VR (kts) ※100kt未満は不可</label>
-        <input type="number" id="pl-vr" placeholder="例: 145" onchange="calcPL()" oninput="calcPL()">
+    <div>
+      <div class="card" style="height:100%">
+        <div class="card-title">降水現象（PL）</div>
+        <div class="precip-grid" id="pl-precip-grid"></div>
       </div>
     </div>
   </div>
+
   <div id="pl-result-area"></div>
   <div id="pl-alerts-area"></div>
+  <div id="pl-change-area"></div>
+
   <div class="card">
     <div class="card-title" id="pl-table-title">Allowance Time Table — PG</div>
     <div style="overflow-x:auto" id="pl-table-wrap"></div>
@@ -702,7 +729,10 @@ function buildPrecipGrid(){
       const btn=document.createElement('button');
       btn.className='precip-btn'+(g.isNogo?' no-hot':'')+(g.isSN?' sn-btn':'');
       btn.dataset.code=p.code;
-      btn.innerHTML=`<span class="code">${p.code}</span><span style="font-size:12px">${p.label}${p.note?'<br><small style="color:#5580a0">'+p.note+'</small>':''}</span>`;
+      // No-break label: replace spaces with nbsp for code and label
+      const codeNoBreak = p.code.replace(/-/g, '\u2011'); // non-breaking hyphen
+      const lblText = (p.label||'').replace(/Lt /g,'Light ').replace(/\s/g,'\u00a0');
+      btn.innerHTML=`<span class="code" style="white-space:nowrap">${p.code}</span><span class="lbl">${lblText}${p.note?'<br><small style="color:#5580a0;white-space:nowrap">'+p.note+'</small>':''}</span>`;
       btn.onclick=()=>togglePrecip(p.code);
       grid.appendChild(btn);
     });
@@ -715,7 +745,7 @@ function buildPLPrecipGrid(){
   const tbl=state.plFluidType==='EG'?PL_EG:PL_PG;
   tbl.forEach(row=>{
     const btn=document.createElement('button');btn.className='precip-btn';btn.dataset.plcode=row.code;
-    btn.innerHTML=`<span class="code">${row.code}</span><span style="font-size:11px">${row.label}</span>`;
+    btn.innerHTML=`<span class="code" style="white-space:nowrap">${row.code}</span><span class="lbl" style="white-space:nowrap">${row.label}</span>`;
     btn.onclick=()=>selectPLPrecip(row.code);
     if(state.plPrecip===row.code)btn.classList.add('active');
     grid.appendChild(btn);
@@ -1015,12 +1045,12 @@ function calcPL(){
   state.plOat=plOat;state.plVR=isNaN(plVR)?null:plVR;
   const resultArea=document.getElementById('pl-result-area');
   const alertsArea=document.getElementById('pl-alerts-area');
-  if(!state.plPrecip){resultArea.innerHTML=`<div class="result-card none"><div class="result-label">降水現象を選択してください</div></div>`;alertsArea.innerHTML='';return;}
+  if(!state.plPrecip){resultArea.innerHTML=`<div class="result-card none"><div class="result-label">降水現象を選択してください</div></div>`;alertsArea.innerHTML='';document.getElementById('pl-change-area').innerHTML='';return;}
   const tbl=state.plFluidType==='EG'?PL_EG:PL_PG;
   const row=tbl.find(r=>r.code===state.plPrecip);
   if(!row){resultArea.innerHTML='';return;}
   const bi=getPLOatBandIdx(plOat);
-  if(bi>=PL_OAT_BANDS.length){resultArea.innerHTML=`<div class="result-card no-go"><div class="result-label">⛔ -22°C以下 — Operations Not Authorized</div></div>`;alertsArea.innerHTML='';return;}
+  if(bi>=PL_OAT_BANDS.length){resultArea.innerHTML=`<div class="result-card no-go"><div class="result-label">⛔ -22°C以下 — Operations Not Authorized</div></div>`;alertsArea.innerHTML='';document.getElementById('pl-change-area').innerHTML='';return;}
   const allowMin=bi<row.times.length?row.times[bi]:null;
   const alerts=[];
   if(state.plVR!==null&&state.plVR<100)alerts.push({cls:'red',icon:'⛔',text:'VR < 100kt: Allowance Time適用不可。離陸不可。'});
@@ -1037,9 +1067,35 @@ function calcPL(){
   else{resultArea.innerHTML=`<div class="result-card ok"><div class="result-label">✅ Allowance Time</div><div class="result-hot">${allowMin}<small>分</small></div><div class="result-basis"><b>条件:</b> ${row.label}<br><b>OAT:</b> ${plOat}°C (${PL_OAT_BANDS[bi].label})<br><b>防氷液種別:</b> ${state.plFluidType}<br>⚠ Type IV Fluid (100/0) のみ使用可</div></div>`;}
   alertsArea.innerHTML=alerts.map(a=>`<div class="alert ${a.cls}"><span class="alert-icon">${a.icon}</span><span>${a.text}</span></div>`).join('');
   renderPLTable();
+
+  // PL OAT change table
+  renderPLChangeTable(row,bi);
 }
 
-function renderPLTable(){
+function renderPLChangeTable(row,curBandIdx){
+  const area=document.getElementById('pl-change-area');
+  if(!row){area.innerHTML='';return;}
+  let html=`<div class="card"><div class="card-title">OAT変化による Allowance Time 変化</div>`;
+  html+=`<table class="hot-change-table"><thead><tr><th>OAT帯域</th><th>Allowance Time</th><th></th></tr></thead><tbody>`;
+  PL_OAT_BANDS.forEach((band,i)=>{
+    const t=i<row.times.length?row.times[i]:null;
+    const isCur=(i===curBandIdx);
+    let cls='',note='';
+    if(t===null){cls='nogo';note='N/A';}
+    else if(isCur){cls='ok';}
+    else if(i>curBandIdx){cls='worse';}
+    html+=`<tr class="${isCur?'cur-row':''}">
+      <td style="text-align:left;font-size:12px">${band.label}</td>
+      <td class="${cls}">${t!==null?t+'分':'<span class="nogo">N/A</span>'}</td>
+      <td style="font-size:11px;color:var(--text3)">${isCur?'← 現在':''}</td>
+    </tr>`;
+  });
+  html+=`<tr><td style="text-align:left;font-size:12px;color:var(--text3)" colspan="3">-22°C以下</td></tr>`;
+  html+=`</tbody></table></div>`;
+  area.innerHTML=html;
+}
+
+
   const tbl=state.plFluidType==='EG'?PL_EG:PL_PG;
   const wrap=document.getElementById('pl-table-wrap');
   let html=`<table class="pl-table"><thead><tr><th>降水現象</th>${PL_OAT_BANDS.map(b=>`<th>${b.label}</th>`).join('')}</tr></thead><tbody>`;
@@ -1077,6 +1133,22 @@ function saveSettings(){
   document.getElementById('sel-fluid').value=state.fluid;onFluidChange();
 }
 document.getElementById('settings-modal').addEventListener('click',function(e){if(e.target===this)closeSettings();});
+
+// ── Stepper helpers ──
+function stepOAT(delta){
+  const inp=document.getElementById('inp-oat');
+  inp.value=(parseFloat(inp.value)||0)+delta;calculate();
+}
+function stepVis(delta){
+  const inp=document.getElementById('inp-vis');
+  const cur=parseFloat(inp.value)||0;
+  const nv=Math.max(0,cur+delta);
+  inp.value=nv===0?'':nv;calculate();
+}
+function stepPLOat(delta){
+  const inp=document.getElementById('pl-oat');
+  inp.value=(parseFloat(inp.value)||0)+delta;calcPL();
+}
 
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 init();
