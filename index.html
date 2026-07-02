@@ -259,7 +259,8 @@ select option{background:var(--bg)}
             </div>
             <div style="display:flex;gap:4px;align-items:center">
               <div style="position:relative;flex:1;min-width:80px">
-                <input type="number" id="inp-vis" value="3000" step="100" onchange="calculate()" oninput="calculate()" style="width:100%;text-align:center;font-size:16px;padding-right:28px;box-sizing:border-box"><span id="vis-unit-label" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px;pointer-events:none">m</span
+                <input type="number" id="inp-vis" value="3000" step="100" onchange="calculate()" oninput="calculate()" style="width:100%;text-align:center;font-size:16px;padding-right:28px;box-sizing:border-box">
+              <span id="vis-unit-label" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px;pointer-events:none">m</span
               </div>
               <div style="display:flex;gap:3px;flex-shrink:0">
                 <div style="display:flex;flex-direction:column;gap:3px">
@@ -809,17 +810,22 @@ function updateSunsetDisplay(){
 }
 
 function setVisUnit(unit){
-  const mStyle='background:#2d7abf;border:none;color:#fff;';
-  const smStyle='background:var(--bg);border:1px solid var(--border);color:var(--text3);';
-  ['vis-unit-m','pl-vis-unit-m'].forEach(id=>{const b=document.getElementById(id);if(b)b.style.cssText=b.style.cssText.replace(/background:[^;]+;border:[^;]*;color:[^;]+/,unit==='m'?mStyle.slice(0,-1):smStyle.slice(0,-1));});
-  ['vis-unit-sm','pl-vis-unit-sm'].forEach(id=>{const b=document.getElementById(id);if(b)b.style.cssText=b.style.cssText.replace(/background:[^;]+;(border-left:[^;]+;)?color:[^;]+/,unit==='sm'?mStyle.slice(0,-1):smStyle.slice(0,-1));});
-  // Simpler: just set each button directly
-  const mBtn=document.getElementById('vis-unit-m');if(mBtn){mBtn.style.background=unit==='m'?'#2d7abf':'var(--bg)';mBtn.style.color=unit==='m'?'#fff':'var(--text3)';mBtn.style.border=unit==='m'?'none':'1px solid var(--border)';}
-  const smBtn=document.getElementById('vis-unit-sm');if(smBtn){smBtn.style.background=unit==='sm'?'#2d7abf':'var(--bg)';smBtn.style.color=unit==='sm'?'#fff':'var(--text3)';}
-  const plMBtn=document.getElementById('pl-vis-unit-m');if(plMBtn){plMBtn.style.background=unit==='m'?'#2d7abf':'var(--bg)';plMBtn.style.color=unit==='m'?'#fff':'var(--text3)';plMBtn.style.border=unit==='m'?'none':'1px solid var(--border)';}
-  const plSmBtn=document.getElementById('pl-vis-unit-sm');if(plSmBtn){plSmBtn.style.background=unit==='sm'?'#2d7abf':'var(--bg)';plSmBtn.style.color=unit==='sm'?'#fff':'var(--text3)';}
-  // Update unit label spans inside input boxes
-  ['vis-unit-label','pl-vis-unit-label'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=unit;});
+  // Toggle buttons
+  ['vis-unit-m','pl-vis-unit-m'].forEach(id=>{
+    const b=document.getElementById(id);if(!b)return;
+    b.style.background=unit==='m'?'#2d7abf':'var(--bg)';
+    b.style.color=unit==='m'?'#fff':'var(--text3)';
+    b.style.border=unit==='m'?'none':'1px solid var(--border)';
+  });
+  ['vis-unit-sm','pl-vis-unit-sm'].forEach(id=>{
+    const b=document.getElementById(id);if(!b)return;
+    b.style.background=unit==='sm'?'#2d7abf':'var(--bg)';
+    b.style.color=unit==='sm'?'#fff':'var(--text3)';
+  });
+  // Update unit label inside input box
+  ['vis-unit-label','pl-vis-unit-label'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.textContent=unit;
+  });
   const hidden=document.getElementById('vis-unit-val');if(hidden)hidden.value=unit;
   calculate();
 }
