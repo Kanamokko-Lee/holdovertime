@@ -764,11 +764,14 @@ const PL_OAT_BANDS=[
   {label:'-16〜-22°C',min:-22,max:-16}
 ];
 function getPLOatBandIdx(oat){
+  // Band boundaries: ">0°C" | "0~-5°C" | "Below -5 to -10°C" etc.
+  // -5°C belongs to "0~-5°C" (upper band), not "Below -5"
   if(oat>0)return 0;
   for(let i=1;i<PL_OAT_BANDS.length;i++){
-    const b=PL_OAT_BANDS[i];if(oat>b.min&&oat<=b.max)return i;
+    const b=PL_OAT_BANDS[i];
+    if(oat>=b.min&&oat<=b.max)return i;
   }
-  return PL_OAT_BANDS.length;// beyond last
+  return PL_OAT_BANDS.length;// beyond last (-22°C以下)
 }
 
 // ============================================================
