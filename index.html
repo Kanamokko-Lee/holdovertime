@@ -348,41 +348,43 @@ select option{background:var(--bg)}
   <!-- ==================== PL TAB ====================
   -->
   <div id="view-pl" class="hidden">
-  <!-- 3-column layout: LEFT=settings, MIDDLE=precip+result, RIGHT=table -->
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;align-items:start">
+
+  <!-- TOP ROW: 2 columns: settings | precip+result -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
 
     <!-- LEFT: fluid / OAT / vis / VR -->
-    <div>
-      <div class="card">
-        <div class="card-title">Ice Pellets / Small Hail</div>
-        <p class="text-sm" style="margin-bottom:8px">PL/Small Hail を含む降水現象に適用。<br><b>Type IV (100/0) のみ使用可。</b></p>
-        <div style="margin-bottom:8px">
-          <label>使用防氷液（連動・変更可）</label>
-          <select id="pl-fluid-sel" onchange="onPLFluidChange()" style="width:100%;font-size:12px;padding:6px 7px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);color:var(--accent);font-weight:600"></select>
-          <div id="pl-fluid-type-badge" style="font-size:11px;color:var(--text3);margin-top:3px"></div>
-        </div>
+    <div class="card">
+      <div class="card-title">Ice Pellets / Small Hail</div>
+      <p class="text-sm" style="margin-bottom:8px">PL/Small Hail を含む降水現象に適用。<br><b>Type IV (100/0) のみ使用可。</b></p>
+      <div style="margin-bottom:8px">
+        <label>使用防氷液（連動・変更可）</label>
+        <select id="pl-fluid-sel" onchange="onPLFluidChange()" style="width:100%;font-size:12px;padding:6px 7px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);color:var(--accent);font-weight:600"></select>
+        <div id="pl-fluid-type-badge" style="font-size:11px;color:var(--text3);margin-top:3px"></div>
+      </div>
+      <!-- OAT + Vis side by side -->
+      <div style="display:flex;gap:10px;margin-bottom:8px">
         <!-- OAT -->
-        <div style="margin-bottom:8px">
+        <div style="flex:1;min-width:0">
           <label>OAT (°C)（連動）</label>
           <div style="display:flex;gap:4px;align-items:center">
-            <div style="position:relative;flex:1;min-width:70px">
-              <input type="number" id="pl-oat" value="0" step="1" onchange="onPLOatChange()" oninput="onPLOatChange()" style="width:100%;text-align:center;font-size:18px;font-weight:700;padding-right:28px;box-sizing:border-box">
-              <span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px;pointer-events:none">°C</span>
+            <div style="position:relative;flex:1;min-width:0">
+              <input type="number" id="pl-oat" value="0" step="1" onchange="onPLOatChange()" oninput="onPLOatChange()" style="width:100%;text-align:center;font-size:17px;font-weight:700;padding-right:26px;box-sizing:border-box">
+              <span style="position:absolute;right:5px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px;pointer-events:none">°C</span>
             </div>
             <div style="display:flex;gap:3px;flex-shrink:0">
               <div style="display:flex;flex-direction:column;gap:3px">
-                <button class="step-btn big" onclick="stepBothOAT(5)" style="font-size:12px;padding:5px 8px;min-width:38px">+5</button>
-                <button class="step-btn big" onclick="stepBothOAT(-5)" style="font-size:12px;padding:5px 8px;min-width:38px">−5</button>
+                <button class="step-btn big" onclick="stepBothOAT(5)" style="font-size:11px;padding:5px 8px;min-width:36px">+5</button>
+                <button class="step-btn big" onclick="stepBothOAT(-5)" style="font-size:11px;padding:5px 8px;min-width:36px">−5</button>
               </div>
               <div style="display:flex;flex-direction:column;gap:3px">
-                <button class="step-btn big" onclick="stepBothOAT(1)" style="font-size:12px;padding:5px 8px;min-width:38px">+1</button>
-                <button class="step-btn big" onclick="stepBothOAT(-1)" style="font-size:12px;padding:5px 8px;min-width:38px">−1</button>
+                <button class="step-btn big" onclick="stepBothOAT(1)" style="font-size:11px;padding:5px 8px;min-width:36px">+1</button>
+                <button class="step-btn big" onclick="stepBothOAT(-1)" style="font-size:11px;padding:5px 8px;min-width:36px">−1</button>
               </div>
             </div>
           </div>
         </div>
         <!-- Vis -->
-        <div style="margin-bottom:8px">
+        <div style="flex:1;min-width:0">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
             <label style="margin-bottom:0">視程（連動）</label>
             <div style="display:flex;gap:2px">
@@ -391,36 +393,35 @@ select option{background:var(--bg)}
             </div>
           </div>
           <div style="display:flex;gap:4px;align-items:center">
-            <div style="position:relative;flex:1;min-width:70px">
-              <input type="number" id="pl-vis" value="3000" step="100" onchange="onPLVisChange()" oninput="onPLVisChange()" style="width:100%;text-align:center;font-size:15px;padding-right:28px;box-sizing:border-box">
-              <span id="pl-vis-unit-label" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px;pointer-events:none">m</span>
+            <div style="position:relative;flex:1;min-width:0">
+              <input type="number" id="pl-vis" value="3000" step="100" onchange="onPLVisChange()" oninput="onPLVisChange()" style="width:100%;text-align:center;font-size:15px;padding-right:26px;box-sizing:border-box">
+              <span id="pl-vis-unit-label" style="position:absolute;right:5px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px;pointer-events:none">m</span>
             </div>
             <div style="display:flex;gap:3px;flex-shrink:0">
               <div style="display:flex;flex-direction:column;gap:3px">
-                <button class="step-btn big" onclick="stepBothVis(1000)" style="font-size:11px;padding:5px 7px;min-width:38px">+1k</button>
-                <button class="step-btn big" onclick="stepBothVis(-1000)" style="font-size:11px;padding:5px 7px;min-width:38px">−1k</button>
+                <button class="step-btn big" onclick="stepBothVis(1000)" style="font-size:11px;padding:5px 7px;min-width:36px">+1k</button>
+                <button class="step-btn big" onclick="stepBothVis(-1000)" style="font-size:11px;padding:5px 7px;min-width:36px">−1k</button>
               </div>
               <div style="display:flex;flex-direction:column;gap:3px">
-                <button class="step-btn big" onclick="stepBothVis(100)" style="font-size:11px;padding:5px 7px;min-width:38px">+100</button>
-                <button class="step-btn big" onclick="stepBothVis(-100)" style="font-size:11px;padding:5px 7px;min-width:38px">−100</button>
+                <button class="step-btn big" onclick="stepBothVis(100)" style="font-size:11px;padding:5px 7px;min-width:36px">+100</button>
+                <button class="step-btn big" onclick="stepBothVis(-100)" style="font-size:11px;padding:5px 7px;min-width:36px">−100</button>
               </div>
             </div>
           </div>
           <div id="pl-sn-info" style="font-size:12px;margin-top:4px"></div>
         </div>
-        <!-- VR -->
-        <div>
-          <label>VR (kts) ※100kt未満は適用不可</label>
-          <input type="number" id="pl-vr" placeholder="例: 145" onchange="calcPL()" oninput="calcPL()">
-        </div>
+      </div>
+      <!-- VR -->
+      <div>
+        <label>VR (kts) ※100kt未満は適用不可</label>
+        <input type="number" id="pl-vr" placeholder="例: 145" onchange="calcPL()" oninput="calcPL()">
       </div>
     </div>
 
-    <!-- MIDDLE: precip selection + result + OAT change table -->
+    <!-- RIGHT: precip selection + result -->
     <div>
       <div class="card">
         <div class="card-title">降水現象の構成要素</div>
-        <!-- PL intensity -->
         <div style="margin-bottom:8px">
           <div style="font-size:11px;color:var(--text3);margin-bottom:3px">Ice Pellets 強度</div>
           <div class="toggle-group">
@@ -429,7 +430,6 @@ select option{background:var(--bg)}
             <button class="toggle-btn" id="pl-int-mod" onclick="setPLInt(2)">PL</button>
           </div>
         </div>
-        <!-- Mixed precip -->
         <div style="margin-bottom:8px">
           <div style="font-size:11px;color:var(--text3);margin-bottom:3px">混合降水（複数選択可）</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px">
@@ -440,25 +440,23 @@ select option{background:var(--bg)}
             <button class="precip-btn" id="plm-ra" onclick="togglePLMix('ra')"><span class="code" style="white-space:nowrap">RA</span><span class="lbl" style="white-space:nowrap;font-size:11px">Rain (Lt)</span></button>
           </div>
         </div>
-        <!-- Resolved code -->
-        <div id="pl-resolved-code" style="font-size:20px;font-weight:800;color:#f1c40f;font-family:monospace;min-height:28px;padding:2px 0;letter-spacing:.03em"></div>
+        <div id="pl-resolved-code" style="font-size:20px;font-weight:800;color:#f1c40f;font-family:monospace;min-height:28px;padding:2px 0;letter-spacing:.03em;white-space:nowrap"></div>
       </div>
-
-      <!-- Result -->
       <div id="pl-result-area"></div>
       <div id="pl-alerts-area"></div>
     </div>
 
-    <!-- RIGHT: OAT change table + Allowance Time table -->
-    <div>
-      <div id="pl-change-area"></div>
-      <div class="card">
-        <div class="card-title" id="pl-table-title">Allowance Time Table — PG</div>
-        <div style="overflow-x:auto" id="pl-table-wrap"></div>
-      </div>
-    </div>
+  </div><!-- /top row -->
 
-  </div><!-- /grid -->
+  <!-- BOTTOM ROW: 2 columns: OAT change table | Allowance Time table -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div id="pl-change-area"></div>
+    <div class="card">
+      <div class="card-title" id="pl-table-title">Allowance Time Table — PG</div>
+      <div style="overflow-x:auto" id="pl-table-wrap"></div>
+    </div>
+  </div>
+
   </div><!-- /view-pl -->
 
 </div><!-- /scroll -->
@@ -693,20 +691,31 @@ function lookupHOT(fluidName,ratio,col,oat){
   const f=FLUIDS[fluidName];if(!f)return null;
   const bands=f.bands;let bi=-1;
   for(let i=0;i<bands.length;i++){
-    const b=bands[i];const mx=b.oatMax===999?9999:b.oatMax;
+    const b=bands[i];
     if(i===0&&oat>=b.oatMin){bi=0;break;}
-    if(oat>b.oatMin&&oat<=mx){bi=i;break;}
+    else{
+      const mx=b.oatMax===999?9999:b.oatMax;
+      if(oat>=b.oatMin&&oat<mx){bi=i;break;}
+    }
   }
   if(bi<0)bi=bands.length-1;
   const arr=bands[bi][ratio];if(!arr)return null;
   return arr[col];
 }
 function getOatBandIndex(fluidName,oat){
+  // AOMB uses "Below -X to -Y" = strictly less than upper boundary
+  // Band[0]: "-3 and above" → oat >= -3
+  // Band[1]: "Below -3 to -8" → -8 < oat < -3  (i.e. oat < -3)
+  // Band[2]: "Below -8 to -14" → -14 < oat < -8
+  // So upper boundary is EXCLUSIVE (strict <)
   const bands=FLUIDS[fluidName].bands;
   for(let i=0;i<bands.length;i++){
-    const b=bands[i];const mx=b.oatMax===999?9999:b.oatMax;
-    if(i===0&&oat>=b.oatMin)return 0;
-    if(oat>b.oatMin&&oat<=mx)return i;
+    const b=bands[i];
+    if(i===0){if(oat>=b.oatMin)return 0;}
+    else{
+      const mx=b.oatMax===999?9999:b.oatMax;
+      if(oat>=b.oatMin&&oat<mx)return i;
+    }
   }
   return bands.length-1;
 }
@@ -1237,9 +1246,9 @@ function buildInlineWarnings(minCol,ratio,snIntensityResult,snNeedsVis){
     // nb.oatMax is the upper (higher) boundary of the next band = trigger threshold
     const threshold=nb.oatMax;
     if(nextV!==null){
-      lines.push(`<span style="color:var(--yellow);${FS}">🌡 ${threshold}°C未満→ ${fmtMin(nextV)}</span>`);
+      lines.push(`<span style="color:var(--yellow);${FS};white-space:nowrap">🌡 ${threshold}°C未満→ ${fmtMin(nextV)}</span>`);
     } else {
-      lines.push(`<span style="color:var(--orange);${FS}">🌡 ${threshold}°C未満→ 指針なし</span>`);
+      lines.push(`<span style="color:var(--orange);${FS};white-space:nowrap">🌡 ${threshold}°C未満→ 指針なし</span>`);
     }
   }
 
@@ -1251,16 +1260,16 @@ function buildInlineWarnings(minCol,ratio,snIntensityResult,snNeedsVis){
       const si=getSnIntensity(bp,state.oat,state.isNight);
       if(!si||si===snIntensityResult)continue;
       if(si==='heavy'){
-        lines.push(`<span style="color:var(--red);${FS}">👁 ${bp}m以下→ Heavy SN Ops</span>`);
+        lines.push(`<span style="color:var(--red);${FS};white-space:nowrap">👁 ${bp}m以下→ Heavy SN Ops</span>`);
       } else {
         const sc=snIntensityToCol(si);
         const sv=sc!==null?lookupHOT(state.fluid,ratio,sc,state.oat):null;
         const siLabel=SN_INTENSITY_LABELS[si];
         const color=SN_INTENSITY_COLORS[si]||'#aaa';
         if(sv!==null){
-          lines.push(`<span style="color:${color};${FS}">👁 ${bp}m以下→ ${siLabel} → ${fmtMin(sv)}</span>`);
+          lines.push(`<span style="color:${color};${FS};white-space:nowrap">👁 ${bp}m以下→ ${siLabel} → ${fmtMin(sv)}</span>`);
         } else {
-          lines.push(`<span style="color:var(--red);${FS}">👁 ${bp}m以下→ ${siLabel} → 指針なし</span>`);
+          lines.push(`<span style="color:var(--red);${FS};white-space:nowrap">👁 ${bp}m以下→ ${siLabel} → 指針なし</span>`);
         }
       }
       break; // ONE step only
@@ -1278,11 +1287,11 @@ function buildInlineWarnings(minCol,ratio,snIntensityResult,snNeedsVis){
       const icon=otherNight?'🌙':'☀';
       const label=otherNight?'日没後':'日出後';
       if(otherSI==='heavy'){
-        lines.push(`<span style="color:var(--red);${FS}">${icon} ${label}→ Heavy SN Ops</span>`);
+        lines.push(`<span style="color:var(--red);${FS};white-space:nowrap">${icon} ${label}→ Heavy SN Ops</span>`);
       } else if(otherHOT!==null){
-        lines.push(`<span style="color:${otherColor};${FS}">${icon} ${label}→ ${SN_INTENSITY_LABELS[otherSI]} → ${fmtMin(otherHOT)}</span>`);
+        lines.push(`<span style="color:${otherColor};${FS};white-space:nowrap">${icon} ${label}→ ${SN_INTENSITY_LABELS[otherSI]} → ${fmtMin(otherHOT)}</span>`);
       } else {
-        lines.push(`<span style="color:var(--red);${FS}">${icon} ${label}→ 指針なし</span>`);
+        lines.push(`<span style="color:var(--red);${FS};white-space:nowrap">${icon} ${label}→ 指針なし</span>`);
       }
     }
   }
@@ -1303,10 +1312,7 @@ function renderHOTChangeTable(minCol,minBasis,snIntensityResult,snNeedsVis){
     const curBandIdx=getOatBandIndex(state.fluid,state.oat);
     const arr=band[ratio];if(!arr)return;
     const v=arr[minCol];const isCur=(i===curBandIdx);
-    // Label: add "以上" to upper boundary for clarity
-    // e.g. "-3〜-8°C" → "-3未満〜-8°C以上" but simpler: keep label, add boundary note
-    const rawLabel=band.label;
-    const dispLabel=rawLabel==='−3°C以上'||rawLabel==='-3°C以上'?rawLabel:rawLabel.replace(/〜(-?\d+(?:\.\d+)?)°C$/,'〜$1°C以上');
+    const dispLabel=fmtBandLabel(band);
     let cls='',note='';
     if(v===null){cls='nogo';note='指針なし';}
     else if(v<(arr[minCol]||0)&&!isCur){cls='worse';}
