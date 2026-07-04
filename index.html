@@ -434,8 +434,8 @@ select option{background:var(--bg)}
           <div style="font-size:11px;color:var(--text3);margin-bottom:3px">混合降水（複数選択可）</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px">
             <button class="precip-btn" id="plm-sn" onclick="togglePLMix('sn')"><span class="code" style="white-space:nowrap">SN</span><span class="lbl" style="white-space:nowrap;font-size:11px">Snow</span></button>
-            <button class="precip-btn" id="plm-fzdz" onclick="togglePLMix('fzdz')"><span class="code" style="white-space:nowrap">FZDZ</span><span class="lbl" style="white-space:nowrap;font-size:11px">Frz Drizzle</span></button>
-            <button class="precip-btn" id="plm-dz" onclick="togglePLMix('dz')"><span class="code" style="white-space:nowrap">DZ</span><span class="lbl" style="white-space:nowrap;font-size:11px">Drizzle</span></button>
+            <button class="precip-btn" id="plm-fzdz" onclick="togglePLMix('fzdz')"><span class="code" style="white-space:nowrap">FZDZ</span><span class="lbl" style="white-space:nowrap;font-size:11px">Frz DZ (全強度)</span></button>
+            <button class="precip-btn" id="plm-dz" onclick="togglePLMix('dz')"><span class="code" style="white-space:nowrap">DZ</span><span class="lbl" style="white-space:nowrap;font-size:11px">DZ (全強度)</span></button>
             <button class="precip-btn" id="plm-fzra" onclick="togglePLMix('fzra')"><span class="code" style="white-space:nowrap">FZRA</span><span class="lbl" style="white-space:nowrap;font-size:11px">Frz Rain (Lt)</span></button>
             <button class="precip-btn" id="plm-ra" onclick="togglePLMix('ra')"><span class="code" style="white-space:nowrap">RA</span><span class="lbl" style="white-space:nowrap;font-size:11px">Rain (Lt)</span></button>
           </div>
@@ -498,11 +498,11 @@ select option{background:var(--bg)}
 // Columns: [FZFG/IC/BR, SNFZFG, SN_VL, SN_MOD, SN_LT, SN_VVL, FZDZ, FZRA_LT, SNRA_MOD, COLD_WING]
 // ============================================================
 const FLUIDS = {
-  "Type I (Generic)":{"type":"I","ratios":["100/0","75/25","50/50"],"glycolType":"PG","bands":[
-    {"label":"-3°C以上","oatMin":-3,"oatMax":999,"100/0":[10.5,3,8,3,8,14,9,2,2,3],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
-    {"label":"-3〜-6°C","oatMin":-6,"oatMax":-3,"100/0":[8.5,3.5,6,2.5,6,12,7,2,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
-    {"label":"-6〜-10°C","oatMin":-10,"oatMax":-6,"100/0":[8,3,5.5,2,5.5,10,5.5,2,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]},
-    {"label":"-10°C以下","oatMin":-999,"oatMax":-10,"100/0":[7,3,4,2,4,7,null,null,null,null],"75/25":[null,null,null,null,null,null,null,null,null,null],"50/50":[null,null,null,null,null,null,null,null,null,null]}
+  "Type I (Generic)":{"type":"I","ratios":["100/0"],"glycolType":"PG","bands":[
+    {"label":"-3°C以上","oatMin":-3,"oatMax":999,"100/0":[9,3,6,3,6,12,8,2,1,1]},
+    {"label":"-3〜-6°C","oatMin":-6,"oatMax":-3,"100/0":[6,2,5,2,5,11,5,2,null,null]},
+    {"label":"-6〜-10°C","oatMin":-10,"oatMax":-6,"100/0":[4,2,5,2,5,9,4,2,null,null]},
+    {"label":"-10°C以下","oatMin":-999,"oatMax":-10,"100/0":[4,2,4,2,4,7,null,null,null,null]}
   ]},
   "ABC-K PLUS (TypeII)":{"type":"II","ratios":["100/0","75/25","50/50"],"glycolType":"PG","bands":[
     {"label":"-3°C以上","oatMin":-3,"oatMax":999,"100/0":[187.5,45,75,60,100,110,115,60,12.5,130],"75/25":[125,25,50,35,70,95,112,50,10,107.5],"50/50":[50,5,10,7,15,null,25,10,null,null]},
@@ -625,7 +625,7 @@ const FLUIDS = {
   ]}
 };
 
-const COL={FZFG:0,SNFZFG:1,SN_VL:2,SN_MOD:3,SN_LT:4,SN_VVL:5,FZDZ:6,FZRA_LT:7,SNRA_MOD:8,COLD_WING:9};
+const COL={FZFG:0,SNFZFG_MOD:1,SNFZFG_LT:2,SN_MOD:3,SN_LT:4,SN_VL:5,FZDZ:6,FZRA_LT:7,SNRA_MOD:8,COLD_WING:9};
 
 // Precip definitions grouped
 const PRECIP_GROUPS = [
@@ -635,8 +635,8 @@ const PRECIP_GROUPS = [
     {code:'BR',    label:'Mist',           col:'FZFG', note:'OAT≤0°C'},
   ]},
   { id:'snfog', label:'SN + Fog', isSN:false, isNogo:false, items:[
-    {code:'-SNFZFG',label:'Lt SN+FZFG',  col:'SNFZFG'},
-    {code:'SNFZFG', label:'Mod SN+FZFG', col:'SNFZFG'},
+    {code:'-SNFZFG',label:'Lt SN+FZFG',  col:'SNFZFG_LT'},
+    {code:'SNFZFG', label:'Mod SN+FZFG', col:'SNFZFG_MOD'},
   ]},
   { id:'sn', label:'❄ Snow / SG — 強度は視程で自動判定', isSN:true, isNogo:false, items:[
     {code:'SN', label:'Snow',        col:'SN_AUTO'},
@@ -681,7 +681,7 @@ function getSnIntensity(visMeter,oat,isNight){
   }
 }
 function snIntensityToCol(i){
-  return i==='vlight'?COL.SN_VVL:i==='light'?COL.SN_LT:i==='moderate'?COL.SN_MOD:null;
+  return i==='vlight'?COL.SN_VL:i==='light'?COL.SN_LT:i==='moderate'?COL.SN_MOD:null;
 }
 const SN_INTENSITY_LABELS={heavy:'Heavy',moderate:'Moderate',light:'Light',vlight:'Very Light'};
 const SN_INTENSITY_COLORS={heavy:'#e74c3c',moderate:'#e67e22',light:'#f1c40f',vlight:'#a8e06a'};
@@ -1200,6 +1200,10 @@ function calculate(){
     alerts.push({cls:'red',icon:'⛔',text:'PL/Small Hailの場合、Type I/II は anti-icing に使用不可。Type IV のみ使用可。'});
   if(state.selectedPrecip.includes('BR')&&state.oat>0)
     alerts.push({cls:'orange',icon:'⚠',text:'Mist(BR)のHOTはOAT 0°C以下の場合のみ適用（*10ルール）。'});
+  // *15 rule: SNRA column applies to MODERATE intensity. VL/Light snow + light rain/drizzle → use -FZRA HOT
+  if((state.selectedPrecip.includes('SNRA')||state.selectedPrecip.includes('RASN'))){
+    alerts.push({cls:'blue',icon:'ℹ',text:'SNRA/RASNはModerate強度に適用（*15）。Very Light/Light SN + Light Rain/DZの場合は -FZRA のHOTを使用。Heavy相当の視程ならHOT指針なし。'});
+  }
 
   // SN intensity basis text
   let snBasisText='';
@@ -1520,7 +1524,13 @@ function calcPL(){
   const allowMin=bi<row.times.length?row.times[bi]:null;
   const alerts=[];
   if(state.plVR!==null&&state.plVR<100)alerts.push({cls:'red',icon:'⛔',text:'VR < 100kt: Allowance Time適用不可。離陸不可。'});
-  if(state.plFluidType==='PG'&&(state.plPrecip==='-PL'||state.plPrecip==='-PLSN')&&bi===3)
+  // *2 rule (PG table): -PL@-10~-16, -PL@-16~-22, -PLSN@-10~-16, PL@-10~-16
+  const vr2Applies=state.plFluidType==='PG'&&(
+    (state.plPrecip==='-PL'&&(bi===3||bi===4))||
+    (state.plPrecip==='-PLSN'&&bi===3)||
+    (state.plPrecip==='PL'&&bi===3)
+  );
+  if(vr2Applies)
     alerts.push({cls:'orange',icon:'⚠',text:'VR < 115kt の場合は離陸不可（*2ルール）。'});
   if(bi<PL_OAT_BANDS.length-1){
     const nb=PL_OAT_BANDS[bi+1];const drop=plOat-nb.min;
